@@ -1,0 +1,164 @@
+.m_fieldset
+{
+	padding-right:10px; 
+	padding-left:10px; 
+	padding-bottom:5px; 
+	padding-top:0px; 
+	text-align:left
+}
+.m_legend
+{
+	font-size:12px; 
+	padding-bottom:5px; 
+	font-family:tahoma
+}
+.m_frameborder
+{
+	border-right:#ffffff 2px inset; 
+	border-top:#d4d0c8 2px inset; 
+	font-size:10px; 
+	overflow:hidden; 
+	border-left:#d4d0c8 2px inset; 
+	width:40px; 
+	border-bottom:#ffffff 2px inset; 
+	height:19px; 
+	background-color:#ffffff; 
+	text-align:right
+}
+
+.m_input
+{
+	width:55px; 
+	height:16px
+}
+.c_fieldset
+{
+	padding-right:10px; 
+	padding-left:10px; 
+	padding-bottom:5px; 
+	padding-top:0px; 
+	text-align:left
+}
+.c_legend
+{
+	font-size:12px; 
+	padding-bottom:5px; 
+	font-family:tahoma
+}
+.c_frameborder
+{
+	border-right:2px inset #ffffff; 
+	border-top:2px inset #d4d0c8; 
+	border-left:2px inset #d4d0c8; 
+	border-bottom:2px inset #ffffff; 
+	width:160px; 
+	font-size:10px; 
+	overflow:hidden; 
+	background-color:#ffffff;
+}
+
+.c_year
+{
+	width:55px;
+	height:16px;
+}
+
+.c_month
+{
+	width:35px; 
+	height:16px
+}
+
+.c_dateHead td
+{
+	font-size:12px;
+	width:23px; 
+	cursor:pointer; 
+	height:20px; 
+	text-align:center;
+	color:#d4d0c8; 
+	background-color:#808080;
+}
+
+.button_container
+{
+	height:8px; 
+	position:relative;
+	margin-left:2px;
+}
+
+.button_container .up-button
+{
+	height:8px; 
+	width:16px;
+	position:absolute; 
+	top:0px; 
+	left:0px; 
+	padding:0px;
+	background-image:url('up.png');
+	background-repeat:no-repeat;
+	background-color:white;
+	border:1px solid #cccccc;
+	background-position: 4px 1px;
+	margin-top:3px;
+}
+
+.button_container .down-button
+{
+	height:8px; 
+	width:16px;
+	position:absolute; 
+	top:0px; 
+	left:0px; 
+	padding:0px;
+	background-image:url('down.png');
+	background-repeat:no-repeat;
+	background-color:white;
+	border:1px solid #cccccc;
+	background-position: 4px 2px;
+	margin-top:4px;
+}
+
+.table_container
+{
+	border:0px;
+	margin:0px;
+	border-collapse:collapse;
+}
+
+.table_container td
+{
+	padding:0px;
+}
+
+.date_table_container td
+{
+	width:23px; 
+	cursor:pointer; 
+	height:15px; 
+	text-align:center;
+	padding:0px;
+}
+
+.date_table_container .selected
+{
+	width:12px; 
+	color:white; 
+	height:12px; 
+	background-color:#0a246a
+}
+
+.date_table_container span
+{
+	width:12px; 
+	height:12px;
+	font-size:11px; 
+}
+
+.button-style
+{
+	width:50px;
+	margin-left:2px;
+	margin-top:5px;
+	height:24px;
+}

@@ -1,0 +1,51 @@
+.selection-field{cursor:pointer; border-radius:2px; height:30px; width:130px; padding:0px 18px 0px 5px; background-repeat:no-repeat; color:#666666}
+
+
+#selector-panel 
+{
+    background-color:#ffffff;
+	z-index:999;
+	border-bottom-right-radius:3px;
+	border-bottom-left-radius:3px;
+}
+
+#selector-panel .item-panel
+{
+	background-color:#ffffff;
+}
+
+#selector-panel .item-panel li
+{
+	padding:5px;
+	font-size:12px;
+	color:#666666;
+}
+
+
+#selector-panel .list-container
+{
+	margin:3px;
+	overflow:auto;
+	max-height:250px;
+
+}
+
+#selector-panel .tree-container
+{
+}
+
+
+
+#selector-panel .tree-selector
+{
+	background-color:#ffffff; float:left; border:1px solid #dddddd; width:300px; margin:5px; height:288px;
+}
+
+#selector-panel .tree-chosen
+{
+	background-color:#ffffff; float:right; border:1px solid #dddddd; width:269px; margin:5px; height:288px;
+}
+#selector-panel .tree-chosen li
+{
+    cursor: pointer; padding: 2px 4px 0px 4px;
+}

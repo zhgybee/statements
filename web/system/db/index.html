@@ -1,0 +1,156 @@
+<!doctype html>
+
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+
+	<script type="text/javascript" src="../../lib/jquery.js"></script>
+
+
+	<style>
+	</style>
+	<script type="text/javascript">
+		$(function()
+		{
+			resize();
+			initialize();
+
+			
+		});
+
+		function initialize()
+		{
+			$.getJSON("db.jsp", function(dbs)
+			{
+				$("#activation-container").empty();
+				$("#backup-container").empty();
+				
+				for(var i = 0 ; i < dbs.length ; i++)
+				{
+					var db = dbs[i];
+					var $db = $('<li isselect="0" title="文件大小 '+db.size+'&#10;创建日期 '+db.date+'"><i class="fa fa-check-circle selection"></i><i class="fa fa-database db-icon"></i><br/><span>'+db.name+'</span></li>');
+					$db.data("filename", db.name);
+					
+					if(db.activation)
+					{
+						$("#activation-container").append($db);
+					}
+					else
+					{
+						$("#backup-container").append($db);
+					}
+				}
+				
+				$("#backup-container li").on("mouseout", function()
+				{
+					$(this).find(".db-icon").css("color", "#6FB3E0");
+					$(this).find("span").css("color", "#333333");
+				});
+				
+				$("#backup-container li").on("mouseover", function()
+				{
+					$(this).find(".db-icon").css("color", "#FF6600");
+					$(this).find("span").css("color", "#FF6600");
+				});
+
+				$("#backup-container li").on("click", function(event)
+				{
+					$("#backup-container li").attr("isselect", "0");
+					$("#backup-container li").find(".selection").fadeOut("fast");
+					
+					$(this).attr("isselect", "1");
+					$(this).find(".selection").fadeIn("fast");
+				});
+			});
+		}
+		
+		function resize()
+		{
+		}
+		
+		function backup()
+		{
+			$.get("action.jsp?action=backup", function()
+			{
+				initialize();
+			});
+		}
+		
+		function del()
+		{
+			var db = $("#backup-container li[isselect='1']");
+			var name = db.data("filename");
+			$.get("action.jsp?action=delete&name="+name, function()
+			{
+				initialize();
+			});
+		}
+		
+		function activate()
+		{
+			var db = $("#backup-container li[isselect='1']");
+			var name = db.data("filename");
+			if(name != null)
+			{
+				$.get("action.jsp?action=activate&name="+name, function()
+				{
+					initialize();
+				});
+			}
+		}
+	</script>
+
+	<style>
+		#db-container .category
+		{
+			padding:10px; background-color:#f3f3f3; font-size:15px;
+		}
+		
+		#db-container ul li
+		{
+			float:left; min-width:60px; padding:10px 8px 5px 8px; text-align:center; border:1px solid #e1e1e1; margin:5px 8px 5px 0px; cursor:pointer; position:relative 
+		}
+
+		#db-container ul li .selection
+		{
+			cursor:pointer; position:absolute; top:-5px; left:-5px; font-size:18px; color:#6FB3E0; display:none
+		}
+
+		#db-container ul li i
+		{
+			font-size:30px; color:#6FB3E0;
+		}
+		.button
+		{
+			background-color:#4ab6ef; border:0px solid transparent; color:#ffffff; cursor:pointer; padding:8px 30px
+		}
+	</style>
+
+
+</head>
+
+<body style="padding:5px; overflow:hidden">
+
+<div id="db-container">
+	<div class="line-break category">当前数据</div>
+	<ul id="activation-container"></ul>
+	
+	<div class="line-break category">备份数据</div>
+	<ul id="backup-container"></ul>
+</div>
+
+<div class="line-break"></div>
+
+<div style="text-align:center; margin-top:4px; padding-top:10px; border-top:1px solid #e1e1e1">
+	<input type="button" class="button" value="备份" onclick="backup()" />
+	<input type="button" class="button" value="删除" onclick="del()" />
+	<input type="button" class="button" value="激活" onclick="activate()" />
+</div>
+
+</body>
+
+</html>

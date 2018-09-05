@@ -1,0 +1,76 @@
+html{}
+
+a{text-decoration:none;}
+
+form{margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px} 
+
+body{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px;}
+
+td{font-family:"微软雅黑"; font-size:13px; color:#333333;}
+
+button{font-family:"微软雅黑"; border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer;}
+
+input{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; margin:0px; outline:none }
+
+textarea{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; outline:none}
+
+select{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px; box-sizing:border-box; outline:none}
+
+ul, ol, menu, p, h1, h2, h3, h4, h5, h6, hr, dl, dt, dd{padding:0px; margin:0px;}
+
+li{padding:0px; margin:0px; list-style-type:none}
+
+.line-break{clear:both}
+
+.clearfix::after{clear:both; content:""; display:block;}
+
+.green{background-color:#5DC4BF!important}
+
+.red{background-color:#cd5050!important}
+
+.blue{background-color:#009CEA!important}
+
+.left{float:left}
+
+.right{float:right}
+
+.button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 4px}
+
+#loading-panel{}
+
+#loading-panel .loading-mask{position:fixed; width:100%; height:100%; top:0px; left:0px;right:0px; bottom:0px; background-color:#333333; filter:alpha(opacity=10); opacity:0.1;}
+
+#loading-panel .loading-toast{position:absolute; width:100px; background-color:#ffffff; height:100px; opacity:0.7; border:1px solid #dddddd}
+
+#loading-panel .loading-toast img{display:block; margin:0px auto;}
+
+#messages-panel{box-sizing:border-box; display:none; position:absolute; top:0px; left:0px; background-color:#fefbdf; width:100%; padding:30px; color:#333333; filter:alpha(opacity=90); opacity:0.9;}
+
+.grid-toolbar-panel{overflow:hidden;}
+.grid-toolbar-panel .searcher-panel{}
+.grid-toolbar-panel .searcher-panel .search-title{color:#aaaaaa; margin:0px 10px 0px 4px}
+.grid-toolbar-panel .searcher-panel .searcher-keyword-panel{background-color:#ffffff; padding:0px 10px; border-radius:3px; width:300px}
+.grid-toolbar-panel .searcher-panel .searcher-keyword-panel input{width:275px}
+.grid-toolbar-panel .searcher-panel input{border-radius:2px; margin-right:5px; background-color:#ffffff; border:0px none; color:#838383; width:100px; height:35px; padding:0px 5px}
+.grid-toolbar-panel .searcher-panel i{font-size:14px; color:#999999}
+.grid-toolbar-panel .pagination-panel {margin:0px auto}
+.grid-toolbar-panel .pagination-panel ul{margin:0px auto}
+.grid-toolbar-panel .pagination-panel ul li{float:left; margin-left:5px}
+.grid-toolbar-panel .pagination-panel ul li a{cursor:pointer; height:35px; line-height:35px; background-color:#ffffff; border-radius:4px; color:#999999; font-size:13px; padding:0px 10px; display:block}
+.grid-toolbar-panel .pagination-panel ul li a.disabled{background-color:#f2f2f2; cursor:not-allowed}
+.grid-toolbar-panel .pagination-panel ul li a i{font-size:14px; color:#999999}
+
+
+#module-panel{margin:10px}
+#module-panel #left-panel{float:right; width:260px}
+#module-panel #left-panel h4{font-weight:400; color:#555555; font-size:16px; margin-top:12px; letter-spacing:1px}
+#module-panel #left-panel h4 span{font-weight:400}
+#module-panel #left-panel p{margin-top:6px; color:#999999; font-size:12px}
+#module-panel #left-panel #all-item{margin-top:10px}
+#module-panel #left-panel #all-item h5{padding: 8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400;}
+#module-panel #left-panel ul{color:#999999;}
+#module-panel #left-panel ul li{margin-top:5px; cursor:pointer}
+#module-panel #left-panel ul li:hover h5{color:#ffaa00}
+#module-panel #left-panel ul li h5{padding:8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400}
+#module-panel #left-panel ul li strong{float:right; font-size:12px; margin:10px 10px 0px 0px; background-color:#999999; color:#ffffff; padding:0px 5px; border-radius:10px; font-weight:400;}
+#module-panel #right-panel{margin-right:290px;}

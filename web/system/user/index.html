@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="../../lib/selection/selection.css"/>
+	<style>
+
+	#user-field-panel input{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; padding:0px 6px; height:30px;}	
+	#user-field-panel textarea{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; padding:0px 6px; height:30px; height:50px}	
+	#user-field-panel .close-button{text-align:center; margin:10px 0px; cursor:pointer}
+	#user-field-panel .close-button i{font-size:15px; color:#aaaaaa}
+
+	#users > li{background-color:#ffffff; margin:10px 0px; border-radius:5px; padding:15px; box-sizing:border-box}
+	#users > li .left {width:50px; text-align:center}
+	#users > li .left img{width:50px; height:50px;}
+
+	#users > li .items{margin-left:70px;}
+	#users > li .items h2{font-size:15px}
+	#users > li .items h2 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#users > li .items a{color:#555555;}
+	#users > li .items a:hover{color:#ffaa00;}
+	#users > li .items p{margin-top:5px}
+	#users > li .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
+
+
+	#user-field-panel .close-button{text-align:center; margin:10px 0px; cursor:pointer}
+	#user-field-panel .close-button i{font-size:15px; color:#aaaaaa}
+
+	</style>
+</head>
+
+<body style="margin:0px; background-color:#EEEEEE">
+	
+	<div class="clearfix" style="background-color:#F7F7F7; margin:10px">
+	
+		<div class="clearfix" style="padding:20px">
+			<div class="left" style="font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;">
+				用户<span style="color:#468847">管理</span>
+			</div>
+			<div class="right">
+				<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-plus" style="margin-right:3px;"></i>增加用户</button>
+			</div>
+		</div>
+		<div id="user-field-panel" style="padding:10px; display:none">
+			<div class="close-button">
+				<i class="fa fa-chevron-up"></i>
+			</div>
+			<div class="clearfix">
+				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">编号<input type="text" id="code"/></div>
+				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">姓名<input type="text" id="name"/></div>
+				<div class="left" style="width:40%; padding-right:10px; box-sizing:border-box;">用户名<input type="text" id="loginname"/></div>
+			</div>
+			<div class="clearfix" style="margin-top:10px">
+				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">密码<input type="text" id="password"/></div>
+				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">角色<input type="text" id="role"/></div>
+			</div>
+			<div style="text-align:center; margin-top:20px">
+				<button id="save-button" style="padding:10px 50px">确定</button>
+			</div>
+		</div>
+	</div>
+	
+		
+	<div id="module-panel" class="clearfix">
+		<ul id="users"></ul>
+	</div>
+	
+	
+	<script type="text/javascript" src="../../lib/jquery.js"></script>
+	<script type="text/javascript" src="../../lib/app.js"></script>
+	<script type="text/javascript" src="../../lib/selection/selection.js"></script>
+	<script type="text/javascript">
+
+		$(function()
+		{
+			findUsers();
+			
+			$("#save-button").on("click", function()
+			{
+				app.showLoading();
+				$.getJSON("do.jsp?mode=2", {"code":$("#code").val(), "name":$("#name").val(), "loginname":$("#loginname").val(), "password":$("#password").val(), "role":$("#role").val()}, function(response)
+				{
+					app.hideLoading();
+					if(response.status == "1")
+					{
+						$.get("export.jsp", function(columns){});
+						findUsers();
+					}
+					else 
+					{
+						app.message(response.messages);
+					}
+				});
+			});
+
+			$("#role").selection
+			({
+				url:app.getContextPath()+"/dictionary/list/role.json",
+				ismultiple:false
+			});
+			
+			$("#add-user-button").on("click", function()
+			{
+				$("#user-field-panel").slideToggle('fast');
+			});
+
+			$("#user-field-panel .close-button").on("click", function()
+			{
+				$("#user-field-panel").slideToggle('fast');
+			});
+		});
+		
+		function findUsers()
+		{
+			app.showLoading();
+			$.getJSON("user.jsp?mode=1", function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					var $items = $("#users");
+					var rows = response.resource.rows;
+					var content = [];
+					$.each(rows, function(i, row)
+					{
+						var icon = row.ICON || "";
+						if(icon == "")
+						{
+							icon = "user.png"
+						}
+						content.push('<li class="clearfix">');
+						content.push('<div class="left"><img src="../../resource/usericon/'+icon+'"></div>');
+						content.push('<div class="items">');
+						content.push('<h2>'+row.NAME+'<span>'+row.LOGINNAME+'</span></h2>');
+						content.push('<p>创建日期：'+row.CREATE_DATE+'</p>');
+						content.push('</div>');
+					});
+					
+					$items.html(content.join(""));
+					
+					$items.find(".delete-button").on("click", function()
+					{
+						app.showLoading();
+						$.getJSON("do.jsp?mode=1&id="+$(this).attr("code"), function(response)
+						{
+							app.hideLoading();
+							if(response.status == "1")
+							{
+								findUsers();
+							}
+							else 
+							{
+								app.message(response.messages);
+							}
+						});
+					});
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+				
+			});
+		}
+	
+	</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

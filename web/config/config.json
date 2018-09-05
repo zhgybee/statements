@@ -1,0 +1,66 @@
+{
+    "datasource": "db",
+    "variable": 
+    [
+        {
+            "name": "day",
+            "classname": "com.system.variable.SystemDayVariable"
+        },
+        {
+            "name": "hour",
+            "classname": "com.system.variable.SystemHourVariable"
+        },
+        {
+            "name": "minute",
+            "classname": "com.system.variable.SystemMinuteVariable"
+        },
+        {
+            "name": "month",
+            "classname": "com.system.variable.SystemMonthVariable"
+        },
+        {
+            "name": "second",
+            "classname": "com.system.variable.SystemSecondVariable"
+        },
+        {
+            "name": "user-name",
+            "classname": "com.system.variable.SystemUserNameVariable"
+        },
+        {
+            "name": "user-id",
+            "classname": "com.system.variable.SystemUserIdVariable"
+        },
+        {
+            "name": "uuid",
+            "classname": "com.system.variable.SystemUUIDVariable"
+        },
+        {
+            "name": "year",
+            "classname": "com.system.variable.SystemYearVariable"
+        },
+        {
+            "name": "date",
+            "classname": "com.system.variable.SystemDateVariable"
+        },
+        {
+            "name": "context-path",
+            "classname": "com.system.variable.SystemContextPathVariable"
+        },
+        {
+            "name": "time",
+            "classname": "com.system.variable.SystemTimeVariable"
+        },
+        {
+            "name": "unit-id",
+            "classname": "com.system.variable.SystemUnitIdVariable"
+        },
+        {
+            "name": "unit-code",
+            "classname": "com.system.variable.SystemUnitCodeVariable"
+        },
+        {
+            "name": "unit-name",
+            "classname": "com.system.variable.SystemUnitNameVariable"
+        }
+    ]
+}

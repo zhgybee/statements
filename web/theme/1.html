@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<link rel="stylesheet" href="../style/css/app.css">
+<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+
+<style>
+#navigation{background-color:#ffffff}
+#navigation #login-user-panel{float:left; box-sizing:border-box; height:70px; padding:10px 0px 0px 10px}
+#navigation #login-user-panel #login-user-icon img{width:50px; height:50px; display:block;}
+#navigation #login-user-panel #login-user-name {margin:3px 0px 0px 10px; font-size:14px;}
+#navigation #login-user-panel #login-user-name h6{display:inline; margin-left:5px; color:#777777;}
+#navigation #login-user-panel #login-user-tags{margin:3px 0px 0px 10px;}
+#navigation #login-user-panel #login-user-tags span{font-size:12px; margin-right:3px; color:#ffffff; padding:0px 4px; border-radius:2px}
+
+#navigation nav{float:right; height:70px; line-height:25px;}
+#navigation nav a{float:left; width:80px; height:70px; color:#ffffff; text-align:center; box-sizing:border-box; padding-top:8px; cursor:pointer;}
+#navigation nav a i{font-size:30px}
+</style>
+
+<title></title>
+<body style="background-color:#EEEEEE;">
+
+	<div id="navigation" class="clearfix">
+		<div id="login-user-panel" class="clearfix">		
+			<div id="login-user-icon" class="left"><img /></div>
+			<div class="left">
+				<div id="login-user-name"></div>
+				<div id="login-user-tags">
+					<span class="green" id="role-name"></span>
+				</div>
+			</div>		
+		</div>
+		<nav class="clearfix">
+			<a style="background-color:#7CBB00" target="_blank" href="../statements/creator.html"><i class="fa fa-cog"></i><br/>任务管理</a>
+			<a style="background-color:#009CEA" target="_blank" href="../statements/transactor.html"><i class="fa fa-tasks"></i><br/>我的任务</a>
+			<a style="background-color:#EC4F13" target="_blank" href="../system/user/"><i class="fa fa-user"></i><br/>用户管理</a>
+			<a style="background-color:#FFBB00" target="_blank" href="../system/report/design/"><i class="fa fa-file-text"></i><br/>报表设计</a>
+			<a style="background-color:#678fcf" target="_blank" href="../version/"><i class="fa fa-gavel"></i><br/>升级维护</a>
+			<a style="background-color:#009CEA" target="_blank" href="../system/db/"><i class="fa fa-database"></i><br/>备份还原</a>
+			<a style="background-color:#7CBB00" target="_blank" href="../help/"><i class="fa fa-question-circle"></i><br/>帮助</a>
+			<a style="background-color:#EC4F13" target="_blank" href="../index.html"><i class="fa fa-sign-out"></i><br/>注销</a>
+		</nav>
+	</div>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+
+<div style="height:100px; background-color:#aaaaaa; padding:10px;">
+<div style="text-align:center; "><a href="../system/cleanup.jsp" target="_blank" style="font-size:14px; color:#cccccc">清理临时文件</a></div>
+<div style="text-align:center; font-size:14px; color:#cccccc; margin-top:10px"><span style="" id="version-code"><span></div>
+</div>
+
+
+
+
+	<div class="module-container">
+	</div>
+
+
+
+
+
+	<script src="../lib/jquery.js"></script>
+	<script src="../lib/app.js"></script>
+	<script src="../lib/user.jsp"></script>
+	<script src="../system/datastructure/datastructure.js"></script>
+	
+	<script type="text/javascript">
+
+		$(function()
+		{
+			var icon = app.USERICON || "";
+			if(icon == "")
+			{
+				icon = "user.png"
+			}
+			$("#login-user-icon img").attr("src", "../resource/usericon/"+icon);
+			$("#login-user-name").html(app.USERNAME);
+			
+			var dataStructureUtils = new DataStructureUtils();
+			$("#role-name").html(dataStructureUtils.getDictionary("../dictionary/map/role.json", app.USERROLE));
+			
+			$.getJSON("../version/config.json", function(config)
+			{
+				$("#version-code").html(config.version);
+			});
+		});
+
+	</script>
+</body>
+</html>

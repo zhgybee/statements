@@ -1,0 +1,174 @@
+
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<title></title>
+
+<link rel="stylesheet" href="../../../style/css/app.css" />
+<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css" />
+<script type="text/javascript" src="../../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../../lib/app.js"></script>
+
+<script type="text/javascript">
+	$(document).ready
+	(
+		function()
+		{
+			$("#create-report").on("click", function()
+			{
+				$.getJSON("report.do.jsp?action=add", function(messages)
+				{
+					bulider();
+				});
+			});
+			bulider();
+		}
+	);
+	function bulider()
+	{
+
+		$.getJSON("reports.json.jsp", function(messages)
+		{
+			var reports = messages.REPORTS;
+			var trashs = messages.TRASHTEMPLATE
+			if(trashs != null)
+			{
+				if(trashs.length > 0)
+				{
+					var tablefile = [];
+					$.each(trashs, function(i, trash)
+					{
+						tablefile.push(trash);
+					});
+					$("#errors").show();
+					$("#errors .error-text").append('<i class="fa fa-warning"></i><span>共有'+tablefile.length+'个表格（'+tablefile.join("，")+'）未对应配置文件。</span>');
+				}
+			}
+
+			var content = "";
+			var $row = null;
+			var $cell = null;
+
+			var $reports = $("#reports tbody");
+			$(".reports").remove();
+			$.each( reports, function(i, report)
+			{
+				var id = report.ID;
+				var title = report.TITLE;
+				var code = report.CODE;
+				var template = report.TEMPLATE;
+				
+				$row = $('<tr class="reports"/>')
+				
+
+				$cell = $('<td>'+(i+1)+'</td>');
+				$row.append($cell);
+				
+				if(template == null)
+				{
+					$cell = $('<td></td>');
+				}
+				else
+				{
+					$cell = $('<td><a href="../template/'+template+'.xls" target="_blanke"><i class="fa fa-file-text template-icon"></i></a></td>');
+				}
+
+				$row.append($cell);
+
+				$cell = $('<td>'+title+'</td>');
+				$row.append($cell);
+
+				$cell = $('<td>'+report.MESSAGE+'</td>');
+				if(code == 1)
+				{
+					$cell.addClass("error");
+				}
+				$row.append($cell);
+				
+				var $copybutton = $('<button>复制</button>');
+				$copybutton.on("click", {id:id}, function(event)
+				{
+					$.getJSON("report.do.jsp?action=copy&id="+id, function(messages)
+					{
+						bulider();
+					});
+				});
+
+				var $designbutton = $('<button>配置</button>');
+				$designbutton.on("click", {id:id}, function(event)
+				{
+					window.open("design.jsp?id="+event.data.id);
+				});
+
+				var $deletebutton = $('<button style="background-color:#F04747">删除</button>');
+				$deletebutton.on("click", {id:id}, function(event)
+				{
+					if(confirm("确定删除所选择的报表吗？"))
+					{
+						$.getJSON("report.do.jsp?action=delete&id="+id, function(messages)
+						{
+							bulider();
+						});
+					}
+				});
+
+				$cell = $('<td></td>');
+				$cell.append($copybutton);
+				$cell.append($designbutton);
+				$cell.append($deletebutton);
+				$row.append($cell);
+
+				$reports.append($row);
+			});
+
+			$("#reports tbody").append(content);
+		});
+	}
+</script>
+<style>
+#reports{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0px; border-width:0px; border-top:1px dotted #cccccc}
+
+#reports td{padding:0px; margin:0px; border-style:dotted; border-width:0px 1px 1px 0px; border-color:#cccccc;}
+
+#reports thead{background-color:#f0f0f0;}
+#reports thead td{height:40px; font-weight:bold; text-align:center}
+#reports thead .mark{font-size:9px; margin:0px 3px}
+
+#reports tbody td{height:40px; text-align:center}
+#reports tbody .error{color:red}
+#reports tbody td .template-icon{font-size:22px; color:#444444}
+#reports tbody td button{cursor:pointer; height:26px; padding:0px 4px; margin:0px 2px 0px 0px; background-color:#4AB6EF; border: 1px solid transparent; color:#ffffff; line-height:normal}
+
+#errors{margin:5px 0px; padding:0px; line-height:30px; background-color:#fcf8e3; border-top:1px solid #faebcc; border-bottom:1px solid #faebcc; width:100%;}
+#errors .error-text{margin:5px 0px 5px 20px; color:#8a6d3b}
+#errors .error-text i{font-size:16px;}
+#errors .error-text span{margin-left:10px}
+</style>
+</head>
+<body>
+<div id="errors" style="display:none"><p class="error-text"></p></div>
+<table id="reports">
+<thead>
+<tr>
+<td style="width:60px">序号</td>
+<td style="width:90px">表格<span class="mark">EXCEL</span></td>
+<td style="width:300px">名称<span class="mark">NAME</span></td>
+<td>消息<span class="mark">MESSAGE</span></td>
+<td style="width:250px"></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="width:60px"></td>
+<td style="width:80px"></td>
+<td style="width:200px">模板</td>
+<td style="color:#ff6600">点击复制按钮从模板中创建一条新的报表配置文件</td>
+<td style="width:200px"><button id="create-report">复制</button></td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+[
+	{
+		"code":"A1", "name":"A1", "title":"人员信息", "columns":
+		[
+			{"name":"ID", "title":"编号"},
+			{"name":"C1", "title":"值一", "editor":{}, "datagrid":{"frozen":true}},
+			{"name":"C2", "title":"值二", "editor":{}, "datagrid":{}},
+			{"name":"C3", "title":"值三", "editor":{}, "datagrid":{}},
+			{"name":"C4", "title":"值四", "editor":{}, "datagrid":{}},
+			{"name":"C5", "title":"值五", "editor":{}, "datagrid":{}},
+			{"name":"TASK_ID", "title":"任务", "editor":{}},
+			{"name":"STATUS", "title":"状态", "editor":{}},
+			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}, "datagrid":{}},
+			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		]
+	},
+	{
+		"code":"A2", "name":"A2", "title":"人员信息", "columns":
+		[
+			{"name":"ID", "title":"编号"},
+			{"name":"C1", "title":"值一", "editor":{}, "datagrid":{"frozen":true}},
+			{"name":"C2", "title":"值二", "editor":{}, "datagrid":{}},
+			{"name":"C3", "title":"值三", "editor":{}, "datagrid":{}},
+			{"name":"C4", "title":"值四", "editor":{}, "datagrid":{}},
+			{"name":"C5", "title":"值五", "editor":{}, "datagrid":{}},
+			{"name":"TASK_ID", "title":"任务", "editor":{}},
+			{"name":"STATUS", "title":"状态", "editor":{}},
+			{"name":"CREATE_USER_ID", "title":"创建人", "datagrid":{}},
+			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		]
+	},
+	{
+		"code":"A3", "name":"A3", "title":"人员信息", "columns":
+		[
+			{"name":"ID", "title":"编号"},
+			{"name":"C1", "title":"值一", "editor":{}, "datagrid":{"frozen":true}},
+			{"name":"C2", "title":"值二", "editor":{}, "datagrid":{}},
+			{"name":"C3", "title":"值三", "editor":{}, "datagrid":{}},
+			{"name":"C4", "title":"值四", "editor":{}, "datagrid":{}},
+			{"name":"C5", "title":"值五", "editor":{}, "datagrid":{}},
+			{"name":"TASK_ID", "title":"任务", "editor":{}},
+			{"name":"STATUS", "title":"状态", "editor":{}},
+			{"name":"CREATE_USER_ID", "title":"创建人", "datagrid":{}},
+			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		]
+	},
+	{
+		"code":"A4", "name":"A4", "title":"人员信息", "columns":
+		[
+			{"name":"ID", "title":"编号"},
+			{"name":"C1", "title":"值一", "editor":{}, "datagrid":{"frozen":true}},
+			{"name":"C2", "title":"值二", "editor":{}, "datagrid":{}},
+			{"name":"C3", "title":"值三", "editor":{}, "datagrid":{}},
+			{"name":"C4", "title":"值四", "editor":{}, "datagrid":{}},
+			{"name":"C5", "title":"值五", "editor":{}, "datagrid":{}},
+			{"name":"TASK_ID", "title":"任务", "editor":{}},
+			{"name":"STATUS", "title":"状态", "editor":{}},
+			{"name":"CREATE_USER_ID", "title":"创建人", "datagrid":{}},
+			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		]
+	}
+]

@@ -1,0 +1,18 @@
+	{
+		"TITLE":"新建报表",
+		"HANDLE":"handle.jsp",
+		"LOG":false,
+		"PREVIEW":true,
+		"CHANGER":{},
+		"SOURCE":
+		{
+			"SQLS":
+			{
+			}
+		},
+		"SHEET":{},
+		"ITEMS":
+		[
+			
+		]
+	}

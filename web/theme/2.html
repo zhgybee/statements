@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html>
+<head>		
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../style/css/app.css" />
+	<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+	<script type="text/javascript" src="../lib/jquery.js"></script>
+	<style>
+		body{margin:0px; overflow:hidden;}
+	</style>
+	<script type="text/javascript">
+		$(function()
+		{
+			$.getJSON("../version/config.json", function(config)
+			{
+				$("#version-code").html(config.version);
+			});
+		});
+	</script>
+</head>
+
+<body>
+
+
+
+<a href="../index.html">注销</a>
+<a href="../help/" target="_blank">帮助</a>
+<a href="../system/user/" target="_blank">用户管理</a>
+<a href="../statements/creator.html" target="_blank">任务管理</a>
+<a href="../statements/transactor.html" target="_blank">我的任务</a>
+<a href="../system/report/design/" target="_blank">报表设计</a>
+<a href="../system/cleanup.jsp" target="_blank">清理临时文件</a>	
+<a href="../version/" target="_blank">升级维护</a>
+<a href="../system/db/" target="_blank">备份还原</a>
+<span style="margin-right:12px">版本<span style="margin-right:15px" id="version-code"><span>
+
+
+
+</body>
+
+</html>

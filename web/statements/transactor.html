@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../style/css/app.css" />
+	<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+	<style>
+
+	#tasks > li{background-color:#ffffff; margin:10px 0px; border-radius:5px; padding:15px; box-sizing:border-box}
+	#tasks > li .left {width:50px; text-align:center}
+	#tasks > li .left img{width:50px; height:50px;}
+
+	#tasks > li .items{margin-left:70px;}
+	#tasks > li .items h2{font-size:15px}
+	#tasks > li .items h2 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#tasks > li .items a{color:#555555;}
+	#tasks > li .items a:hover{color:#ffaa00;}
+	#tasks > li .items p{margin-top:5px}
+	#tasks > li .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
+
+	</style>
+</head>
+
+<body style="margin:0px; background-color:#EEEEEE">
+	
+	<div class="clearfix" style="background-color:#F7F7F7; margin:10px">	
+		<div class="clearfix" style="padding:20px">
+			<div class="left" style="font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;">
+				报表<span style="color:#468847">管理</span>
+			</div>
+			<div class="right">
+				<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-plus" style="margin-right:3px;"></i>新建报表</button>
+			</div>
+		</div>
+		<div id="task-field-panel" style="padding:10px; display:none">
+		</div>
+	</div>
+	
+	
+	<div id="module-panel" class="clearfix">
+		<ul id="tasks"></ul>
+	</div>
+	
+	<script type="text/javascript" src="../lib/jquery.js"></script>
+	<script type="text/javascript" src="../lib/app.js"></script>
+
+	<script type="text/javascript">
+
+		$(function()
+		{
+			findTasks();
+		});
+		
+		function findTasks()
+		{
+			app.showLoading();
+			$.getJSON("task.jsp?mode=1", function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					var $tasks = $("#tasks");
+					var tasks = response.resource.rows;
+					var content = [];
+					$.each(tasks, function(i, task)
+					{
+						content.push('<li class="clearfix">');
+						
+						var icon = task.USERICON || "";
+						if(icon == "")
+						{
+							icon = "user.png"
+						}
+						
+						content.push('	<div class="left"><img src="../resource/usericon/'+icon+'"></div>');
+						content.push('	<div class="items">');
+						content.push('		<a href="transact.html?id='+task.ID+'" target="_blank"><h2>'+task.TITLE+'<span>'+task.CREATE_DATE+'</span></h2></a>');
+						content.push('		<p>'+task.DESCRIPTION+'</p>');
+						content.push('		<hr/>');
+
+						content.push('	</div>');
+						content.push('</li>');
+					});
+					
+					$tasks.html(content.join(""));
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+				
+			});
+		}
+	
+	</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

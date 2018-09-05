@@ -1,0 +1,39 @@
+
+
+.datagrid{border:1px solid #c5d0dc; overflow:hidden; box-sizing:border-box;}
+
+.datagrid table{table-layout:fixed; border-collapse:separate; border-spacing:0px; border-width:0px}
+.datagrid table td{padding:0px; margin:0px; border-style:dotted; border-width:0px 1px 1px 0px; border-color:#cccccc;}
+
+
+.datagrid table td div span.editor{width:100%; display:inline-block; position: relative;}
+.datagrid table td div span.editor i{border-left:7px solid transparent; border-top:7px solid #ff6363; height:0px; position:absolute; right:-5px; top:-6px; width:0px;}
+.datagrid table td div span.editor .cell-success{border-top-color:green}
+.datagrid table td div span.editor .cell-error{border-top-color:red}
+.datagrid table td div span input{padding:2px 0px; margin:-3px 0px; border:0px none; width:100%; text-align:center; height:100%; background-color:#f1f1f1}
+
+.datagrid .datagrid-index {width:40px; text-align:center; text-align:center; overflow:hidden}
+.datagrid .datagrid-index i{font-size:14px}
+
+.datagrid .column-manager-button i{font-size:14px; color:#478FCA; cursor:pointer}
+.datagrid .selection{width:20px; text-align:center}
+
+.datagrid .datagrid-header-container, .datagrid-frozen-header-container{float:left; overflow:hidden}
+.datagrid .datagrid-header-container td, .datagrid-frozen-header-container td{background-color:#f1f5fa;}
+.datagrid .datagrid-header-container td:hover, .datagrid-frozen-header-container td:hover{background-color:#D9EDF7;}
+
+.datagrid .datagrid-header-container td div, .datagrid-frozen-header-container td div{width:100px; text-align:center; height:30px; margin:0px; line-height:30px; padding:0px 5px}
+.datagrid .datagrid-header-container .inner{float:left; width:10000px; background-color:#f1f5fa}
+
+
+.datagrid .resizable-line{position:absolute; left:30px; top:0px; width:1px; height:300px; background-color:#6FB3E0; display:none}
+.datagrid .unselect{-moz-user-select:none; -webkit-user-select:none; -ms-user-select:none; -khtml-user-select:none; user-select:none;}
+.datagrid .loading-panel{position:absolute; background-color:#333333; display:none; filter:alpha(opacity=10); opacity:0.1;}
+.datagrid .loading-image{width:30px; height:30px; position:absolute; background-image:url('loading.gif')}
+
+.datagrid .datagrid-body-container{float:left; overflow:auto}
+.datagrid .datagrid-frozen-body-container{float:left; overflow:hidden}
+.datagrid .datagrid-frozen-body-container .inner{margin-bottom:30px;}
+.datagrid .datagrid-body-container td div, .datagrid-frozen-body-container td div{width:100px; text-align:center; padding:6px 5px; overflow:hidden; white-space:nowrap; word-wrap:normal}
+
+.datagrid .control-button{margin:0px; padding:1px 2px; border:1px solid #cccccc; font-size:11px; cursor:pointer}
