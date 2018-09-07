@@ -1,5 +1,14 @@
 $(function()
 {
+
+	var left = ($(window).outerWidth(true) - $("#login-container").outerWidth(true)) / 2
+	var top = ($(window).outerHeight(true) - $("#login-container").outerHeight(true)) / 2
+	$("#login-container").css("left", left+"px");
+	$("#login-container").css("top", (top - 50)+"px");
+
+	$("#login-panel").css("left", $("#login-container").css("left"));
+	$("#login-panel").css("top", $("#login-container").css("top"));
+
 	var cookiename = $.cookie('nest-name');
 	if(cookiename != null)
 	{
@@ -38,21 +47,15 @@ $(function()
 function login()
 {
 	app.showLoading();
-	$('#login-form').attr("action", app.getContextPath()+"/servlet/Login")
+	$('#login-form').attr("action", app.getContextPath()+"/login.do")
 	$('#login-form').ajaxSubmit
 	(
-		function(data)
+		function(response)
 		{
 			app.hideLoading();
-			var json = jQuery.parseJSON(data);
-			if(json.code == "1")
+			response = jQuery.parseJSON(response);
+			if(response.status == 1)
 			{
-				$("#error-text").append(json.message+"<br/>");
-				$("#error-text").slideDown("fast");
-			}
-			else if(json.code == "0")
-			{
-
 				var status = $("#memorization i").attr("isselect");
 				if(status == "1")
 				{
@@ -66,7 +69,11 @@ function login()
 					$.cookie('nest-password', null);
 					$.cookie('nest-memorization', null);
 				}
-				window.location.href = '../theme/1.html'; 
+				window.location.href = '../app.html'; 
+			}
+			else
+			{
+				app.message(response.messages);
 			}
 		}
 	);

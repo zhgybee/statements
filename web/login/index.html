@@ -5,16 +5,10 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="../style/css/app.css" />
 	<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
-	<script type="text/javascript" src="../lib/jquery.js"></script>
-	<script type="text/javascript" src="../lib/jquery.cookie.min.js"></script>
-	<script type="text/javascript" src="../lib/jquery.form.js"></script> 
-	<script type="text/javascript" src="../lib/app.js"></script> 
-	<script type="text/javascript" src="login.js"></script> 
 	<style>
 		.textedit{border:none; height:30px; background-color:transparent; color:#ffffff; font-size:16px; filter:alpha(opacity=80); opacity:0.8;}
 		form i{color:#ffffff; margin-right:10px; filter:alpha(opacity=60); opacity:0.6;}
 		hr{margin:2px 0px 0px 0px; border-top:1px solid #ffffff; border-left:none; border-right:none; border-bottom:none; filter:alpha(opacity=50); opacity:0.5;}
-
 	</style>
 </head>
 
@@ -55,20 +49,11 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-
-$(function()
-{
-	var left = ($(window).outerWidth(true) - $("#login-container").outerWidth(true)) / 2
-	var top = ($(window).outerHeight(true) - $("#login-container").outerHeight(true)) / 2
-	$("#login-container").css("left", left+"px");
-	$("#login-container").css("top", (top - 50)+"px");
-
-	$("#login-panel").css("left", $("#login-container").css("left"));
-	$("#login-panel").css("top", $("#login-container").css("top"));
-});
-
-</script>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="../lib/jquery.form.js"></script> 
+<script type="text/javascript" src="../lib/app.js"></script> 
+<script type="text/javascript" src="login.js"></script> 
 
 </body>
 </html>

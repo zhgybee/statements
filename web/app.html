@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-<link rel="stylesheet" href="../style/css/app.css">
-<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="style/css/app.css">
+<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css" />
 
 <style>
 #navigation{background-color:#ffffff}
@@ -33,14 +33,14 @@
 			</div>		
 		</div>
 		<nav class="clearfix">
-			<a style="background-color:#7CBB00" target="_blank" href="../statements/creator.html"><i class="fa fa-cog"></i><br/>任务管理</a>
-			<a style="background-color:#009CEA" target="_blank" href="../statements/transactor.html"><i class="fa fa-tasks"></i><br/>我的任务</a>
-			<a style="background-color:#EC4F13" target="_blank" href="../system/user/"><i class="fa fa-user"></i><br/>用户管理</a>
-			<a style="background-color:#FFBB00" target="_blank" href="../system/report/design/"><i class="fa fa-file-text"></i><br/>报表设计</a>
-			<a style="background-color:#678fcf" target="_blank" href="../version/"><i class="fa fa-gavel"></i><br/>升级维护</a>
-			<a style="background-color:#009CEA" target="_blank" href="../system/db/"><i class="fa fa-database"></i><br/>备份还原</a>
-			<a style="background-color:#7CBB00" target="_blank" href="../help/"><i class="fa fa-question-circle"></i><br/>帮助</a>
-			<a style="background-color:#EC4F13" target="_blank" href="../index.html"><i class="fa fa-sign-out"></i><br/>注销</a>
+			<a style="background-color:#7CBB00" target="_blank" href="statements/creator.html"><i class="fa fa-cog"></i><br/>任务管理</a>
+			<a style="background-color:#009CEA" target="_blank" href="statements/transactor.html"><i class="fa fa-tasks"></i><br/>我的任务</a>
+			<a style="background-color:#EC4F13" target="_blank" href="system/user/"><i class="fa fa-user"></i><br/>用户管理</a>
+			<a style="background-color:#FFBB00" target="_blank" href="system/report/design/"><i class="fa fa-file-text"></i><br/>报表设计</a>
+			<a style="background-color:#678fcf" target="_blank" href="version/"><i class="fa fa-gavel"></i><br/>升级维护</a>
+			<a style="background-color:#009CEA" target="_blank" href="system/db/"><i class="fa fa-database"></i><br/>备份还原</a>
+			<a style="background-color:#7CBB00" target="_blank" href="help/"><i class="fa fa-question-circle"></i><br/>帮助</a>
+			<a style="background-color:#EC4F13" target="_blank" href="index.html"><i class="fa fa-sign-out"></i><br/>注销</a>
 		</nav>
 	</div>
 
@@ -56,39 +56,36 @@
 
 
 
-	<div class="module-container">
-	</div>
+<div class="module-container">
+</div>
 
+<script src="lib/jquery.js"></script>
+<script src="lib/app.js"></script>
+<script src="lib/user.jsp"></script>
+<script src="system/datastructure/datastructure.js"></script>
 
+<script type="text/javascript">
 
-
-
-	<script src="../lib/jquery.js"></script>
-	<script src="../lib/app.js"></script>
-	<script src="../lib/user.jsp"></script>
-	<script src="../system/datastructure/datastructure.js"></script>
-	
-	<script type="text/javascript">
-
-		$(function()
+	$(function()
+	{
+		var icon = app.USERICON || "";
+		if(icon == "")
 		{
-			var icon = app.USERICON || "";
-			if(icon == "")
-			{
-				icon = "user.png"
-			}
-			$("#login-user-icon img").attr("src", "../resource/usericon/"+icon);
-			$("#login-user-name").html(app.USERNAME);
-			
-			var dataStructureUtils = new DataStructureUtils();
-			$("#role-name").html(dataStructureUtils.getDictionary("../dictionary/map/role.json", app.USERROLE));
-			
-			$.getJSON("../version/config.json", function(config)
-			{
-				$("#version-code").html(config.version);
-			});
+			icon = "user.png"
+		}
+		$("#login-user-icon img").attr("src", "resource/usericon/"+icon);
+		$("#login-user-name").html(app.USERNAME);
+		
+		var dataStructureUtils = new DataStructureUtils();
+		$("#role-name").html(dataStructureUtils.getDictionary("dictionary/map/role.json", app.USERROLE));
+		
+		$.getJSON("version/config.json", function(config)
+		{
+			$("#version-code").html(config.version);
 		});
+	});
 
-	</script>
+</script>
+
 </body>
 </html>

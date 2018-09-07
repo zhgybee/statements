@@ -7,7 +7,7 @@
     <filter-class>com.system.filter.SessionFilter</filter-class>
     <init-param>
       <param-name>exclusions</param-name>
-      <param-value>/servlet/Login,/login/,/plug-in/,/index.html</param-value>
+      <param-value>login.do,/login/,/plug-in/,/index.html</param-value>
     </init-param>
   </filter>
   <filter>
@@ -24,7 +24,7 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>SessionFilter</filter-name>
-    <url-pattern>/servlet/*</url-pattern>
+    <url-pattern>*.do</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>CharacterEncodingFilter</filter-name>
@@ -41,6 +41,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Login</servlet-name>
-    <url-pattern>/servlet/Login</url-pattern>
+    <url-pattern>/login.do</url-pattern>
   </servlet-mapping>
 </web-app>

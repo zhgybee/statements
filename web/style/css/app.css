@@ -2,21 +2,19 @@ html{}
 
 a{text-decoration:none;}
 
-form{margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px} 
-
 body{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px;}
 
-td{font-family:"微软雅黑"; font-size:13px; color:#333333;}
+td{font-size:13px; color:#333333;}
 
-button{font-family:"微软雅黑"; border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer;}
+button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border:none; outline:none; cursor:pointer;}
 
-input{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; margin:0px; outline:none }
+input{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; margin:0px; outline:none; padding:0px 3px }
 
-textarea{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; outline:none}
+textarea{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; outline:none; padding:3px}
 
 select{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px; box-sizing:border-box; outline:none}
 
-ul, ol, menu, p, h1, h2, h3, h4, h5, h6, hr, dl, dt, dd{padding:0px; margin:0px;}
+ul, ol, menu, p, h1, h2, h3, h4, h5, h6, hr, dl, dt, dd, form{padding:0px; margin:0px;}
 
 li{padding:0px; margin:0px; list-style-type:none}
 
