@@ -495,7 +495,7 @@
 
 					$frozenbody.find("tr td div span.editor").on("click", {"container":$container}, onEditor);
 					$body.find("tr td div span.editor").on("click", {"container":$container}, onEditor);
-					$(window).on("mousedown", {"container":$container}, function(event)
+					$(window).off("mousedown.editor").on("mousedown.editor", {"container":$container}, function(event)
 					{
 						if($(event.target).closest(".field").size() == 0)
 						{
@@ -527,8 +527,9 @@
 												app.hideLoading();				
 												if(response.status == "1")
 												{
-													$cell.html($field.val() == "" ? "&nbsp;" : $field.val());
-													$cell.append('<i class="cell-success" title="保存成功">');
+													//$cell.html($field.val() == "" ? "&nbsp;" : $field.val());
+													//$cell.append('<i class="cell-success" title="保存成功">');
+													flush( $container );
 												}
 												else 
 												{

@@ -1,3 +1,5 @@
+<%@page import="com.system.variable.VariableService"%>
+<%@page import="org.json.JSONArray"%>
 <%@page import="org.apache.commons.lang3.ArrayUtils"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Map"%>
@@ -30,18 +32,46 @@
 				String id = request.getParameter("id");
 				String value = request.getParameter("value");
 				JSONObject column = new JSONObject( request.getParameter("column") );
-				
-				JSONObject table = column.getJSONObject("table");
-				if(table != null)
+				if(column != null)
 				{
-					String tablename = table.optString("name");
-					String columnname = column.optString("name");
-					
-					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablename);
-					connection = DataSource.connection(SystemProperty.DATASOURCE);
-					DataSource datasource = new DataSource(connection);	
-					datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, id);
-					connection.commit();
+					JSONObject table = column.getJSONObject("table");
+					if(table != null)
+					{
+						String tablename = table.optString("name");
+						String columnname = column.optString("name");
+						
+						DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablename);
+						connection = DataSource.connection(SystemProperty.DATASOURCE);
+						DataSource datasource = new DataSource(connection);	
+						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, id);
+						
+						JSONObject editor = column.optJSONObject("editor");
+						if(editor != null)
+						{
+							JSONArray callbacks = editor.optJSONArray("callback");
+							if(callbacks != null)
+							{
+								for(int i =  0 ; i < callbacks.length() ; i++)
+								{
+									JSONObject item = SystemProperty.SQLBUILDER.get(callbacks.optString(i));
+									if(item != null)
+									{
+										String sql = item.optString("sql");
+										sql = VariableService.parseUrlVariable(sql, 0, request);
+										sql = VariableService.parseSysVariable(sql, request);
+										datasource.execute(sql);
+									}
+									else
+									{
+										message.message(ServiceMessage.FAILURE, "SQL构建起中不存在["+callbacks.optString(i)+"]。");
+									}
+								}
+							}
+							
+						}
+						
+						connection.commit();
+					}
 				}
 			}
 			catch(Exception e)

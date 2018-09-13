@@ -1,5 +1,3 @@
-
-
 <%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="java.util.Set"%>
 <%@page import="org.json.JSONException"%>

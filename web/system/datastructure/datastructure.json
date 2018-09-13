@@ -4,7 +4,7 @@
 		[
 			{"name":"ID", "title":"编号"},
 			{"name":"C1", "title":"值一", "editor":{}, "datagrid":{"frozen":true}},
-			{"name":"C2", "title":"值二", "editor":{}, "datagrid":{}},
+			{"name":"C2", "title":"值二", "editor":{"callback":["00001"]}, "datagrid":{}},
 			{"name":"C3", "title":"值三", "editor":{}, "datagrid":{}},
 			{"name":"C4", "title":"值四", "editor":{}, "datagrid":{}},
 			{"name":"C5", "title":"值五", "editor":{}, "datagrid":{}},
