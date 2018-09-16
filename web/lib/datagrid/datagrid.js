@@ -477,7 +477,97 @@
 						$tr.on("click", clickrow);
 						$tr.on("mouseout", mouseoutRow);
 						$tr.on("mouseover", mouseoverRow);
+
+
 					}
+
+
+
+					var groups = options.groups;
+					if(groups != null && groups.length > 0)
+					{
+						$.each(groups, function(i, group)
+						{
+							var type = group["type"] || "footer";
+							var rule = group["rule"];
+							var style = group["style"];
+							var rulecolumn = rule["column"];
+							var rulevalue = rule["value"];
+
+							
+							var $grouprows = $("div."+rulecolumn+":contains('"+rulevalue+"')").closest('tr');
+							if(rulevalue == "*")
+							{
+								$grouprows = $("div."+rulecolumn+"").closest('tr');
+							}
+							if($grouprows.length > 0)
+							{
+								var $pointrow = $grouprows.last();
+								if(type == "header")
+								{
+									$pointrow = $grouprows.first();
+								}
+								var $frozenrows = $container.find(".datagrid-frozen-body-container tbody tr:not('.group-item')");
+								var $rows = $container.find(".datagrid-body-container tbody tr:not('.group-item')");
+								var index = Math.max($frozenrows.index($pointrow), $rows.index($pointrow)); 
+
+								if(index >= 0)
+								{
+									
+									var content = "";
+									content += '<tr class="group-item" style="'+getStyle(style)+'">';
+									if(frozencolumns != null || fixedcolumns != null)
+									{
+										for(var j = 0 ; j < fixedcolumns.length ; j++)
+										{
+											var column = fixedcolumns[j];
+											content += groupcell(column, $grouprows, group);
+										}
+										for(var j = 0 ; j < frozencolumns.length ; j++)
+										{
+											var column = frozencolumns[j];
+											content += groupcell(column, $grouprows, group);
+										}
+									}
+									content += '</tr>';
+									if(type == "footer")
+									{
+										$($frozenrows.get(index)).after(content);
+									}
+									else
+									{
+										$($frozenrows.get(index)).before(content);
+									}
+									
+									
+									content = "";
+									content += '<tr class="group-item" style="'+getStyle(style)+'">';
+									if(columns != null)
+									{
+										for(var j = 0 ; j < columns.length ; j++)
+										{
+											var column = columns[j];
+											content += groupcell(column, $grouprows, group);
+										}
+									}
+									content += '</tr>';
+		
+									if(type == "footer")
+									{
+										$($rows.get(index)).after(content);
+									}
+									else
+									{
+										$($rows.get(index)).before(content);
+									}
+								}
+
+							}
+							
+						});
+
+					}
+
 
 					if(fixedcolumns != null)
 					{
@@ -553,6 +643,52 @@
 					app.message(response.messages);
 				}
 			}, "json");
+		}
+
+		var groupcell = function(column, $grouprows, grouprule)
+		{
+			var cell = "";
+			var sumcolumns = grouprule["sum"];
+			if(sumcolumns != null)
+			{
+				if(sumcolumns.indexOf(column.id) != -1)
+				{
+
+					cell += '<td>'+sum($grouprows, column.id)+'</td>';
+				}
+			}
+
+			var titlecolumns = grouprule["title"];
+			if(titlecolumns != null)
+			{
+				$.each(titlecolumns, function(i, titlecolumn)
+				{
+					if(titlecolumn["column"] == column.id)
+					{
+						cell += '<td>'+titlecolumn["text"]+'</td>';
+					}
+				});
+			}
+			
+			if(cell == "")
+			{
+				cell += '<td></td>';
+			}
+
+
+			return cell;
+		}
+
+		var sum = function($grouprows, columnname)
+		{
+			var number = 0
+			var $cells = $grouprows.find("."+columnname);
+			$.each($grouprows, function(i, grouprow)
+			{
+				var row = $(grouprow).data("row");
+				number += parseFloat(row[columnname]) || 0;
+			});
+			return number;
 		}
 
 		var clickrow = function(event)
@@ -769,9 +905,12 @@
 		var getStyle = function(items)
 		{
 			var style = [];
-			for(var item in items)
+			if(items != null)
 			{
-				style.push(item+":"+items[item]);
+				for(var item in items)
+				{
+					style.push(item+":"+items[item]);
+				}
 			}
 			return style.join("; ")
 		}

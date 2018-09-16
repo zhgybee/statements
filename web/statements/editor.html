@@ -26,7 +26,9 @@ html, body{height:100%}
 
 	var id = app.getParameter("id");
 	var code = app.getParameter("code");
-	var name = app.getParameter("name");
+	var type = app.getParameter("type");
+	var statement = null;
+	var datastructure = null;
 
 	var structureutils = new DataStructureUtils();
 	
@@ -34,7 +36,32 @@ html, body{height:100%}
 	{ 
 		resize();
 		$(window).resize( function(){resize()} ); 
-		initialize();
+
+		
+		app.showLoading();
+
+		$.getJSON("task.jsp?mode=4", {code:code, type:type}, function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				statement = response.resource.statement;
+				datastructure = response.resource.datastructure;
+				if(statement != null && datastructure != null)
+				{
+					initialize();
+				}
+				else
+				{
+					app.message("表格配置文件错误");
+				}
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+
 	});
 
 	function initialize()
@@ -76,8 +103,18 @@ html, body{height:100%}
 			var datagridcolumns = structureutils.columns(response);
 			var frozencolumns = datagridcolumns.frozencolumns;
 			var columns = datagridcolumns.columns;
-			var searcher = [{table:name, column:"TASK_ID", "operator":"=", "value":id}];
-			
+			var searcher = [{table:datastructure.name, column:"TASK_ID", "operator":"=", "value":id}];
+			var sorts = [];
+			if(datastructure.sort != null)
+			{
+				sorts = sorts.concat(datastructure.sort);
+			}
+			var groups = [];
+			if(datastructure.group != null)
+			{
+				groups = groups.concat(datastructure.group);
+			}
+
 			$(".datagrid").datagrid(
 			{
 				datasource:
@@ -86,13 +123,15 @@ html, body{height:100%}
 					args:
 					{
 						columns:encodeURIComponent(JSON.stringify(frozencolumns.concat(columns))),
-						searcher:encodeURIComponent(JSON.stringify(searcher))
+						searcher:encodeURIComponent(JSON.stringify(searcher)),
+						sort:encodeURIComponent(JSON.stringify(sorts))
 					}
 				},
 				editor:
 				{
 					action:app.getContextPath()+"/system/datastructure/action.jsp?mode=1&task="+id
 				},
+				groups:groups,
 				fixedcolumns:fixedcolumns,
 				frozencolumns:frozencolumns,
 				columns:columns
@@ -102,7 +141,7 @@ html, body{height:100%}
 		$("#add-button").on("click", function()
 		{
 			app.showLoading();
-			$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=2&id="+id+"&name="+name, function(response)
+			$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=2&id="+id+"&name="+datastructure.name, function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")
@@ -148,7 +187,7 @@ html, body{height:100%}
 	function copy(ids)
 	{
 		app.showLoading();
-		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=3&ids="+ids.join(",")+"&name="+name, function(response)
+		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=3&ids="+ids.join(",")+"&name="+datastructure.name, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -165,7 +204,7 @@ html, body{height:100%}
 	function del(ids)
 	{
 		app.showLoading();
-		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=4&ids="+ids.join(",")+"&name="+name, function(response)
+		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=4&ids="+ids.join(",")+"&name="+datastructure.name, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")

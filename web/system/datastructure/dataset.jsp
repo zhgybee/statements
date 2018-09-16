@@ -107,10 +107,9 @@
 				for(int i = 0 ; i < sortitems.length() ; i++)
 				{
 					JSONObject sortitem = sortitems.getJSONObject(i);
-					String table = sortitem.optString("table");
 					String column = sortitem.optString("column");
 					String type = sortitem.optString("type");
-					items[i] = table+"."+column+" "+type+"";
+					items[i] = column+" "+type+"";
 				}
 				sql.append(StringUtils.join(items, ", "));
 			}
