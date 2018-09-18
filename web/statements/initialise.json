@@ -1,0 +1,30 @@
+{
+	"1":
+	[
+		{"sql":"insert into B_0_1(ID, TASK_ID, CREATE_USER_ID, CREATE_DATE, A) values('[sys:uuid]', '[task]', '[sys:user-id]', '', CURRENT_TIMESTAMP, '123')"}
+	]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

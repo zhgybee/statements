@@ -51,30 +51,24 @@
 		}
 		else if(mode.equals("2"))
 		{
-			String code = StringUtils.defaultString(request.getParameter("code"), "");
 			String title = StringUtils.defaultString(request.getParameter("title"), "");
 			String type = StringUtils.defaultString(request.getParameter("type"), "");
-			String transactor = StringUtils.defaultString(request.getParameter("transactor"), "");
+			String legalperson = StringUtils.defaultString(request.getParameter("legalperson"), "");
+			String startdate = StringUtils.defaultString(request.getParameter("startdate"), "");
+			String enddate = StringUtils.defaultString(request.getParameter("enddate"), "");
+			String accountant = StringUtils.defaultString(request.getParameter("accountant"), "");
+			String accountantofficer = StringUtils.defaultString(request.getParameter("accountantofficer"), "");			
 			String description = StringUtils.defaultString(request.getParameter("description"), "");
+			
+			
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				String id = SystemUtils.uuid();
-				datasource.execute("INSERT INTO T_TASK(ID, CODE, TITLE, TYPE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-						id, code, title, type, "001", description, sessionuser.getId());
-				
-				if(!transactor.equals(""))
-				{
-					String[] transactors = transactor.split(",");
-					for(int i = 0 ; i < transactors.length ; i++)
-					{
-						datasource.execute("INSERT INTO T_TRANSACTOR(ID, TASK_ID, USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-								SystemUtils.uuid(), id, transactors[i], "011");
-					}
-				}
-				
+				datasource.execute("INSERT INTO T_TASK(ID, CODE, TITLE, TYPE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+						id, "", title, type, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
 				
 				connection.commit();
 			}
@@ -84,6 +78,67 @@
 				{
 					connection.rollback();
 				}
+				Throwable throwable = ThrowableUtils.getThrowable(e);
+				message.message(ServiceMessage.FAILURE, throwable.getMessage());
+			}
+			finally
+			{
+				if(connection != null)
+				{
+					connection.close();
+				}
+			}
+		}
+		else if(mode.equals("3"))
+		{
+			String trantitle = StringUtils.defaultString(request.getParameter("trantitle"), "");
+			String statement = StringUtils.defaultString(request.getParameter("statement"), "");
+			String transactor = StringUtils.defaultString(request.getParameter("transactor"), "");
+			String trandescription = StringUtils.defaultString(request.getParameter("trandescription"), "");
+
+			Connection connection = null;
+			try
+			{
+				connection = DataSource.connection(SystemProperty.DATASOURCE);	
+				DataSource datasource = new DataSource(connection);	
+				datasource.execute("INSERT INTO T_TRANSACTOR(ID, TITLE, DESCRIPTION, TASK_ID, USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					SystemUtils.uuid(), trantitle, trandescription, statement, transactor, "011");
+				connection.commit();
+			}
+			catch(Exception e)
+			{
+				if(connection != null)
+				{
+					connection.rollback();
+				}
+				Throwable throwable = ThrowableUtils.getThrowable(e);
+				message.message(ServiceMessage.FAILURE, throwable.getMessage());
+			}
+			finally
+			{
+				if(connection != null)
+				{
+					connection.close();
+				}
+			}
+		}
+		else if(mode.equals("4"))
+		{
+			String id = request.getParameter("id");
+			Connection connection = null;
+			try
+			{
+				connection = DataSource.connection(SystemProperty.DATASOURCE);	
+				DataSource datasource = new DataSource(connection);	
+				datasource.execute("delete from T_TRANSACTOR where id = ?", id);
+				connection.commit();
+			}
+			catch(Exception e)
+			{
+				if(connection != null)
+				{
+					connection.rollback();
+				};
 				Throwable throwable = ThrowableUtils.getThrowable(e);
 				message.message(ServiceMessage.FAILURE, throwable.getMessage());
 			}

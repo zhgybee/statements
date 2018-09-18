@@ -8,39 +8,39 @@
 	<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
 	<style>
 
-	#tasks > li{background-color:#ffffff; margin:10px 0px; border-radius:5px; padding:15px; box-sizing:border-box}
-	#tasks > li .left {width:50px; text-align:center}
-	#tasks > li .left img{width:50px; height:50px;}
+	#statements > li{background-color:#ffffff; margin:10px 0px; border-radius:5px; padding:15px; box-sizing:border-box}
+	#statements > li .left {width:50px; text-align:center}
+	#statements > li .left img{width:50px; height:50px;}
 
-	#tasks > li .items{margin-left:70px;}
-	#tasks > li .items h2{font-size:15px}
-	#tasks > li .items h2 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
-	#tasks > li .items a{color:#555555;}
-	#tasks > li .items a:hover{color:#ffaa00;}
-	#tasks > li .items p{margin-top:5px}
-	#tasks > li .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
+	#statements > li .items{margin-left:65px;}
+	#statements > li .items h2{font-size:15px}
+	#statements > li .items h2 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#statements > li .items a{color:#555555;}
+	#statements > li .items a:hover{color:#ffaa00;}
+	#statements > li .items p{margin-top:5px; color:#aaaaaa;}
+	#statements > li .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
 
 	</style>
 </head>
 
 <body style="margin:0px; background-color:#EEEEEE">
 	
-	<div class="clearfix" style="background-color:#F7F7F7; margin:10px">	
-		<div class="clearfix" style="padding:20px">
-			<div class="left" style="font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;">
-				报表<span style="color:#468847">管理</span>
+	<div class="clearfix header-panel">	
+		<div class="clearfix header-items">
+			<div class="header-title">
+				<h2>报表<span style="color:#468847">管理</span></h2>
 			</div>
-			<div class="right">
-				<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-plus" style="margin-right:3px;"></i>新建报表</button>
+			<div class="header-buttons">
+				<button id="add-statements-button"><i class="fa fa-plus"></i>报表</button>
 			</div>
 		</div>
-		<div id="task-field-panel" style="padding:10px; display:none">
+		<div id="statement-field-panel" style="padding:10px; display:none">
 		</div>
 	</div>
 	
 	
-	<div id="module-panel" class="clearfix">
-		<ul id="tasks"></ul>
+	<div class="module-panel clearfix">
+		<ul id="statements"></ul>
 	</div>
 	
 	<script type="text/javascript" src="../lib/jquery.js"></script>
@@ -50,25 +50,25 @@
 
 		$(function()
 		{
-			findTasks();
+			initialise();
 		});
 		
-		function findTasks()
+		function initialise()
 		{
 			app.showLoading();
-			$.getJSON("task.jsp?mode=1", function(response)
+			$.getJSON("statement.jsp?mode=1", function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")
 				{
-					var $tasks = $("#tasks");
-					var tasks = response.resource.rows;
+					var $statements = $("#statements");
+					var transactors = response.resource.rows;
 					var content = [];
-					$.each(tasks, function(i, task)
+					$.each(transactors, function(i, transactor)
 					{
 						content.push('<li class="clearfix">');
 						
-						var icon = task.USERICON || "";
+						var icon = transactor.USERICON || "";
 						if(icon == "")
 						{
 							icon = "user.png"
@@ -76,15 +76,13 @@
 						
 						content.push('	<div class="left"><img src="../resource/usericon/'+icon+'"></div>');
 						content.push('	<div class="items">');
-						content.push('		<a href="transact.html?id='+task.ID+'" target="_blank"><h2>'+task.TITLE+'<span>'+task.CREATE_DATE+'</span></h2></a>');
-						content.push('		<p>'+task.DESCRIPTION+'</p>');
-						content.push('		<hr/>');
-
+						content.push('		<a href="transact.html?id='+transactor.ID+'" target="_blank"><h2>'+transactor.TITLE+'<span>'+transactor.CREATE_DATE+'</span></h2></a>');
+						content.push('		<p>'+transactor.DESCRIPTION+'</p>');
 						content.push('	</div>');
 						content.push('</li>');
 					});
 					
-					$tasks.html(content.join(""));
+					$statements.html(content.join(""));
 				}
 				else 
 				{

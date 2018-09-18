@@ -13,7 +13,7 @@
 		#statements-panel li .icon{float:left}
 		#statements-panel li .icon i{font-size:60px; color:#cccccc}
 		#statements-panel li .items{margin-left:60px; padding-top:3px; position:relative}
-		#statements-panel li .items h5{font-weight:400px; font-size:14px; color:#666666}
+		#statements-panel li .items h5{font-weight:400px; font-size:14px; color:#666666; margin-right:24px}
 		#statements-panel li .items hr{margin:7px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
 		#statements-panel li .items strong{font-size:12px; padding:2px; min-width:15px; height:15px; line-height:15px; position:absolute; top:5px; right:0px; background-color:#ffaa00; color:#ffffff; border-radius:5px; text-align:center; font-weight:400}
 
@@ -22,40 +22,28 @@
 
 <body style="margin:0px; background-color:#EEEEEE">
 	
-	<div class="clearfix" style="background-color:#F7F7F7; margin:10px; padding:20px; box-sizing:border-box; height:120px; overflow:hidden">
-	
-			<div id="statement-icon" style="float:left"><img style="width:80px; height:80px"/></div>
-			<div id="statement-title" style="float:left; margin-left:20px">			
-				<h2 style="font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;"></h2>
-				<p style="padding-top:5px;"></p>			
+	<div class="clearfix header-panel">
+		<div class="clearfix header-items">
+			<div id="statement-icon" class="header-icon"><img /></div>
+			<div id="statement-title" class="header-title">			
+				<h2></h2>
+				<p style="color:#aaaaaa"></p>			
 			</div>
-			<div class="right" style="">
+			<div class="header-buttons">
 				<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-plus" style="margin-right:6px;"></i>提交</button>
 			</div>
+		</div>
 	</div>
 	
 	
-	<div id="module-panel" class="clearfix">	
-		<div id="left-panel">
-			<h4><span>表格</span>类别</h4>
-			<p>表格的填写类别</p>
-			<div id="all-item" class="clearfix"><h5>全部</h5><strong></strong></div>
-			<ul>
-				<li class="clearfix"><h5>类别一</h5><li>
-				<li class="clearfix"><h5>类别二</h5><li>
-			</ul>
-		</div>
-		<div id="right-panel">
-			<div class="grid-toolbar-panel clearfix">
-				<div class="searcher-panel left">
-					<div class="searcher-keyword-panel"><input type="text" id="task-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
-				</div>
+	<div class="module-panel clearfix">	
+		<div class="grid-toolbar-panel clearfix">
+			<div class="searcher-panel left">
+				<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
 			</div>
-			<div id="statements-panel"><ul></ul></div>
 		</div>
+		<div id="statements-panel" style="margin-right:-10px"><ul></ul></div>
 	</div>
-
-	<div></div>
 	
 	<script type="text/javascript" src="../lib//jquery.js"></script>
 	<script type="text/javascript" src="../lib/app.js"></script>
@@ -68,17 +56,17 @@
 
 
 			app.showLoading();
-			$.getJSON("task.jsp?mode=3&id="+id, function(response)
+			$.getJSON("statement.jsp?mode=3&id="+id, function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")
 				{
-					var task = response.resource.rows;
-					var statements = response.resource.statements;
+					var statement = response.resource.statement;
+					var tables = response.resource.tables;
 					
-					$("#statement-title h2").html(task.TITLE);
-					$("#statement-title p").html(task.DESCRIPTION);
-					var icon = task.USERICON || "";
+					$("#statement-title h2").html(statement.TITLE);
+					$("#statement-title p").html(statement.DESCRIPTION);
+					var icon = statement.USERICON || "";
 					if(icon == "")
 					{
 						icon = "user.png"
@@ -87,17 +75,17 @@
 
 					var $statements = $("#statements-panel ul");
 					var content = "";
-					$.each(statements, function(i, statement)
+					$.each(tables, function(i, table)
 					{
 						content += '<li>';
 						content += '<div>';
 						content += '	<div class="icon"><i class="fa fa-pencil-square"></i></div>';
 						content += '	<div class="items">';
-						content += '		<strong>'+statement.count+'</strong>';
-						content += '		<h5>'+statement.title+'</h5>';
+						content += '		<strong>'+table.count+'</strong>';
+						content += '		<h5>'+table.title+'</h5>';
 						content += '		<hr/>';
 						content += '		<div class="buttons">';
-						content += '		<a  class="button" href="editor.html?code='+statement.code+'&id='+task.TASK_ID+'&type='+task.TYPE+'" target="_blank">编辑</a>';
+						content += '		<a class="button" href="editor.html?code='+table.code+'&id='+statement.TASK_ID+'&type='+statement.TYPE+'" target="_blank">编辑</a>';
 						content += '		<a class="button">导入</a>';
 						content += '		<a class="button red">删除</a>';
 						content += '		</div>';

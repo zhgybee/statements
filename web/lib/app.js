@@ -49,6 +49,10 @@ var app = {};
 		}
 		$loading.show();
 	}
+	app.alert = function(text) 
+	{
+		alert(text);
+	}
 
 	app.hideLoading = function() 
 	{

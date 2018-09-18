@@ -40,7 +40,7 @@ html, body{height:100%}
 		
 		app.showLoading();
 
-		$.getJSON("task.jsp?mode=4", {code:code, type:type}, function(response)
+		$.getJSON("statement.jsp?mode=4", {code:code, type:type}, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -129,7 +129,7 @@ html, body{height:100%}
 				},
 				editor:
 				{
-					action:app.getContextPath()+"/system/datastructure/action.jsp?mode=1&task="+id
+					action:app.getContextPath()+"/system/datastructure/action.jsp?mode=1&statement="+id
 				},
 				groups:groups,
 				fixedcolumns:fixedcolumns,

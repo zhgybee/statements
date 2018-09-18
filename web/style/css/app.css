@@ -59,16 +59,45 @@ li{padding:0px; margin:0px; list-style-type:none}
 .grid-toolbar-panel .pagination-panel ul li a i{font-size:14px; color:#999999}
 
 
-#module-panel{margin:10px}
-#module-panel #left-panel{float:right; width:260px}
-#module-panel #left-panel h4{font-weight:400; color:#555555; font-size:16px; margin-top:12px; letter-spacing:1px}
-#module-panel #left-panel h4 span{font-weight:400}
-#module-panel #left-panel p{margin-top:6px; color:#999999; font-size:12px}
-#module-panel #left-panel #all-item{margin-top:10px}
-#module-panel #left-panel #all-item h5{padding: 8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400;}
-#module-panel #left-panel ul{color:#999999;}
-#module-panel #left-panel ul li{margin-top:5px; cursor:pointer}
-#module-panel #left-panel ul li:hover h5{color:#ffaa00}
-#module-panel #left-panel ul li h5{padding:8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400}
-#module-panel #left-panel ul li strong{float:right; font-size:12px; margin:10px 10px 0px 0px; background-color:#999999; color:#ffffff; padding:0px 5px; border-radius:10px; font-weight:400;}
-#module-panel #right-panel{margin-right:290px;}
+.module-panel{margin:10px}
+#left-panel{float:left; width:260px}
+#left-panel h4{font-weight:400; color:#555555; font-size:16px; margin-top:12px; letter-spacing:1px}
+#left-panel h4 span{font-weight:400}
+#left-panel p{margin-top:6px; color:#999999; font-size:12px}
+#left-panel #all-item{margin-top:10px}
+#left-panel #all-item h5{padding: 8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400;}
+#left-panel ul{color:#999999;}
+#left-panel ul li{margin-top:5px; cursor:pointer}
+#left-panel ul li:hover h5{color:#ffaa00}
+#left-panel ul li h5{padding:8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400}
+#left-panel ul li img{width:40px; height:40px;}
+#left-panel ul li strong{float:right; font-size:12px; margin:10px 10px 0px 0px; background-color:#999999; color:#ffffff; padding:0px 5px; border-radius:10px; font-weight:400;}
+#right-panel{margin-left:260px;}
+
+
+.header-panel{background-color:#F7F7F7;}
+.header-panel .header-items{padding:20px}
+.header-panel .header-items .header-icon{float:left}
+.header-panel .header-items .header-icon img{width:80px; height:80px; display:block; margin-right:20px}
+.header-panel .header-items .header-title{float:left}
+.header-panel .header-items .header-title h2{font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;}
+.header-panel .header-items .header-title p{padding-top:5px;}
+.header-panel .header-items .header-buttons{float:right}
+.header-panel .header-items .header-buttons button{height:60px; padding:0px 20px; font-size:20px}
+.header-panel .header-items .header-buttons button i{margin-right:3px;}
+
+.fields-panel{padding:10px;} 
+.fields-panel input{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:30px;}	
+.fields-panel textarea{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:50px}	
+.fields-panel .close-button{text-align:center; margin:10px 0px; cursor:pointer}
+.fields-panel .close-button i{font-size:15px; color:#aaaaaa}
+.fields-panel .row-panel{margin-top:10px; overflow:hidden}
+.fields-panel .field-panel{padding-right:10px; box-sizing:border-box}
+.fields-panel .button-panel{text-align:center; margin-top:20px}
+.fields-panel .button-panel button{padding:10px 50px}
+
+
+
+.left-frame{float:left; width:250px;}
+.right-frame-container{float:right; margin:0px 0px 0px -260px; width:100%}
+.right-frame{margin:0px 0px 0px 250px;}

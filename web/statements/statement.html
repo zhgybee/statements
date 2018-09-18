@@ -1,0 +1,371 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../style/css/app.css" />
+	<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="../lib/selection/selection.css"/>
+	<style>
+
+	#statements > li {box-sizing:border-box}
+	#statements > li .statement-panel{background-color:#ffffff; margin-top:10px; border-top-left-radius:4px; border-top-right-radius:4px; padding:15px; box-sizing:border-box}
+	#statements > li .statement-panel .usericon{width:55px; float:left}
+	#statements > li .statement-panel .usericon img{width:50px; height:50px; display:block}
+	#statements > li .statement-panel .items{margin-left:65px;}
+	#statements > li .statement-panel .items h2{font-size:15px}
+	#statements > li .statement-panel .items h2 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#statements > li .statement-panel .items a{color:#555555;}
+	#statements > li .statement-panel .items a:hover{color:#ffaa00;}
+	#statements > li .statement-panel .items p{margin-top:5px; color:#aaaaaa}
+	#statements > li .statement-panel .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
+
+	#statements > li .statement-transactor{background-color:#ffffff}
+	#statements > li .statement-transactor li{padding:15px; border-top:1px solid #eeeeee}
+	#statements > li .statement-transactor li .usericon{width:55px; float:left}
+	#statements > li .statement-transactor li .usericon img{width:50px; height:50px; display:block}
+	#statements > li .statement-transactor li .transactor-items{margin-left:65px;}
+	#statements > li .statement-transactor li .transactor-items > div{overflow:hidden}
+	#statements > li .statement-transactor li .transactor-items i{color:#AAAAAA; font-size:14px; margin-right:3px}
+	#statements > li .statement-transactor li .transactor-items h4{font-size:15px; font-weight:400}
+	#statements > li .statement-transactor li .transactor-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#statements > li .statement-transactor li .transactor-items p{margin-top:5px; color:#aaaaaa}
+	#statements > li .statement-transactor li .transactor-items .transactor-toolbar{margin-top:8px}
+	#statements > li .statement-transactor li .transactor-items .transactor-toolbar span{color:#ffffff; padding:0px 3px; border-radius: 2px; font-size:12px}
+	#statements > li .statement-transactor li .transactor-items .transactor-toolbar i{font-size:18px; margin-right:0px}
+
+
+	#statements > li .statement-toolbar{overflow:hidden; box-sizing:border-box; font-size:12px; border-bottom-left-radius:4px; border-bottom-right-radius:4px; background-color:#f7f7f7}
+	#statements > li .statement-toolbar .buttons{text-align:right; padding:10px;}
+	#statements > li .statement-toolbar .buttons a{cursor:pointer; margin-right:5px}
+	#statements > li .statement-toolbar .buttons a i{font-size:28px; color:#cccccc}
+	#statements > li .statement-toolbar .buttons a i:hover{color:#ffaa00}
+
+
+	</style>
+</head>
+
+<body style="margin:0px; background-color:#EEEEEE">
+	
+	<div class="clearfix header-panel">
+		<div class="clearfix header-items">
+			<div class="header-title">
+				<h2>报表<span style="color:#468847">管理</span></h2>
+			</div>
+			<div class="header-buttons">
+				<button id="add-statements-button"><i class="fa fa-plus"></i>新建报表</button>
+			</div>
+		</div>
+		<div id="statement-field-panel" class="fields-panel" style="display:none">
+			<div class="close-button">
+				<i class="fa fa-chevron-up"></i>
+			</div>
+			<div class="clearfix row-panel">
+				<div class="left field-panel" style="width:50%;">标题<input type="text" id="title"/></div>
+				<div class="left field-panel" style="width:25%;">类型<input type="text" id="type"/></div>
+				<div class="left field-panel" style="width:25%;">法定代表人<input type="text" id="legalperson"/></div>
+			</div>
+			<div class="clearfix row-panel">
+				<div class="left field-panel" style="width:25%;">报告期初日<input type="text" id="startdate"/></div>
+				<div class="left field-panel" style="width:25%;">报告期末日<input type="text" id="enddate"/></div>
+				<div class="left field-panel" style="width:25%;">主管会计工作负责人<input type="text" id="accountant"/></div>
+				<div class="left field-panel" style="width:25%;">会计机构负责人<input type="text" id="accountantofficer"/></div>
+			</div>
+			<div class="clearfix row-panel">
+				<div class="left field-panel" style="width:100%;">备注<textarea type="text" id="description"></textarea></div>
+			</div>
+			<div class="button-panel">
+				<button id="save-button">确定</button>
+			</div>
+		</div>
+	</div>
+	
+
+	<div class="module-panel clearfix">
+		<div class="grid-toolbar-panel clearfix">
+			<div class="searcher-panel left">
+				<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+			</div>
+			<div class="pagination-panel right"></div>
+		</div>
+		<ul id="statements"></ul>
+	</div>
+	
+	
+	<script type="text/javascript" src="../lib/jquery.js"></script>
+	<script type="text/javascript" src="../lib/app.js"></script>
+	<script type="text/javascript" src="../lib/selection/selection.js"></script>
+
+	<script type="text/javascript">
+
+		$(function()
+		{
+			initialise(0, app.pagesize);
+			
+			$("#save-button").on("click", function()
+			{
+				app.showLoading();
+				var parameter = {};
+				parameter["title"] = $("#title").val();
+				parameter["type"] = $("#type").val();
+				parameter["legalperson"] = $("#legalperson").val();
+				parameter["startdate"] = $("#startdate").val();
+				parameter["enddate"] = $("#enddate").val();
+				parameter["accountant"] = $("#accountant").val();
+				parameter["accountantofficer"] = $("#accountantofficer").val();
+				parameter["description"] = $("#description").val();
+				$.post("do.jsp?mode=2", parameter, function(response)
+				{
+					app.hideLoading();
+					if(response.status == "1")
+					{
+						initialise(0, app.pagesize);
+					}
+					else 
+					{
+						app.message(response.messages);
+					}
+				}, "json");
+			});
+			
+			$("#add-statements-button").on("click", function()
+			{
+				$("#statement-field-panel").slideToggle('fast');
+			});
+
+			$("#statement-field-panel .close-button").on("click", function()
+			{
+				$("#statement-field-panel").slideToggle('fast');
+			});
+
+			$("#type").selection
+			({
+				url:app.getContextPath()+"/dictionary/list/report.type.json",
+				ismultiple:false
+			});
+
+		});
+		
+		function initialise(pagenumber, pagesize)
+		{
+			app.showLoading();
+			$.getJSON("statement.jsp?mode=2", function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					var $statements = $("#statements");
+					var statements = response.resource.rows;
+					var content = [];
+
+
+					var number = pagenumber + 1;
+
+					$(".pagination-panel").html(app.pagination(50, pagesize, pagenumber, function(number)
+					{
+						initialise(number, pagesize);
+					}));
+
+
+					$.each(statements, function(i, statement)
+					{
+						content.push('<li class="clearfix" code='+statement.ID+'>');
+						
+						content.push('	<div class="statement-panel clearfix">');
+
+						var icon = statement.USERICON || "";
+						if(icon == "")
+						{
+							icon = "user.png"
+						}
+
+						content.push('		<div class="usericon"><img src="../resource/usericon/'+icon+'"></div>');
+						content.push('		<div class="items">');						
+						content.push('			<h2><a href="manager.html?id='+statement.ID+'">'+statement.TITLE+'</a><span>'+statement.CREATE_DATE+'</span></h2>');
+						content.push('			<p>'+statement.DESCRIPTION+'</p>');
+						content.push('		</div>');
+						content.push('	</div>');
+
+						var transactors = statement.TRANSACTOR;
+						if(transactors != null)
+						{
+							content.push('	<ul class="statement-transactor">');
+							$.each(transactors, function(i, transactor)
+							{
+								var status = transactor.STATUS || "";
+								var icon = transactor.USERICON || "";
+								if(icon == "")
+								{
+									icon = "user.png"
+								}
+
+								content.push('	<li class="clearfix" code="'+transactor.ID+'">');
+								content.push('		<div class="usericon"><img src="../resource/usericon/'+icon+'"></div>');
+								content.push('		<div class="transactor-items">');
+								content.push('			<div class="clearfix"><div class="left"><h4>'+transactor.TITLE+'<span>'+transactor.CREATE_DATE+'</span></h4></div><div class="right"><i class="fa fa-user"></i>'+transactor.USERNAME+'</div></div>');
+								if(transactor.DESCRIPTION != "")
+								{
+									content.push('			<p>'+transactor.DESCRIPTION+'</p>');
+								}
+								content.push('			<div class="transactor-toolbar">');
+								content.push('				<div class="left">');
+								if(status == "012")
+								{
+									content.push('					<span style="background-color:#5DC4BF;">已完成</span>');	
+								}
+								else if(status == "011")
+								{
+									content.push('					<span style="background-color:#009CEA;">制表中</span>');	
+								}
+								
+								content.push('				</div>');
+								content.push('				<div class="right"><a class="delete-transactor-button"><i class="fa fa-trash"></i></a></div>');
+								content.push('			</div>');
+								content.push('		</div>');
+								content.push('	</li>');
+							});		
+							content.push('	</ul>');
+						}
+
+						content.push('	<div class="statement-toolbar">');
+						content.push('		<div class="buttons">');
+						content.push('			<a class="add-transactor-button"><i class="fa fa-user-plus"></i></a>');									
+						content.push('		</div>');
+						content.push('	</div>');
+
+						content.push('</li>');
+
+
+					});
+					
+					$statements.html(content.join(""));
+
+					$("#statements .statement-toolbar .buttons .add-transactor-button").on("click", function()
+					{
+						var $panel = $("#transactor-panel");	
+						$panel.hide();
+
+						if($panel.length == 0)
+						{
+							var content = "";
+							$panel = $('<div id="transactor-panel" class="fields-panel" style="display:none"/>');
+
+							content += '<div class="close-button">';
+							content += '	<i class="fa fa-chevron-up"></i>';
+							content += '</div>';
+
+
+							content += '<div class="clearfix row-panel">';
+							content += '	<div class="left field-panel" style="width:50%;">标题<input type="text" id="trantitle"/></div>';
+							content += '	<div class="left field-panel" style="width:50%;">制表人<input type="text" id="transactor"/></div>';
+							content += '</div>';
+
+							content += '<div class="clearfix row-panel">';
+							content += '	<div class="left field-panel" style="width:100%;">备注<textarea type="text" id="trandescription"></textarea></div>';
+							content += '</div>';
+
+							content += '<div class="button-panel">';
+							content += '	<button id="save-transactor-button">确定</button>';
+							content += '</div>';
+
+
+							$panel.html(content);
+							
+							$panel.find("#transactor").selection
+							(
+								{
+									url:app.getContextPath()+"/dictionary/list/user.json",
+									ismultiple: false
+								}
+							);
+
+							$panel.find(".close-button").on("click", function()
+							{
+								$("#transactor-panel").slideUp('fast');
+							});
+
+							$panel.find("#save-transactor-button").on("click", function()
+							{
+								var parameters = {};
+								parameters.trantitle = $("#trantitle").val();
+								parameters.transactor = $("#transactor").val();
+								parameters.statement = $(this).closest("li[code]").attr("code");
+								parameters.trandescription = $("#trandescription").val();
+								
+								if(parameters.transactor == null || parameters.transactor == "")
+								{
+									app.alert("制表人没有选择");
+									return;
+								}
+								app.showLoading();
+								
+								$.post("do.jsp?mode=3", parameters, function(response)
+								{
+									app.hideLoading();
+									if(response.status == "1")
+									{
+										initialise(pagenumber, pagesize);
+									}
+									else
+									{
+										app.message(response.messages);
+									}
+								}, "json");
+								
+							});
+						}
+						
+						$(this).closest(".statement-toolbar").append($panel);
+
+						$panel.slideDown('fast');
+
+
+					});
+
+					$("#statements .delete-transactor-button").on("click", function()
+					{
+						if(confirm("删除后将不可恢复，确定删除吗？"))
+						{
+							app.showLoading();
+
+							$.post('do.jsp?mode=4&id='+$(this).closest("li[code]").attr("code"), function(response)
+							{
+								app.hideLoading();
+								if(response.status == "1")
+								{
+									initialise(pagenumber, pagesize);
+								}
+								else
+								{
+									app.message(response.messages);
+								}
+							}, "json");
+
+						}
+					});
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+				
+			});
+		}
+	
+	</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
