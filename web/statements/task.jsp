@@ -119,7 +119,6 @@
 					JSONObject statement = statements.getJSONObject(i);
 					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(statement.optString("code"));
 					String table = datastructure.getProperty().optString("name");
-					statement.put("table", table);
 					
 					Datum count = datasource.get("select count(ID) as 'COUNT' from "+table+" where TASK_ID = ?", task.getString("TASK_ID"));
 					statement.put("count", count.getInt("COUNT"));
@@ -137,6 +136,25 @@
 				if(connection != null)
 				{
 					connection.close();
+				}
+			}
+		}
+		else if(mode.equals("4"))
+		{
+			String code = StringUtils.defaultString(request.getParameter("code"), "");
+			String type = StringUtils.defaultString(request.getParameter("type"), "");
+				
+			JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "statements" + SystemProperty.FILESEPARATOR + "statement.json"), "UTF-8"));
+			JSONArray statements = types.getJSONArray(type);
+			
+			for(int i = 0 ; i < statements.length() ; i++)
+			{
+				JSONObject statement = statements.getJSONObject(i);
+				if(statement.optString("code").equals(code))
+				{
+					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
+					message.resource("statement", statement);
+					message.resource("datastructure", datastructure.getProperty());
 				}
 			}
 		}
