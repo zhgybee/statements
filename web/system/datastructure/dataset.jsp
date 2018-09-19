@@ -1,3 +1,4 @@
+<%@page import="com.system.variable.VariableService"%>
 <%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="java.util.Set"%>
 <%@page import="org.json.JSONException"%>
@@ -38,7 +39,9 @@
 		
 		JSONArray searcheritems = null;
 		if(!searcher.equals(""))
-		{
+		{				
+			searcher = VariableService.parseUrlVariable(searcher, 0, request);
+			searcher = VariableService.parseSysVariable(searcher, request);					
 			searcheritems = new JSONArray(searcher);
 		}
 		

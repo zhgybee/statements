@@ -27,7 +27,8 @@ html, body{height:100%}
 	var id = app.getParameter("id");
 	var code = app.getParameter("code");
 	var type = app.getParameter("type");
-	var statement = null;
+	var user = app.getParameter("user");
+
 	var datastructure = null;
 
 	var structureutils = new DataStructureUtils();
@@ -45,9 +46,8 @@ html, body{height:100%}
 			app.hideLoading();
 			if(response.status == "1")
 			{
-				statement = response.resource.statement;
 				datastructure = response.resource.datastructure;
-				if(statement != null && datastructure != null)
+				if(datastructure != null)
 				{
 					initialize();
 				}
@@ -103,7 +103,21 @@ html, body{height:100%}
 			var datagridcolumns = structureutils.columns(response);
 			var frozencolumns = datagridcolumns.frozencolumns;
 			var columns = datagridcolumns.columns;
-			var searcher = [{table:datastructure.name, column:"TASK_ID", "operator":"=", "value":id}];
+
+			var searcher = [{table:datastructure.name, column:"TASK_ID", operator:"=", value:id}];
+			
+			if(user == null)
+			{
+				searcher.push( {table:datastructure.name, column:"CREATE_USER_ID", operator:"=", value:"[sys:user-id]"} );
+			}
+			else
+			{
+				if(user != "0")
+				{
+					searcher.push( {table:datastructure.name, column:"CREATE_USER_ID", operator:"=", value:user} );
+				}
+			}
+
 			var sorts = [];
 			if(datastructure.sort != null)
 			{
@@ -129,7 +143,7 @@ html, body{height:100%}
 				},
 				editor:
 				{
-					action:app.getContextPath()+"/system/datastructure/action.jsp?mode=1&statement="+id
+					action:app.getContextPath()+"/system/datastructure/action.jsp?mode=1"
 				},
 				groups:groups,
 				fixedcolumns:fixedcolumns,

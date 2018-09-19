@@ -20,10 +20,10 @@
 		],
 		"group":
 		[
-			{"type":"footer", "rule":{"column":"B_0_1_B", "value":"*"}, "sum":"['B_0_1_F']", "title":[{"column":"B_0_1_A", "text":"总计"}], "style":{"background-color":"#4ab6ef"}},
-			{"type":"header", "rule":{"column":"B_0_1_B", "value":"1"}, "title":[{"column":"B_0_1_A", "text":"类别"}], "style":{"background-color":"red"}},
+			{"type":"footer", "rule":{"column":"B_0_1_B", "value":"*"}, "sum":"['B_0_1_F']", "title":[{"column":"B_0_1_A", "text":"总计"}], "style":{"background-color":"#fafafa"}},
+			{"type":"header", "rule":{"column":"B_0_1_B", "value":"1"}, "title":[{"column":"B_0_1_A", "text":"类别"}], "style":{"background-color":"#fafafa"}},
 			{"type":"footer", "rule":{"column":"B_0_1_B", "value":"1"}, "sum":"['B_0_1_F']", "title":[{"column":"B_0_1_A", "text":"合计"}]},
-			{"type":"header", "rule":{"column":"B_0_1_B", "value":"2"}, "title":[{"column":"B_0_1_A", "text":"类别"}], "style":{"background-color":"blue"}},
+			{"type":"header", "rule":{"column":"B_0_1_B", "value":"2"}, "title":[{"column":"B_0_1_A", "text":"类别"}], "style":{"background-color":"#fafafa"}},
 			{"type":"footer", "rule":{"column":"B_0_1_B", "value":"2"}, "sum":"['B_0_1_F']", "title":[{"column":"B_0_1_A", "text":"合计"}]}
 		], 
 		"sort":[{"column":"B", "type":"asc"}]

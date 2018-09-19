@@ -1,3 +1,4 @@
+<%@page import="com.system.utils.SystemUtils"%>
 <%@page import="com.system.datastructure.DataStructure"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.io.File"%>
@@ -120,7 +121,7 @@
 					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(table.optString("code"));
 					String tablename = datastructure.getProperty().optString("name");
 					
-					Datum count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where TASK_ID = ?", statement.getString("TASK_ID"));
+					Datum count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where CREATE_USER_ID = ? and TASK_ID = ?", sessionuser.getId(), statement.getString("TASK_ID"));
 					table.put("count", count.getInt("COUNT"));
 				}
 				message.resource("tables", tables);
@@ -153,8 +154,8 @@
 				if(statement.optString("code").equals(code))
 				{
 					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
-					message.resource("statement", statement);
-					message.resource("datastructure", datastructure.getProperty());
+					statement = SystemUtils.merge(datastructure.getProperty(), statement);
+					message.resource("datastructure", statement);
 				}
 			}
 		}
@@ -184,7 +185,7 @@
 					String tablename = datastructure.getProperty().optString("name");
 					
 					Datum count = null;
-					if(!user.equals(""))
+					if(user.equals("0"))
 					{
 						count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where TASK_ID = ?", id);
 					}

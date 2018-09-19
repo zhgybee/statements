@@ -104,14 +104,16 @@
 
 <script type="text/javascript">
 
-
 $(function()
 {
+	var id = app.getParameter("id");
+	initialise(id, "0");
 
 	$("#statement-all-button").on("click", function()
 	{
 		$(".module-panel").hide();
 		$("#statement-module").show();
+		initialise(id, "0")
 	});
 
 	$("#statement-manager-button").on("click", function()
@@ -120,19 +122,12 @@ $(function()
 		$("#manager-module").show();
 	});
 
+})
 
-
-
-
-
-
-
-
-
-	var id = app.getParameter("id");
-
+function initialise(id, user)
+{
 	app.showLoading();
-	$.getJSON("statement.jsp?mode=5&id="+id, function(response)
+	$.getJSON("statement.jsp?mode=5&id="+id+"&user="+user, function(response)
 	{
 		app.hideLoading();
 		if(response.status == "1")
@@ -151,8 +146,6 @@ $(function()
 			$("#statement-icon img").attr("src", "../resource/usericon/"+icon);
 
 
-			var $transactors = $("#statement-all-button");
-
 			var content = "";
 			$.each(transactors, function(i, transactor)
 			{
@@ -161,11 +154,12 @@ $(function()
 				{
 					icon = "user.png"
 				}
-				content += '<li class="clearfix transactor">';
+				content += '<li class="clearfix transactor" code="'+transactor.USER_ID+'">';
 				content += '<div class="left"><img src="../resource/usericon/'+icon+'"></div><div class="transactor-items"><h6>'+transactor.USERNAME+'</h6><p>'+transactor.TITLE+'</p></div>';
 				content += '</li>';
 			});
-			$transactors.after(content);
+			$("li.transactor").remove();
+			$("#statement-all-button").after(content);
 
 
 			var $statements = $("#statements-panel ul");
@@ -180,7 +174,7 @@ $(function()
 				content += '		<h5>'+table.title+'</h5>';
 				content += '		<hr/>';
 				content += '		<div class="buttons">';
-				content += '		<a class="button" href="editor.html?code='+table.code+'&id='+statement.TASK_ID+'&type='+statement.TYPE+'" target="_blank">编辑</a>';
+				content += '		<a class="button" href="editor.html?code='+table.code+'&id='+statement.ID+'&type='+statement.TYPE+'&user='+user+'" target="_blank">编辑</a>';
 				content += '		<a class="button">导入</a>';
 				content += '		<a class="button red">删除</a>';
 				content += '		</div>';
@@ -188,9 +182,13 @@ $(function()
 				content += '</div>';
 				content += '</li>';
 			});
-			$statements.append(content);
+			$statements.html(content);
 
-			
+			$("li.transactor").on("click", function()
+			{
+				var user = $(this).attr("code");
+				initialise(id, user)
+			});
 
 		}
 		else 
@@ -198,7 +196,7 @@ $(function()
 			app.message(response.messages);
 		}
 	});
-})
+}
 
 </script>
 

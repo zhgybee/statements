@@ -1,4 +1,10 @@
 
+<%@page import="com.system.datasource.Datum"%>
+<%@page import="java.io.File"%>
+<%@page import="com.system.variable.VariableService"%>
+<%@page import="org.json.JSONArray"%>
+<%@page import="org.apache.commons.io.FileUtils"%>
+<%@page import="org.json.JSONObject"%>
 <%@page import="com.system.SessionUser"%>
 <%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="java.util.Calendar"%>
@@ -59,8 +65,7 @@
 			String accountant = StringUtils.defaultString(request.getParameter("accountant"), "");
 			String accountantofficer = StringUtils.defaultString(request.getParameter("accountantofficer"), "");			
 			String description = StringUtils.defaultString(request.getParameter("description"), "");
-			
-			
+						
 			Connection connection = null;
 			try
 			{
@@ -69,7 +74,6 @@
 				String id = SystemUtils.uuid();
 				datasource.execute("INSERT INTO T_TASK(ID, CODE, TITLE, TYPE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 						id, "", title, type, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
-				
 				connection.commit();
 			}
 			catch(Exception e)
@@ -92,7 +96,7 @@
 		else if(mode.equals("3"))
 		{
 			String trantitle = StringUtils.defaultString(request.getParameter("trantitle"), "");
-			String statement = StringUtils.defaultString(request.getParameter("statement"), "");
+			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String transactor = StringUtils.defaultString(request.getParameter("transactor"), "");
 			String trandescription = StringUtils.defaultString(request.getParameter("trandescription"), "");
 
@@ -102,7 +106,37 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				datasource.execute("INSERT INTO T_TRANSACTOR(ID, TITLE, DESCRIPTION, TASK_ID, USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-					SystemUtils.uuid(), trantitle, trandescription, statement, transactor, "011");
+					SystemUtils.uuid(), trantitle, trandescription, statementId, transactor, "011");
+				
+				
+				Datum statement = datasource.get("select * from T_TASK where ID = ?", statementId);
+				
+
+				JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "statements" + SystemProperty.FILESEPARATOR + "initialise.json"), "UTF-8"));
+				JSONArray sqlmaps = types.getJSONArray(statement.getString("TYPE"));
+				if(sqlmaps != null)
+				{
+					for(int i = 0 ; i < sqlmaps.length() ; i++)
+					{
+						JSONObject sqlmap = sqlmaps.getJSONObject(i);
+						
+						String sql = sqlmap.optString("sql");
+						sql = StringUtils.replace(sql, "[TASK_ID]", statementId);
+						sql = StringUtils.replace(sql, "[STARTDATE]", statement.getString("STARTDATE"));
+						sql = StringUtils.replace(sql, "[TRANSACTOR]", transactor);
+						sql = StringUtils.replace(sql, "[ENDDATE]", statement.getString("ENDDATE"));
+						sql = StringUtils.replace(sql, "[LEGALPERSON]", statement.getString("LEGALPERSON"));
+						sql = StringUtils.replace(sql, "[ACCOUNTANT]", statement.getString("ACCOUNTANT"));
+						sql = StringUtils.replace(sql, "[ACCOUNTANTOFFICER]", statement.getString("ACCOUNTANTOFFICER"));					
+						sql = VariableService.parseUrlVariable(sql, 0, request);
+						sql = VariableService.parseSysVariable(sql, request);					
+						datasource.execute(sql);
+					}
+				}
+				
+				
+				
+				
 				connection.commit();
 			}
 			catch(Exception e)
