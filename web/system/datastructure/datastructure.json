@@ -23,9 +23,9 @@
 			{"type":"footer", "rule":{"column":"B_0_1_A", "value":"*"}, "sum":"['B_0_1_F']", "title":[{"column":"B_0_1_A", "text":"总计"}], "style":{"background-color":"#fafafa"}},
 			{"type":"header", "rule":{"column":"B_0_1_A", "value":"1"}, "title":[{"column":"B_0_1_A", "text":"资 产 项 目"}], "style":{"background-color":"#fafafa","text-align":"center","font-weight":"bold"}},
 			{"type":"header", "rule":{"column":"B_0_1_A", "value":"1-1"}, "title":[{"column":"B_0_1_A", "text":"流动资产"}], "style":{"background-color":"#fafafa","font-weight":"bold"}},
+			{"type":"footer", "rule":{"column":"B_0_1_A", "value":"1-1"}, "sum":"['B_0_1_C','B_0_1_D']", "title":[{"column":"B_0_1_A", "text":"流动资产合计"}]},
 			{"type":"header", "rule":{"column":"B_0_1_A", "value":"1-2"}, "title":[{"column":"B_0_1_A", "text":"非流动资产"}], "style":{"background-color":"#fafafa","font-weight":"bold"}},
-		], 
-		"sort":[{"column":"A", "type":"asc"}]
+		]
 	},
 	{
 		"code":"B_0_2", "name":"B_0_2", "title":"表8_0_期末数审计调整分录", "columns":
@@ -75,7 +75,7 @@
 		"code":"B_JB_1", "name":"B_JB_1", "title":"表_资产负债表", "columns":
 		[
 			{"name":"ID", "title":"编号"},
-			{"name":"A", "title":"资产", "editor":{}, "datagrid":{}},
+			{"name":"A", "title":"项目", "editor":{}, "datagrid":{"style":{"width":"450px","text-align":"left"}}},
 			{"name":"B", "title":"行次", "editor":{}, "datagrid":{}},
 			{"name":"C", "title":"附注", "editor":{}, "datagrid":{}},
 			{"name":"D", "title":"年末数", "editor":{}, "datagrid":{}},
@@ -84,6 +84,11 @@
 			{"name":"STATUS", "title":"状态", "editor":{}},
 			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}, "datagrid":{}},
 			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		],
+		"group":
+		[
+			{"type":"header", "rule":{"column":"B_JB_1_A", "value":"1"}, "title":[{"column":"B_JB_1_A", "text":"资产"}], "style":{"background-color":"#fafafa","text-align":"center","font-weight":"bold"}},
+			{"type":"header", "rule":{"column":"B_JB_1_A", "value":"2"}, "title":[{"column":"B_JB_1_A", "text":"负债及所有者权益"}], "style":{"background-color":"#fafafa","text-align":"center","font-weight":"bold"}}
 		]
 	},
 	{
@@ -364,7 +369,7 @@
 		"code":"B_8_2", "name":"B_8_2", "title":"表8_2_交易性金融资产", "columns":
 		[
 			{"name":"ID", "title":"编号"},
-			{"name":"A", "title":"交易性金融资产明细项目", "editor":{}, "datagrid":{}},
+			{"name":"A", "title":"交易性金融资产明细项目", "editor":{}, "datagrid":{"style":{"width":"340px","text-align":"left"}}},
 			{"name":"B", "title":"成本(后)", "editor":{}, "datagrid":{}},
 			{"name":"C", "title":"公允价值(后)", "editor":{}, "datagrid":{}},
 			{"name":"D", "title":"成本(前)", "editor":{}, "datagrid":{}},
@@ -373,6 +378,10 @@
 			{"name":"STATUS", "title":"状态", "editor":{}},
 			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}, "datagrid":{}},
 			{"name":"CREATE_DATE", "title":"创建日期", "datagrid":{}}
+		],
+		"group":
+		[
+			{"type":"footer", "rule":{"column":"B_8_2_A", "value":"*"}, "sum":"['B_8_2_B','B_8_2_C','B_8_2_D','B_8_2_E']", "title":[{"column":"B_8_2_A", "text":"合计"}]}
 		]
 	},
 	{

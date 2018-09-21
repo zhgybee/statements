@@ -15,6 +15,50 @@ Date: 2018-09-13 14:25:16
 PRAGMA foreign_keys = OFF;
 
 -- ----------------------------
+-- Table structure for CODE_HB
+-- ----------------------------
+DROP TABLE IF EXISTS "main"."CODE_HB";
+CREATE TABLE CODE_HB
+(
+ 
+ ID                             VARCHAR(32),
+ BZ						VARCHAR(32),
+ HL							DOUBLE,
+ SORT					DOUBLE,
+
+ CONSTRAINT T_CONFIG_PK PRIMARY KEY(ID)
+);
+
+-- ----------------------------
+-- Table structure for CODE_ZQ
+-- ----------------------------
+DROP TABLE IF EXISTS "main"."CODE_ZQ";
+CREATE TABLE CODE_ZQ
+(
+ 
+ ID                             VARCHAR(32),
+ ZL						VARCHAR(32),
+ BL							DOUBLE,
+ SORT					DOUBLE,
+
+ CONSTRAINT T_CONFIG_PK PRIMARY KEY(ID)
+);
+
+-- ----------------------------
+-- Table structure for CODE_ZW
+-- ----------------------------
+DROP TABLE IF EXISTS "main"."CODE_ZW";
+CREATE TABLE CODE_ZW
+(
+ 
+ ID                             VARCHAR(32),
+ ZL						VARCHAR(32),
+ SORT					DOUBLE,
+
+ CONSTRAINT T_CONFIG_PK PRIMARY KEY(ID)
+);
+
+-- ----------------------------
 -- Table structure for B_0_1
 -- ----------------------------
 DROP TABLE IF EXISTS "main"."B_0_1";
