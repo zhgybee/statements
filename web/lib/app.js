@@ -49,6 +49,7 @@ var app = {};
 		}
 		$loading.show();
 	}
+
 	app.alert = function(text) 
 	{
 		alert(text);
@@ -58,6 +59,250 @@ var app = {};
 	{
 		var $loading = $("#loading-panel");
 		$loading.hide();
+	}
+
+	app.showSubStatementTreePanel = function(statementId, callback)
+	{
+		var $choice = $("#choice-substatement-panel");
+		if($choice.length == 0)
+		{
+			var content = '';
+			content += '<div class="choice-panel" id="choice-substatement-panel" style="display:none">';
+			content += '	<div class="choice-mask"></div>';
+			content += '	<div class="choice-frame">';
+			content += '		<div class="choice-toolbar clearfix">';
+			content += '			<h5 class="left">父节点选择</h5>';
+			content += '			<div class="right"><input type="text" id="substatement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>';
+			content += '		</div>';
+			content += '		<div class="substatement-panel"><ul>21321321321</ul></div>';
+			content += '		<div class="choice-button-panel"><button class="save-button">确定</button><button class="close-button">关闭</button></div>';
+			content += '	</div>';
+			content += '</div>';
+			$("body").append(content);
+			$choice = $("#choice-substatement-panel");
+			$choice.find(".close-button").on("click", function()
+			{
+				$choice.hide();
+			});
+		}
+
+		$.getJSON(app.getContextPath()+"/statements/statement.jsp?mode=7&statement="+statementId, function(response)
+		{
+			if(response.status == "1")
+			{
+				var substatements = response.resource.substatements;
+				substatements = app.toTree(substatements);
+
+				var $substatements = $choice.find(".substatement-panel ul");
+				$substatements.empty();
+				$.each(substatements, function(i, substatement)
+				{
+					var icon = substatement.USERICON || "";
+					if(icon == "")
+					{
+						icon = "user.png"
+					}
+					var $substatement = $('<li class="clearfix" style="padding-left:'+((substatement.LEVEL || 0) * 15 + 10)+'px"/>');
+
+					var content = '';
+					content += '<div class="usericon">';
+					content += '<img src="'+app.getContextPath()+'/resource/usericon/'+icon+'">';
+					content += '</div>';
+					content += '<div class="substatement-items">';
+					content += '<h4>'+substatement.TITLE+'<span>'+substatement.CREATE_DATE+'</span></h4>';
+					if(substatement.DESCRIPTION != "")
+					{
+						content +='<p>'+substatement.DESCRIPTION+'</p>';
+					}
+					content += '</div>';
+					$substatement.html(content);
+
+					$substatement.data("substatement", substatement);
+					$substatements.append($substatement);
+
+					$substatement.on("click", function()
+					{
+						callback([$(this).data("substatement")]);
+						$choice.hide();
+
+					});
+				});
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+
+		var $choiceframe = $choice.find(".choice-frame");
+
+		if($(document).scrollTop() > 0)
+		{
+			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(document).scrollTop() + $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+		}
+		else
+		{
+			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+		}
+
+		$choice.find(".save-button").on("click", function()
+		{
+		});
+
+		$choice.show();
+	}
+
+	app.toTree = function(items)
+	{
+		var map = {};
+		$.each(items, function(i, item)
+		{
+			map[item.ID] = item;
+		});
+
+		var data = items.concat();
+
+		for(var index = 0 ; index < items.length ; index++)
+		{
+			for(var i = 0 ; i < items.length ; i++)
+			{
+				var item = items[i];
+				var parentId = item.PARENT_ID;
+				if(parentId != item.ID)
+				{
+					//如果本节点没有被移动过并且本节点存在父节点，本节点才可以移动
+					if(item["ISMOVE"] == null && parentId != "")
+					{
+						var parent = map[parentId];
+						if(parent != null)
+						{
+							//父节点已移动或者父节点是顶级节点 本节点才可以移动
+							if(parent["ISMOVE"] != null || parent.PARENT_ID == "")
+							{
+								parent["ISCHILD"] = true;
+								//当前节点层级为父节点层级上+1
+								var level = parseInt( parent["LEVEL"] || "0" );
+								item["LEVEL"] = level + 1;
+								
+								//父节点索引，移动至父节点后
+								var target = data.indexOf( parent ) + 1;
+								//当前节点索引
+								var current = data.indexOf(item);
+
+								if(current > target)
+								{
+									//从下往上
+									data.splice(target, 0, data[current]);
+									data.splice(current + 1, 1)
+								}
+								else
+								{
+									//从上往下
+									data.splice(target, 0, data[current]);
+									data.splice(current, 1)
+								}
+								item["ISMOVE"] = true;
+							}
+						}
+						else
+						{
+							item["ISMOVE"] = true;
+						}
+					}
+				}
+			}
+		}
+
+		return data;
+
+	}
+
+	app.showUserPanel = function(callback)
+	{
+		var $choice = $("#choice-user-panel");
+		if($choice.length == 0)
+		{
+			var content = '';
+			content += '<div class="choice-panel" id="choice-user-panel" style="display:none">';
+			content += '	<div class="choice-mask"></div>';
+			content += '	<div class="choice-frame">';
+			content += '		<div class="choice-toolbar clearfix">';
+			content += '			<h5 class="left">人员选择</h5>';
+			content += '			<div class="right"><input type="text" id="user-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>';
+			content += '		</div>';
+			content += '		<div class="user-panel"><ul></ul></div>';
+			content += '		<div class="choice-button-panel"><button class="save-button">确定</button><button class="close-button">关闭</button></div>';
+			content += '	</div>';
+			content += '</div>';
+			$("body").append(content);
+			$choice = $("#choice-user-panel");
+			$choice.find(".close-button").on("click", function()
+			{
+				$choice.hide();
+			});
+		}
+		
+		$.getJSON(app.getContextPath()+"/system/user/user.jsp?mode=1", function(response)
+		{
+			if(response.status == "1")
+			{
+				var rows = response.resource.rows;
+				
+				var $users = $choice.find(".user-panel ul");
+				$users.empty();
+				$.each(rows, function(i, row)
+				{
+					var icon = row.ICON || "";
+					if(icon == "")
+					{
+						icon = "user.png"
+					}
+					var $user = $('<li><i class="fa fa-check-circle selection"></i><img src="'+app.getContextPath()+'/resource/usericon/'+icon+'"><br/>'+row.NAME+'</li>');
+					$user.data("user", row);
+					$users.append($user);
+
+					$user.on("click", function()
+					{
+						$("#choice-user-panel .user-panel ul li").attr("isselect", "0");
+						$("#choice-user-panel .user-panel ul li").find(".selection").fadeOut("fast");
+						
+						$(this).attr("isselect", "1");
+						$(this).find(".selection").fadeIn("fast");
+
+						callback([$(this).data("user")]);
+						$choice.hide();
+
+					});
+
+				});
+
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+
+		var $choiceframe = $choice.find(".choice-frame");
+
+		if($(document).scrollTop() > 0)
+		{
+			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(document).scrollTop() + $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+		}
+		else
+		{
+			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+		}
+
+		$choice.find(".save-button").on("click", function()
+		{
+		});
+
+		$choice.show();
 	}
 
 	app.getParameter = function(m)

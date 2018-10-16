@@ -35,12 +35,36 @@ li{padding:0px; margin:0px; list-style-type:none}
 .button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 4px}
 
 #loading-panel{}
-
-#loading-panel .loading-mask{position:fixed; width:100%; height:100%; top:0px; left:0px;right:0px; bottom:0px; background-color:#333333; filter:alpha(opacity=10); opacity:0.1;}
-
+#loading-panel .loading-mask{position:fixed; width:100%; height:100%; top:0px; left:0px;right:0px; bottom:0px; background-color:#333333; filter:alpha(opacity=30); opacity:0.3;}
 #loading-panel .loading-toast{position:absolute; width:100px; background-color:#ffffff; height:100px; opacity:0.7; border:1px solid #dddddd}
-
 #loading-panel .loading-toast img{display:block; margin:0px auto;}
+
+.choice-panel{}
+.choice-panel .choice-mask{position:fixed; width:100%; height:100%; top:0px; left:0px;right:0px; bottom:0px; background-color:#333333; filter:alpha(opacity=30); opacity:0.3;}
+.choice-panel .choice-toolbar{height:50px; background-color:#f1f1f1; padding:0px 20px; box-sizing:border-box}
+.choice-panel .choice-toolbar h5{font-size:16px; font-weight:400; line-height:50px}
+.choice-panel .choice-toolbar .right{background-color:#ffffff; margin-top:8px; padding:0px 10px; border-radius:3px; width:300px}
+.choice-panel .choice-toolbar .right input{width:275px; border-radius:2px; margin-right:5px; background-color:#ffffff; border:0px none; color:#838383; height:35px; padding:0px 5px}
+.choice-panel .choice-toolbar .right i{font-size:14px; color:#999999}
+.choice-panel .choice-button-panel{text-align:center;height:50px; background-color:#f1f1f1}
+.choice-panel .choice-button-panel button{padding:8px 40px; margin:8px 5px}
+
+#choice-user-panel .choice-frame{position:absolute; width:917px; background-color:#ffffff; height:500px}
+#choice-user-panel .user-panel{height:400px; overflow-y:scroll; box-sizing:border-box;}
+#choice-user-panel .user-panel ul li{cursor:pointer; width:90px; box-sizing:border-box; float:left; padding:10px; text-align:center; line-height:20px; position:relative; border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1;}
+#choice-user-panel .user-panel ul li img{width:50px; height:50px; border-radius:50px}
+#choice-user-panel .user-panel ul li .selection{cursor:pointer; position:absolute; top:0px; right:0px; font-size:18px; color:red; display:none}
+
+
+#choice-substatement-panel .choice-frame{position:absolute; width:917px; background-color:#ffffff; height:500px}
+#choice-substatement-panel .substatement-panel{height:400px; overflow-y:scroll; box-sizing:border-box;}
+#choice-substatement-panel .substatement-panel ul li{cursor:pointer; box-sizing:border-box; padding:10px; border-bottom:1px solid #f1f1f1}
+#choice-substatement-panel .substatement-panel ul li .usericon{width:55px; float:left}
+#choice-substatement-panel .substatement-panel ul li .usericon img{width:50px; height:50px; display:block}
+#choice-substatement-panel .substatement-panel ul li .substatement-items{margin-left:65px;}
+#choice-substatement-panel .substatement-panel ul li .substatement-items h4{font-size:15px; font-weight:400}
+#choice-substatement-panel .substatement-panel ul li .substatement-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+#choice-substatement-panel .substatement-panel ul li .substatement-items p{margin-top:5px; color:#aaaaaa}
 
 #messages-panel{box-sizing:border-box; display:none; position:absolute; top:0px; left:0px; background-color:#fefbdf; width:100%; padding:30px; color:#333333; filter:alpha(opacity=90); opacity:0.9;}
 
@@ -58,10 +82,10 @@ li{padding:0px; margin:0px; list-style-type:none}
 .grid-toolbar-panel .pagination-panel ul li a.disabled{background-color:#f2f2f2; cursor:not-allowed}
 .grid-toolbar-panel .pagination-panel ul li a i{font-size:14px; color:#999999}
 
-
-.module-panel{margin:10px}
-#left-panel{float:left; width:260px}
-#left-panel h4{font-weight:400; color:#555555; font-size:16px; margin-top:12px; letter-spacing:1px}
+#module-frame{display:flex}
+.module-panel{margin:10px; flex-grow:1;}
+#left-panel{min-width:260px; flex-grow:0;}
+#left-panel h4{font-weight:400; color:#555555; font-size:16px; letter-spacing:1px}
 #left-panel h4 span{font-weight:400}
 #left-panel p{margin-top:6px; color:#999999; font-size:12px}
 #left-panel #all-item{margin-top:10px}
@@ -72,7 +96,7 @@ li{padding:0px; margin:0px; list-style-type:none}
 #left-panel ul li h5{padding:8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400}
 #left-panel ul li img{width:40px; height:40px;}
 #left-panel ul li strong{float:right; font-size:12px; margin:10px 10px 0px 0px; background-color:#999999; color:#ffffff; padding:0px 5px; border-radius:10px; font-weight:400;}
-#right-panel{margin-left:260px;}
+#right-panel{flex-grow:1;}
 
 
 .header-panel{background-color:#F7F7F7;}
@@ -86,18 +110,15 @@ li{padding:0px; margin:0px; list-style-type:none}
 .header-panel .header-items .header-buttons button{height:60px; padding:0px 20px; font-size:20px}
 .header-panel .header-items .header-buttons button i{margin-right:3px;}
 
-.fields-panel{padding:10px;} 
-.fields-panel input{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:30px;}	
-.fields-panel textarea{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:50px}	
+.fields-panel{padding:0px 10px 20px 20px;} 
 .fields-panel .close-button{text-align:center; margin:10px 0px; cursor:pointer}
 .fields-panel .close-button i{font-size:15px; color:#aaaaaa}
-.fields-panel .row-panel{margin-top:10px; overflow:hidden}
-.fields-panel .field-panel{padding-right:10px; box-sizing:border-box}
+.fields-panel .row-panel{margin-top:15px; overflow:hidden}
+.fields-panel .field-panel{padding-right:20px; box-sizing:border-box}
+.fields-panel .field-panel label{display:block; height:30px; line-height:30px;}
+.fields-panel .field-panel div{display:flex}
+.fields-panel .field-panel div input{color:#444444; width:100%; border:none; border-radius:2px; height:30px; flex-grow:1;}
+.fields-panel .field-panel div textarea{color:#444444; width:100%; border:none; border-radius:2px; height:90px}	
+.fields-panel .field-panel div .field-button{border-radius:2px; height:30px; flex-grow:0; margin-left:5px}
 .fields-panel .button-panel{text-align:center; margin-top:20px}
 .fields-panel .button-panel button{padding:10px 50px}
-
-
-
-.left-frame{float:left; width:250px;}
-.right-frame-container{float:right; margin:0px 0px 0px -260px; width:100%}
-.right-frame{margin:0px 0px 0px 250px;}

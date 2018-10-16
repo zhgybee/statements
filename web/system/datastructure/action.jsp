@@ -96,11 +96,12 @@
 			Connection connection = null;
 			try
 			{
-				String id = request.getParameter("id");
+				String statementId = request.getParameter("statement");
+				String substatementId = request.getParameter("substatement");
 				String name = request.getParameter("name");
 				connection = DataSource.connection(SystemProperty.DATASOURCE);
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("insert into "+name+"(ID, TASK_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), id, sessionuser.getId());
+				datasource.execute("insert into "+name+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
 				connection.commit();
 			}
 			catch(Exception e)
@@ -122,8 +123,8 @@
 		}
 		else if(mode.equals("3"))
 		{
-			String name = request.getParameter("name");
-			DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(name);
+			String code = request.getParameter("code");
+			DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
 			if(datastructure != null)
 			{
 				Map<String, JSONObject> columnmap = datastructure.getColumns();
@@ -139,10 +140,11 @@
 					{				
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	
-						
+
+						String tablename = datastructure.getProperty().optString("name");
 						for(String id : ids)
 						{
-							datasource.execute("insert into "+name+"(ID, "+columnitem+") select '"+SystemUtils.uuid()+"', "+columnitem+" from "+name+" where ID = ?", id);
+							datasource.execute("insert into "+tablename+"(ID, "+columnitem+") select '"+SystemUtils.uuid()+"', "+columnitem+" from "+tablename+" where ID = ?", id);
 						}
 						connection.commit();
 					}
@@ -175,17 +177,26 @@
 			try
 			{
 				String[] ids = StringUtils.defaultString(request.getParameter("ids"), "").split(",");
-				String name = request.getParameter("name");
-				if(ids.length > 0)
-				{				
-					connection = DataSource.connection(SystemProperty.DATASOURCE);
-					DataSource datasource = new DataSource(connection);	
-					
-					for(String id : ids)
-					{
-						datasource.execute("delete from "+name+" where ID = ?", id);
+				String code = request.getParameter("code");
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
+				if(datastructure != null)
+				{
+					if(ids.length > 0)
+					{				
+						connection = DataSource.connection(SystemProperty.DATASOURCE);
+						DataSource datasource = new DataSource(connection);	
+	
+						String tablename = datastructure.getProperty().optString("name");
+						for(String id : ids)
+						{
+							datasource.execute("delete from "+tablename+" where ID = ?", id);
+						}
+						connection.commit();
 					}
-					connection.commit();
+				}
+				else
+				{
+					message.message(ServiceMessage.FAILURE, "表结构配置文件错误。");
 				}
 			}
 			catch(Exception e)

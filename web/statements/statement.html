@@ -21,19 +21,20 @@
 	#statements > li .statement-panel .items p{margin-top:5px; color:#aaaaaa}
 	#statements > li .statement-panel .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
 
-	#statements > li .statement-transactor{background-color:#ffffff}
-	#statements > li .statement-transactor li{padding:15px; border-top:1px solid #eeeeee}
-	#statements > li .statement-transactor li .usericon{width:55px; float:left}
-	#statements > li .statement-transactor li .usericon img{width:50px; height:50px; display:block}
-	#statements > li .statement-transactor li .transactor-items{margin-left:65px;}
-	#statements > li .statement-transactor li .transactor-items > div{overflow:hidden}
-	#statements > li .statement-transactor li .transactor-items i{color:#AAAAAA; font-size:14px; margin-right:3px}
-	#statements > li .statement-transactor li .transactor-items h4{font-size:15px; font-weight:400}
-	#statements > li .statement-transactor li .transactor-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
-	#statements > li .statement-transactor li .transactor-items p{margin-top:5px; color:#aaaaaa}
-	#statements > li .statement-transactor li .transactor-items .transactor-toolbar{margin-top:8px}
-	#statements > li .statement-transactor li .transactor-items .transactor-toolbar span{color:#ffffff; padding:0px 3px; border-radius: 2px; font-size:12px}
-	#statements > li .statement-transactor li .transactor-items .transactor-toolbar i{font-size:18px; margin-right:0px}
+	#statements > li .substatement{background-color:#ffffff}
+	#statements > li .substatement li{padding:15px; border-top:1px solid #eeeeee}
+	#statements > li .substatement li .usericon{width:55px; float:left; text-align:center}
+	#statements > li .substatement li .usericon img{width:50px; height:50px; margin-bottom:5px}
+	#statements > li .substatement li .substatement-items{margin-left:65px;}
+	#statements > li .substatement li .substatement-items > div{overflow:hidden}
+	#statements > li .substatement li .substatement-items i{color:#AAAAAA; font-size:14px; margin-right:3px}
+	#statements > li .substatement li .substatement-items h4{font-size:15px; font-weight:400}
+	#statements > li .substatement li .substatement-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+	#statements > li .substatement li .substatement-items .substatement-tag span{color:#ffffff; padding:0px 3px; border-radius: 2px; font-size:12px}
+	#statements > li .substatement li .substatement-items p{margin-top:5px; color:#aaaaaa}
+	#statements > li .substatement li .substatement-items .substatement-toolbar{margin-top:5px}
+	#statements > li .substatement li .substatement-items .substatement-toolbar span{color:#ffffff; padding:0px 3px; border-radius: 2px; font-size:12px}
+	#statements > li .substatement li .substatement-items .substatement-toolbar i{font-size:18px; margin-right:0px}
 
 
 	#statements > li .statement-toolbar{overflow:hidden; box-sizing:border-box; font-size:12px; border-bottom-left-radius:4px; border-bottom-right-radius:4px; background-color:#f7f7f7}
@@ -46,7 +47,7 @@
 	</style>
 </head>
 
-<body style="margin:0px; background-color:#EEEEEE">
+<body style="background-color:#EEEEEE">
 	
 	<div class="clearfix header-panel">
 		<div class="clearfix header-items">
@@ -61,19 +62,18 @@
 			<div class="close-button">
 				<i class="fa fa-chevron-up"></i>
 			</div>
-			<div class="clearfix row-panel">
-				<div class="left field-panel" style="width:50%;">标题<input type="text" id="title"/></div>
-				<div class="left field-panel" style="width:25%;">类型<input type="text" id="type"/></div>
-				<div class="left field-panel" style="width:25%;">法定代表人<input type="text" id="legalperson"/></div>
+			<div class="row-panel clearfix">
+				<div class="left field-panel" style="width:75%;"><label>标题</label><div style="flex-grow:1"><input type="text" id="title"/><button class="field-button" style="width:100px">选择表格</button></div></div>
+				<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson"/></div></div>
 			</div>
-			<div class="clearfix row-panel">
-				<div class="left field-panel" style="width:25%;">报告期初日<input type="text" id="startdate"/></div>
-				<div class="left field-panel" style="width:25%;">报告期末日<input type="text" id="enddate"/></div>
-				<div class="left field-panel" style="width:25%;">主管会计工作负责人<input type="text" id="accountant"/></div>
-				<div class="left field-panel" style="width:25%;">会计机构负责人<input type="text" id="accountantofficer"/></div>
+			<div class="row-panel clearfix">
+				<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>主管会计</label><div><input type="text" id="accountant"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer"/></div></div>
 			</div>
-			<div class="clearfix row-panel">
-				<div class="left field-panel" style="width:100%;">备注<textarea type="text" id="description"></textarea></div>
+			<div class="row-panel">
+				<div class="field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description"></textarea></div></div>
 			</div>
 			<div class="button-panel">
 				<button id="save-button">确定</button>
@@ -82,14 +82,16 @@
 	</div>
 	
 
-	<div class="module-panel clearfix">
-		<div class="grid-toolbar-panel clearfix">
-			<div class="searcher-panel left">
-				<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	<div id="module-frame">
+		<div class="module-panel clearfix">
+			<div class="grid-toolbar-panel clearfix">
+				<div class="searcher-panel left">
+					<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+				</div>
+				<div class="pagination-panel right"></div>
 			</div>
-			<div class="pagination-panel right"></div>
+			<ul id="statements"></ul>
 		</div>
-		<ul id="statements"></ul>
 	</div>
 	
 	
@@ -101,14 +103,15 @@
 
 		$(function()
 		{
+			
 			initialise(0, app.pagesize);
 			
+
 			$("#save-button").on("click", function()
 			{
 				app.showLoading();
 				var parameter = {};
 				parameter["title"] = $("#title").val();
-				parameter["type"] = $("#type").val();
 				parameter["legalperson"] = $("#legalperson").val();
 				parameter["startdate"] = $("#startdate").val();
 				parameter["enddate"] = $("#enddate").val();
@@ -129,6 +132,7 @@
 				}, "json");
 			});
 			
+
 			$("#add-statements-button").on("click", function()
 			{
 				$("#statement-field-panel").slideToggle('fast');
@@ -137,12 +141,6 @@
 			$("#statement-field-panel .close-button").on("click", function()
 			{
 				$("#statement-field-panel").slideToggle('fast');
-			});
-
-			$("#type").selection
-			({
-				url:app.getContextPath()+"/dictionary/list/report.type.json",
-				ismultiple:false
 			});
 
 		});
@@ -182,45 +180,47 @@
 
 						content.push('		<div class="usericon"><img src="../resource/usericon/'+icon+'"></div>');
 						content.push('		<div class="items">');						
-						content.push('			<h2><a href="manager.html?id='+statement.ID+'">'+statement.TITLE+'</a><span>'+statement.CREATE_DATE+'</span></h2>');
+						content.push('			<h2><a href="console.html?id='+statement.ID+'">'+statement.TITLE+'</a><span>'+statement.CREATE_DATE+'</span></h2>');
 						content.push('			<p>'+statement.DESCRIPTION+'</p>');
 						content.push('		</div>');
 						content.push('	</div>');
 
-						var transactors = statement.TRANSACTOR;
-						if(transactors != null)
+						var substatements = statement.SUBSTATEMENTS;
+						substatements = app.toTree(substatements);
+						if(substatements != null)
 						{
-							content.push('	<ul class="statement-transactor">');
-							$.each(transactors, function(i, transactor)
+							content.push('	<ul class="substatement">');
+							$.each(substatements, function(i, substatement)
 							{
-								var status = transactor.STATUS || "";
-								var icon = transactor.USERICON || "";
+								var status = substatement.STATUS || "";
+								var icon = substatement.USERICON || "";
 								if(icon == "")
 								{
 									icon = "user.png"
 								}
 
-								content.push('	<li class="clearfix" code="'+transactor.ID+'">');
-								content.push('		<div class="usericon"><img src="../resource/usericon/'+icon+'"></div>');
-								content.push('		<div class="transactor-items">');
-								content.push('			<div class="clearfix"><div class="left"><h4>'+transactor.TITLE+'<span>'+transactor.CREATE_DATE+'</span></h4></div><div class="right"><i class="fa fa-user"></i>'+transactor.USERNAME+'</div></div>');
-								if(transactor.DESCRIPTION != "")
-								{
-									content.push('			<p>'+transactor.DESCRIPTION+'</p>');
-								}
-								content.push('			<div class="transactor-toolbar">');
-								content.push('				<div class="left">');
-								if(status == "012")
+								content.push('	<li class="clearfix" code="'+substatement.ID+'" style="padding-left:'+((substatement.LEVEL || 0) * 15 + 10)+'px">');
+								content.push('		<div class="usericon"><img src="../resource/usericon/'+icon+'"><br/>'+substatement.USERNAME+'</div>');
+								content.push('		<div class="substatement-items">');
+								content.push('			<div class="clearfix">');
+								content.push('				<div class="left"><h4>'+substatement.TITLE+'<span>'+substatement.CREATE_DATE+'</span></h4></div>');
+								content.push('				<div class="right substatement-tag">');
+								if(status == "002")
 								{
 									content.push('					<span style="background-color:#5DC4BF;">已完成</span>');	
 								}
-								else if(status == "011")
+								else if(status == "001")
 								{
 									content.push('					<span style="background-color:#009CEA;">制表中</span>');	
-								}
-								
+								}								
 								content.push('				</div>');
-								content.push('				<div class="right"><a class="delete-transactor-button"><i class="fa fa-trash"></i></a></div>');
+								content.push('			</div>');
+								if(substatement.DESCRIPTION != "")
+								{
+									content.push('			<p>'+substatement.DESCRIPTION+'</p>');
+								}
+								content.push('			<div class="substatement-toolbar">');
+								content.push('				<div class="left"><span class="red delete-substatement-button">删除</span></div>');
 								content.push('			</div>');
 								content.push('		</div>');
 								content.push('	</li>');
@@ -230,7 +230,7 @@
 
 						content.push('	<div class="statement-toolbar">');
 						content.push('		<div class="buttons">');
-						content.push('			<a class="add-transactor-button"><i class="fa fa-user-plus"></i></a>');									
+						content.push('			<a class="add-substatement-button"><i class="fa fa-user-plus"></i></a>');									
 						content.push('		</div>');
 						content.push('	</div>');
 
@@ -241,15 +241,15 @@
 					
 					$statements.html(content.join(""));
 
-					$("#statements .statement-toolbar .buttons .add-transactor-button").on("click", function()
+					$("#statements .statement-toolbar .buttons .add-substatement-button").on("click", function()
 					{
-						var $panel = $("#transactor-panel");	
+						var $panel = $("#substatement-panel");	
 						$panel.hide();
 
 						if($panel.length == 0)
 						{
 							var content = "";
-							$panel = $('<div id="transactor-panel" class="fields-panel" style="display:none"/>');
+							$panel = $('<div id="substatement-panel" class="fields-panel" style="display:none"/>');
 
 							content += '<div class="close-button">';
 							content += '	<i class="fa fa-chevron-up"></i>';
@@ -257,22 +257,23 @@
 
 
 							content += '<div class="clearfix row-panel">';
-							content += '	<div class="left field-panel" style="width:50%;">标题<input type="text" id="trantitle"/></div>';
-							content += '	<div class="left field-panel" style="width:50%;">制表人<input type="text" id="transactor"/></div>';
+							content += '	<div class="left field-panel" style="width:40%;"><label>标题</label><div><input type="text" id="subtitle"/></div></div>';
+							content += '	<div class="left field-panel" style="width:30%;"><label>制表人</label><div><input type="text" id="manageruser"/></div></div>';
+							content += '	<div class="left field-panel" style="width:30%;"><label>父表格</label><div><input type="text" onclick="app.showSubStatementTreePanel(1)"/></div></div>';
 							content += '</div>';
 
 							content += '<div class="clearfix row-panel">';
-							content += '	<div class="left field-panel" style="width:100%;">备注<textarea type="text" id="trandescription"></textarea></div>';
+							content += '	<div class="left field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="remark"></textarea></div></div>';
 							content += '</div>';
 
 							content += '<div class="button-panel">';
-							content += '	<button id="save-transactor-button">确定</button>';
+							content += '	<button id="save-substatement-button">确定</button>';
 							content += '</div>';
 
 
 							$panel.html(content);
 							
-							$panel.find("#transactor").selection
+							$panel.find("#manageruser").selection
 							(
 								{
 									url:app.getContextPath()+"/dictionary/list/user.json",
@@ -282,18 +283,18 @@
 
 							$panel.find(".close-button").on("click", function()
 							{
-								$("#transactor-panel").slideUp('fast');
+								$("#substatement-panel").slideUp('fast');
 							});
 
-							$panel.find("#save-transactor-button").on("click", function()
+							$panel.find("#save-substatement-button").on("click", function()
 							{
 								var parameters = {};
-								parameters.trantitle = $("#trantitle").val();
-								parameters.transactor = $("#transactor").val();
+								parameters.title = $("#subtitle").val();
+								parameters.manageruser = $("#manageruser").val();
 								parameters.statement = $(this).closest("li[code]").attr("code");
-								parameters.trandescription = $("#trandescription").val();
+								parameters.description = $("#remark").val();
 								
-								if(parameters.transactor == null || parameters.transactor == "")
+								if(parameters.manageruser == null || parameters.manageruser == "")
 								{
 									app.alert("制表人没有选择");
 									return;
@@ -323,13 +324,13 @@
 
 					});
 
-					$("#statements .delete-transactor-button").on("click", function()
+					$("#statements .delete-substatement-button").on("click", function()
 					{
 						if(confirm("删除后将不可恢复，确定删除吗？"))
 						{
 							app.showLoading();
 
-							$.post('do.jsp?mode=4&id='+$(this).closest("li[code]").attr("code"), function(response)
+							$.post('do.jsp?mode=4&substatement='+$(this).closest("li[code]").attr("code"), function(response)
 							{
 								app.hideLoading();
 								if(response.status == "1")

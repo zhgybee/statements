@@ -25,17 +25,15 @@
 	if(sessionuser != null)
 	{
 		String mode = request.getParameter("mode");
-		
-		
 		if(mode.equals("1"))
 		{
-			String id = request.getParameter("id");
+			String statementId = request.getParameter("statement");
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("delete from T_TASK where id = ?", id);
+				datasource.execute("delete from T_STATEMENT where id = ?", statementId);
 				connection.commit();
 			}
 			catch(Exception e)
@@ -58,7 +56,6 @@
 		else if(mode.equals("2"))
 		{
 			String title = StringUtils.defaultString(request.getParameter("title"), "");
-			String type = StringUtils.defaultString(request.getParameter("type"), "");
 			String legalperson = StringUtils.defaultString(request.getParameter("legalperson"), "");
 			String startdate = StringUtils.defaultString(request.getParameter("startdate"), "");
 			String enddate = StringUtils.defaultString(request.getParameter("enddate"), "");
@@ -72,8 +69,8 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				String id = SystemUtils.uuid();
-				datasource.execute("INSERT INTO T_TASK(ID, CODE, TITLE, TYPE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-						id, "", title, type, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
+				datasource.execute("INSERT INTO T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+						id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
 				connection.commit();
 			}
 			catch(Exception e)
@@ -95,25 +92,24 @@
 		}
 		else if(mode.equals("3"))
 		{
-			String trantitle = StringUtils.defaultString(request.getParameter("trantitle"), "");
+			String title = StringUtils.defaultString(request.getParameter("title"), "");
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
-			String transactor = StringUtils.defaultString(request.getParameter("transactor"), "");
-			String trandescription = StringUtils.defaultString(request.getParameter("trandescription"), "");
+			String manageruser = StringUtils.defaultString(request.getParameter("manageruser"), "");
+			String description = StringUtils.defaultString(request.getParameter("description"), "");
 
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("INSERT INTO T_TRANSACTOR(ID, TITLE, DESCRIPTION, TASK_ID, USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-					SystemUtils.uuid(), trantitle, trandescription, statementId, transactor, "011");
+				datasource.execute("INSERT INTO T_SUBSTATEMENT(ID, TITLE, DESCRIPTION, STATEMENT_ID, MANAGER_USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					SystemUtils.uuid(), title, description, statementId, manageruser, "01");
 				
 				
-				Datum statement = datasource.get("select * from T_TASK where ID = ?", statementId);
+				Datum statement = datasource.get("select * from T_STATEMENT where ID = ?", statementId);
 				
-
 				JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "statements" + SystemProperty.FILESEPARATOR + "initialise.json"), "UTF-8"));
-				JSONArray sqlmaps = types.getJSONArray(statement.getString("TYPE"));
+				JSONArray sqlmaps = types.getJSONArray("default");
 				if(sqlmaps != null)
 				{
 					for(int i = 0 ; i < sqlmaps.length() ; i++)
@@ -121,9 +117,9 @@
 						JSONObject sqlmap = sqlmaps.getJSONObject(i);
 						
 						String sql = sqlmap.optString("sql");
-						sql = StringUtils.replace(sql, "[TASK_ID]", statementId);
+						sql = StringUtils.replace(sql, "[STATEMENT_ID]", statementId);
 						sql = StringUtils.replace(sql, "[STARTDATE]", statement.getString("STARTDATE"));
-						sql = StringUtils.replace(sql, "[TRANSACTOR]", transactor);
+						sql = StringUtils.replace(sql, "[MANAGERUSER]", manageruser);
 						sql = StringUtils.replace(sql, "[ENDDATE]", statement.getString("ENDDATE"));
 						sql = StringUtils.replace(sql, "[LEGALPERSON]", statement.getString("LEGALPERSON"));
 						sql = StringUtils.replace(sql, "[ACCOUNTANT]", statement.getString("ACCOUNTANT"));
@@ -133,9 +129,6 @@
 						datasource.execute(sql);
 					}
 				}
-				
-				
-				
 				
 				connection.commit();
 			}
@@ -158,13 +151,42 @@
 		}
 		else if(mode.equals("4"))
 		{
-			String id = request.getParameter("id");
+			String substatementId = request.getParameter("substatement");
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("delete from T_TRANSACTOR where id = ?", id);
+				datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
+				connection.commit();
+			}
+			catch(Exception e)
+			{
+				if(connection != null)
+				{
+					connection.rollback();
+				};
+				Throwable throwable = ThrowableUtils.getThrowable(e);
+				message.message(ServiceMessage.FAILURE, throwable.getMessage());
+			}
+			finally
+			{
+				if(connection != null)
+				{
+					connection.close();
+				}
+			}
+		}
+		else if(mode.equals("5"))
+		{
+			String transactorId = request.getParameter("transactor");
+			String transactoruser = request.getParameter("transactoruser");
+			Connection connection = null;
+			try
+			{
+				connection = DataSource.connection(SystemProperty.DATASOURCE);	
+				DataSource datasource = new DataSource(connection);	
+				datasource.execute("update T_STATEMENT_TRANSACTOR set TRANSACTOR_USER_ID = ? where id = ?", transactoruser, transactorId);
 				connection.commit();
 			}
 			catch(Exception e)

@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="../style/css/app.css" />
+<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+<title></title>
+
+<style>
+#sheets-panel li{float:left; box-sizing:border-box; width:25%; padding-right:10px; margin-top:10px}
+#sheets-panel li > div{background-color:#ffffff; height:80px; padding:10px; border-radius:5px}
+#sheets-panel li .icon{float:left; text-align:center; font-size:10px; line-height:20px}
+#sheets-panel li .icon i{font-size:40px; color:#1eaaf1}
+#sheets-panel li .icon img{width:50px; height:50px}
+#sheets-panel li .icon .changeuser-button{cursor:pointer}
+#sheets-panel li .items{margin-left:62px; position:relative}
+#sheets-panel li .items h5{font-weight:400px; font-size:14px; color:#666666; margin-right:24px}
+#sheets-panel li .items hr{margin:5px 0px 7px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
+#sheets-panel li .items strong{font-size:12px; padding:1px; min-width:15px; height:15px; line-height:15px; position:absolute; top:2px; right:0px; background-color:#ffaa00; color:#ffffff; border-radius:5px; text-align:center; font-weight:400}
+#left-panel ul li.substatement{padding-left:10px; cursor:auto; margin-bottom:15px}
+#left-panel ul li.substatement .substatement-items{margin-left:46px}
+#left-panel ul li.substatement .substatement-items h6 {font-weight:400; font-size:13px;}
+#left-panel ul li.substatement .substatement-items h6 .substatement-title{font-weight:400; cursor:pointer}
+#left-panel ul li.substatement .substatement-items h6 .substatement-title:hover{color:#ffaa00}
+#left-panel ul li.substatement .substatement-items h6 .merge-statement-button{margin-left:10px; padding:1px 5px }
+#manager-module .button-panel button{display:inline-block; border:none; text-align: center; width:120px; font-size:20px; height:60px; line-height:60px; color:#ffffff; cursor:pointer; padding: 0px 20px; border-radius:4px}
+#manager-module .button-panel button i{font-size:20px; margin-right:3px}
+</style>
+
+</head>
+
+
+<body style="background-color:#eeeeee">
+	
+<div class="clearfix header-panel">
+	<div class="clearfix header-items">
+		<div id="statement-icon" class="header-icon"><img /></div>
+		<div id="statement-title" class="header-title">			
+			<h2></h2>
+			<p style="color:#aaaaaa"></p>			
+		</div>
+		<div class="header-buttons">
+			<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-file-text" style="margin-right:6px;"></i>导出表格</button>
+		</div>
+	</div>
+</div>
+	
+
+<div id="module-frame">
+
+	<div id="left-panel">
+		<div class="module-panel clearfix">	
+			<h4><span>表格</span>导航</h4>
+			<p>表格的相关管理</p>
+			<ul>
+				<li class="clearfix" id="statement-all-button"><h5></h5></li>
+				<li class="clearfix" id="statement-manager-button"><h5>基本信息</h5></li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="right-panel">
+		<div class="module-panel clearfix" id="statement-module">	
+			<div class="grid-toolbar-panel clearfix">
+				<div class="searcher-panel left">
+					<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+				</div>
+			</div>
+			<div id="sheets-panel" style="margin-right:-10px"><ul></ul></div>
+		</div>
+		<div class="module-panel clearfix" id="manager-module" style="display:none">
+			<div id="statement-field-panel" class="fields-panel">
+				<div class="clearfix row-panel">
+					<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson"/></div></div>
+				</div>
+				<div class="clearfix row-panel">
+					<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>主管会计工作负责人</label><div><input type="text" id="accountant"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer"/></div></div>
+				</div>
+				<div class="clearfix row-panel">
+					<div class="left field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description"></textarea></div></div>
+				</div>
+				<div class="button-panel">
+					<button id="save-button" class="blue" style="display:none"><i class="fa fa-trash-o"></i>修改</button>
+					<button id="delete-button" class="red" style="display:none"><i class="fa fa-pencil-square-o"></i>删除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/app.js"></script>
+
+<script type="text/javascript">
+
+$(function()
+{
+	var statementId = app.getParameter("id");
+	initialise(statementId, "");
+	$("#statement-manager-button").on("click", function()
+	{
+		showManagerPanel();
+	});
+})
+
+function showEditorPanel()
+{
+	$("#manager-module").hide();
+	$("#statement-module").show();
+}
+function showManagerPanel()
+{
+	$("#statement-module").hide();
+	$("#manager-module").show();
+}
+
+function initialise(statementId)
+{
+	app.showLoading();
+	$.getJSON("statement.jsp?mode=5&statement="+statementId, function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var statement = response.resource.statement;
+			var substatements = response.resource.substatements;
+			var iscreaotr = statement.ISCREATOR;
+			if(iscreaotr == "1")
+			{
+				$("#save-button").show();
+				$("delete-button").show();
+
+				$("#statement-all-button h5").html(statement.TITLE);
+				$("#statement-all-button").on("click", function()
+				{
+					showEditorPanel();
+					getSheets(1, statementId, '');
+				});
+
+
+			}
+			substatements = app.toTree(substatements);
+
+			console.log(substatements);
+			
+			$("#statement-title h2").html(statement.TITLE);
+			$("#statement-title p").html(statement.DESCRIPTION);
+			var icon = statement.USERICON || "";
+			if(icon == "")
+			{
+				icon = "user.png"
+			}
+			$("#statement-icon img").attr("src", "../resource/usericon/"+icon);
+
+
+			var content = "";
+			$.each(substatements, function(i, substatement)
+			{
+				var icon = substatement.USERICON || "";
+				if(icon == "")
+				{
+					icon = "user.png"
+				}
+				content += '<li class="clearfix substatement" code="'+substatement.ID+'" style="padding-left:'+((substatement.LEVEL || 0) * 15)+'px">';
+
+				content += '<div class="left"><img src="../resource/usericon/'+icon+'"></div>';
+				content += '<div class="substatement-items">';
+				content += '	<h6><span class="substatement-title">'+substatement.TITLE+'</span>'+(substatement.ISCHILD != null ? '<span class="button merge-statement-button">合并</span>' : '')+'</h6>';
+				content += '	<p>'+substatement.USERNAME+'</p>';
+				content += '</div>';
+
+
+				content += '</li>';
+			});
+			$("li.substatement").remove();
+			$("#statement-all-button").after(content);
+
+			$("li.substatement h6 .substatement-title").on("click", function()
+			{
+				showEditorPanel();
+				var substatementId = $(this).closest("li").attr("code");
+				getSheets(0, statementId, substatementId)
+			});
+			$("li.substatement h6 .merge-statement-button").on("click", function()
+			{
+				showEditorPanel();
+				var substatementId = $(this).closest("li").attr("code");
+				getSheets(1, statementId, substatementId)
+			});
+
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+}
+
+function getSheets(ismerge, statementId, substatementId)
+{
+	app.showLoading();
+	$.getJSON("statement.jsp?mode=6&merge="+ismerge+"&statement="+statementId+"&substatement="+substatementId, function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var sheets = response.resource.sheets;
+			var children = response.resource.children;
+			var $statements = $("#sheets-panel ul");
+			content = "";
+			$.each(sheets, function(i, sheet)
+			{
+				content += '<li code="'+sheet.ID+'">';
+				content += '<div>';
+				if(ismerge == "1")
+				{
+					content += '	<div class="icon"><img src="../style/images/merge.png"><div>合并数据</div></div>';
+					content += '	<div class="items">';
+					content += '		<strong>'+sheet.COUNT+'</strong>';
+					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
+					content += '		<hr/>';
+					content += '		<div class="buttons">';
+					content += '		<a class="button" href="editor.html?merge=1&code='+sheet.SHEETCODE+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
+					content += '		</div>';
+					content += '	</div>';
+				}
+				else
+				{
+					var icon = sheet.USERICON || "";
+					if(icon == "")
+					{
+						icon = "user.png"
+					}
+					content += '	<div class="icon"><img src="../resource/usericon/'+icon+'" /><div class="changeuser-button">'+sheet.USERNAME+'</div></div>';
+					content += '	<div class="items">';
+					content += '		<strong>'+sheet.COUNT+'</strong>';
+					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
+					content += '		<hr/>';
+					content += '		<div class="buttons">';
+					content += '		<a class="button" href="editor.html?merge=0&code='+sheet.SHEETCODE+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">编辑</a>';
+					content += '		<a class="button">导入</a>';
+					content += '		<a class="button red">删除</a>';
+					content += '		</div>';
+					content += '	</div>';
+				}
+				content += '</div>';
+				content += '</li>';
+			});
+
+			$statements.html(content);
+
+			$statements.find(".changeuser-button").on("click", function()
+			{
+				var that = this;
+				app.showUserPanel(function(users)
+				{
+					var user = users[0];
+
+					$.post("do.jsp?mode=5", {transactor:$(that).closest("li").attr("code"), transactoruser:user.ID}, function(response)
+					{
+						app.hideLoading();
+						if(response.status == "1")
+						{
+							var icon = user.ICON || "";
+							if(icon == "")
+							{
+								icon = "user.png"
+							}
+							$(that).prev().attr("src", '../resource/usericon/'+icon);
+							$(that).html(user.NAME);
+						}
+						else
+						{
+							app.message(response.messages);
+						}
+					}, "json");
+
+				});
+			});
+
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+
+}
+
+</script>
+
+</body>
+</html>

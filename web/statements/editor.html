@@ -8,6 +8,22 @@
 <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
 <link rel="stylesheet" href="../lib/datagrid/datagrid.css" />
 <link rel="stylesheet" href="../lib/selection/selection.css"/>
+<style>
+html, body{height:100%}
+</style>
+</head>
+<body>
+<div style="box-sizing:border-box; padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+		<button style="height:35px; width:80px" id="add-button">增加</button>
+		<button style="height:35px; width:80px" id="copy-button">复制</button>
+		<button style="height:35px; width:80px" class="red" id="delete-button">删除</button>
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+<div class="datagrid" id="editor-panel" style="overflow:hidden; width:100%;"></div>
 
 <script type="text/javascript" src="../lib/jquery.js"></script>
 <script type="text/javascript" src="../lib/app.js"></script>
@@ -17,17 +33,13 @@
 <script type="text/javascript" src="../lib/calendar/jquery.calendar.js"></script>
 <script type="text/javascript" src="../lib/selection/selection.js"></script>
 
-<style>
-html, body{height:100%}
-</style>
-
-
 <script type="text/javascript">
 
-	var id = app.getParameter("id");
 	var code = app.getParameter("code");
-	var type = app.getParameter("type");
-	var user = app.getParameter("user");
+	var statementId = app.getParameter("statement");
+	var substatementId = app.getParameter("substatement");
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children");
 
 	var datastructure = null;
 
@@ -38,10 +50,9 @@ html, body{height:100%}
 		resize();
 		$(window).resize( function(){resize()} ); 
 
-		
 		app.showLoading();
 
-		$.getJSON("statement.jsp?mode=4", {code:code, type:type}, function(response)
+		$.getJSON("statement.jsp?mode=4", {code:code}, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -104,18 +115,23 @@ html, body{height:100%}
 			var frozencolumns = datagridcolumns.frozencolumns;
 			var columns = datagridcolumns.columns;
 
-			var searcher = [{table:datastructure.name, column:"TASK_ID", operator:"=", value:id}];
+			var searcher = [];
 			
-			if(user == null)
+			if(merge == "1")
 			{
-				searcher.push( {table:datastructure.name, column:"CREATE_USER_ID", operator:"=", value:"[sys:user-id]"} );
+				if(substatementId == "")
+				{
+					searcher.push( {table:datastructure.name, column:"STATEMENT_ID", operator:"=", value:statementId} );
+				}
+				else
+				{
+					children = decodeURI(children);
+					searcher.push( {table:datastructure.name, column:"SUBSTATEMENT_ID", operator:"in", value:"("+children+")"} );
+				}
 			}
 			else
 			{
-				if(user != "0")
-				{
-					searcher.push( {table:datastructure.name, column:"CREATE_USER_ID", operator:"=", value:user} );
-				}
+				searcher.push( {table:datastructure.name, column:"SUBSTATEMENT_ID", operator:"=", value:substatementId} );
 			}
 
 			var sorts = [];
@@ -155,7 +171,7 @@ html, body{height:100%}
 		$("#add-button").on("click", function()
 		{
 			app.showLoading();
-			$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=2&id="+id+"&name="+datastructure.name, function(response)
+			$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=2&statement="+statementId+"&substatement="+substatementId+"&name="+datastructure.name, function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")
@@ -201,7 +217,7 @@ html, body{height:100%}
 	function copy(ids)
 	{
 		app.showLoading();
-		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=3&ids="+ids.join(",")+"&name="+datastructure.name, function(response)
+		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=3&ids="+ids.join(",")+"&code="+datastructure.code, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -218,7 +234,7 @@ html, body{height:100%}
 	function del(ids)
 	{
 		app.showLoading();
-		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=4&ids="+ids.join(",")+"&name="+datastructure.name, function(response)
+		$.getJSON(app.getContextPath()+"/system/datastructure/action.jsp?mode=4&ids="+ids.join(",")+"&code="+datastructure.code, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -240,18 +256,5 @@ html, body{height:100%}
 	
 </script>
 
-</head>
-<body>
-<div style="box-sizing:border-box; padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
-	<div class="left">
-		<button style="height:35px; width:80px" id="add-button">增加</button>
-		<button style="height:35px; width:80px" id="copy-button">复制</button>
-		<button style="height:35px; width:80px" class="red" id="delete-button">删除</button>
-	</div>
-	<div class="searcher-panel right">
-		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
-	</div>
-</div>
-<div class="datagrid" id="editor-panel" style="overflow:hidden; width:100%;"></div>
 </body>
 </html>
