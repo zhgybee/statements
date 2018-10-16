@@ -103,45 +103,6 @@
 				}
 			}
 		}
-		else if(mode.equals("3"))
-		{
-			String id = StringUtils.defaultString(request.getParameter("id"), "");
-			Connection connection = null;
-			try
-			{
-				connection = DataSource.connection(SystemProperty.DATASOURCE);	
-				DataSource datasource = new DataSource(connection);	
-				Datum statement = datasource.get("select * from T_TRANSACTOR left join (select T_TASK.ID as 'TASK_ID', T_TASK.TITLE, T_TASK.TYPE, T_TASK.DESCRIPTION, T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON' from T_TASK left join T_USER on T_USER.ID = T_TASK.CREATE_USER_ID ) T_TASK on T_TASK.TASK_ID = T_TRANSACTOR.TASK_ID where T_TRANSACTOR.TRANSACTOR_USER_ID = ? and T_TRANSACTOR.ID = ? order by T_TRANSACTOR.CREATE_DATE desc", 
-						sessionuser.getId(), id);
-				message.resource("statement", statement);
-				
-				JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "statements" + SystemProperty.FILESEPARATOR + "statement.json"), "UTF-8"));
-				JSONArray tables = types.getJSONArray(statement.getString("TYPE"));
-				for(int i = 0 ; i < tables.length() ; i++)
-				{
-					JSONObject table = tables.getJSONObject(i);
-					DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(table.optString("code"));
-					String tablename = datastructure.getProperty().optString("name");
-					
-					Datum count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where CREATE_USER_ID = ? and TASK_ID = ?", sessionuser.getId(), statement.getString("TASK_ID"));
-					table.put("count", count.getInt("COUNT"));
-				}
-				message.resource("tables", tables);
-				
-			}
-			catch(Exception e)
-			{
-				Throwable throwable = ThrowableUtils.getThrowable(e);
-				message.message(ServiceMessage.FAILURE, throwable.getMessage());
-			}
-			finally
-			{
-				if(connection != null)
-				{
-					connection.close();
-				}
-			}
-		}
 		else if(mode.equals("4"))
 		{
 			String code = StringUtils.defaultString(request.getParameter("code"), "");				
