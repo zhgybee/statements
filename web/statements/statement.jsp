@@ -1,3 +1,4 @@
+<%@page import="com.statement.ConfigService"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
 <%@page import="com.system.utils.SystemUtils"%>
@@ -103,12 +104,6 @@
 				}
 			}
 		}
-		else if(mode.equals("4"))
-		{
-			String code = StringUtils.defaultString(request.getParameter("code"), "");				
-			DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
-			message.resource("datastructure", datastructure.getProperty());			
-		}
 		else if(mode.equals("5"))
 		{
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
@@ -154,7 +149,7 @@
 						substatement.remove("ISFIND");
 					}
 					
-					//当前人员工作的子项目
+					//当前人员工作的子项目（从当前人员可以操作的表格查找）
 					Data statements = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_SUBSTATEMENT.* from T_SUBSTATEMENT left join T_USER on T_SUBSTATEMENT.MANAGER_USER_ID = T_USER.ID where T_SUBSTATEMENT.ID in (select SUBSTATEMENT_ID from T_STATEMENT_TRANSACTOR where TRANSACTOR_USER_ID = ?  group by SUBSTATEMENT_ID) order by T_SUBSTATEMENT.CREATE_DATE desc", 
 						sessionuser.getId());
 
@@ -199,16 +194,19 @@
 			Connection connection = null;
 			try
 			{
-				
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
+				
+				ConfigService configService = new ConfigService("0001");
 				
 				Datum statement = datasource.get("select * from T_STATEMENT where ID = ?", statementId);
 				Data substatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
 				Datum substatement = null;
 				if(statement != null)
 				{
+					//是否总项目创建人
 					boolean iscreaotr = statement.getString("CREATE_USER_ID").equals(sessionuser.getId());
+					//是否当前分项目负责人
 					boolean ismanager = false;
 					for(Datum item : substatements)
 					{
@@ -224,20 +222,19 @@
 					/*
 						取出项目表格
 							查看总项目：取出所有表格（总项目对应的表格）
-							相差子项目：
+							查看子项目：
 								项目创建人：取出该子项目中的所有表格
 								子项目负责人：取出该子项目中的所有表格
 								项目工作人员：取出自己负责的表格
 					*/
 					if(substatement == null)
 					{
-						sheets = datasource.find("select CODE as 'SHEETCODE', NAME as 'SHEETNAME' from T_SHEET where ID in (select SHEET_ID from T_STATEMENT_SHEET where STATEMENT_ID = ?)", statementId);
+						sheets = datasource.find("select SHEET_ID from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 					}
 					else
 					{
 						StringBuffer sql = new StringBuffer();
-						sql.append("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_SHEET.CODE as 'SHEETCODE', T_SHEET.NAME as 'SHEETNAME', T_STATEMENT_TRANSACTOR.* from T_STATEMENT_TRANSACTOR ");
-						sql.append("left join T_SHEET on T_STATEMENT_TRANSACTOR.SHEET_ID = T_SHEET.ID ");
+						sql.append("select T_USER.NAME as 'USERNAME', T_USER.ID as 'USERID', T_USER.ICON as 'USERICON', T_STATEMENT_TRANSACTOR.ID, T_STATEMENT_TRANSACTOR.SHEET_ID from T_STATEMENT_TRANSACTOR ");
 						sql.append("left join T_USER on T_STATEMENT_TRANSACTOR.TRANSACTOR_USER_ID = T_USER.ID ");	
 						if(ismanager || iscreaotr)
 						{
@@ -248,9 +245,9 @@
 						{
 							sql.append("where T_STATEMENT_TRANSACTOR.SUBSTATEMENT_ID = ? and TRANSACTOR_USER_ID = ?");	
 							sheets = datasource.find(sql.toString(), substatementId, sessionuser.getId());
-						}					
+						}
 						
-						//找到当前子下面的下级项目
+						//找到当前子项目下的的下级项目（包括当前子项目）
 						Set<Datum> children = new HashSet<Datum>();
 						children.addAll(getChildSubStatements(new HashSet<Datum>(), substatement, substatements));
 						children.add(substatement);
@@ -263,37 +260,65 @@
 					
 					for(Datum sheet : sheets)
 					{
-						String code = StringUtils.defaultString(sheet.getString("SHEETCODE"), "");
-						if(!code.equals(""))
+						String sheetId = StringUtils.defaultString(sheet.getString("SHEET_ID"), "");
+						
+						if(!sheetId.equals(""))
 						{
-							DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
-							String tablename = datastructure.getProperty().optString("name");
-							Datum count = null;
-							
-							/*
-								取出表格数据
-									合并数据：
-									    查看总项目：取出该项目中所有表格数据，根据项目ID得到数据
-									    查看子项目：取出子项目的所有数据，包括下级子项目
-									不合并数据：取出子项目中的所有数据，根据子项目ID得到表格数据
-							*/
-							
-							if(ismerge.equals("1"))
+							JSONObject sheetconfig = configService.getSheet(sheetId);
+							sheet.put("SHEETNAME", sheetconfig.optString("name"));
+							JSONArray tables = sheetconfig.optJSONArray("tables");
+							int count = 0;
+							if(tables != null)
 							{
-								if(substatement == null)
+								for(int i = 0 ; i < tables.length() ; i++)
 								{
-									count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where STATEMENT_ID = ?", statementId);
+									JSONObject table = tables.optJSONObject(i);
+									String tablecode = table.optString("id");
+									if(!tablecode.equals(""))
+									{
+										DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablecode);
+										if(datastructure != null)
+										{
+											String tablename = datastructure.getProperty().optString("table");
+											Datum countmap = null;
+											/*
+												取出表格数据
+													合并数据：
+														查看总项目：取出该项目中所有表格数据，根据项目ID得到数据
+														查看子项目：取出子项目的所有数据，包括下级子项目
+													不合并数据：取出子项目中的所有数据，根据子项目ID得到表格数据
+											*/
+											
+											if(ismerge.equals("1"))
+											{
+												if(substatement == null)
+												{
+													countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where STATEMENT_ID = ?", statementId);
+												}
+												else
+												{
+													countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID in ("+StringUtils.join(substatementIds, ",")+")");
+												}
+											}
+											else
+											{
+												countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID = ?", substatementId);
+											}
+											count += countmap.getInt("COUNT");
+										}
+									}
 								}
-								else
-								{
-									count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID in ("+StringUtils.join(substatementIds, ",")+")");
-								}
+							}
+
+							if(sheet.getString("USERID").equals(sessionuser.getId()))
+							{
+								sheet.put("EDITOR", true);
 							}
 							else
 							{
-								count = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID = ?", substatementId);
+								sheet.put("EDITOR", false);
 							}
-							sheet.put("COUNT", count.getInt("COUNT"));
+							sheet.put("COUNT", count);
 						}
 						
 					}

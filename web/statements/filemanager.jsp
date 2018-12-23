@@ -1,8 +1,15 @@
+<%@page import="com.system.utils.ThrowableUtils"%>
+<%@page import="com.system.utils.SystemUtils"%>
+<%@page import="com.system.utils.ServiceMessage"%>
+<%@page import="com.system.SystemProperty"%>
+<%@page import="java.net.URLDecoder"%>
+<%@page import="org.apache.commons.lang3.StringUtils"%>
+<%@page import="org.apache.commons.lang3.ArrayUtils"%>
+<%@page import="org.json.JSONObject"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.io.OutputStream"%>
 <%@page import="java.io.FileInputStream"%>
 <%@page import="java.io.InputStream"%>
-<%@page import="com.system.SystemProperty"%>
 <%@page import="java.io.File"%>
 <%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
 <%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
@@ -11,57 +18,59 @@
 <%@page contentType="text/html; charset=utf-8"%>
 
 <%
-	String folder = request.getParameter("folder");
-	if (folder == null || folder.equals(""))
-	{
-		out.println("folder is null");
-		return;
-	}
+	request.setCharacterEncoding("UTF-8");
 	String action = request.getParameter("action");
 	if(action == null)
 	{
 		action = "up";
 	}
-
-	String path = SystemProperty.PATH + SystemProperty.FILESEPARATOR + folder;
-	if(folder.indexOf(":") != -1)
+	
+	String folder = request.getParameter("folder");
+	if(folder == null)
 	{
-		path = folder;
+		folder = "temp";
 	}
+	else
+	{
+		folder = URLDecoder.decode(folder, "UTF-8");
+	}
+	String path = SystemProperty.PATH + SystemProperty.FILESEPARATOR + folder;
+
+	ServiceMessage message = new ServiceMessage();
 	
 	if(action.equals("up"))
 	{
-		String name = request.getParameter("name");
 		File file = new File(path);
-		if (!file.exists())
+		if(!file.exists())
 		{
 			file.mkdirs();
 		}
         DiskFileItemFactory factory = new DiskFileItemFactory();  
         factory.setSizeThreshold(1 * 1024 * 1024);
 		
-		ServletFileUpload sfu = new ServletFileUpload(factory);
+		ServletFileUpload fileupload = new ServletFileUpload(factory);
 		try
 		{
-			List<?> fileList = sfu.parseRequest(request);
+			List<?> fileList = fileupload.parseRequest(request);
+			String[] filenames = new String[]{};
 			for (int i = 0; i < fileList.size(); i++)
 			{
 				FileItem fileItem = (FileItem) fileList.get(i);
 				if (!fileItem.isFormField())
 				{
 					String fileName = fileItem.getName();
-					if(name != null)
-					{
-						fileName = name;
-					}
-					File f = new File(path, fileName);
+					String name = fileName;
+					filenames = ArrayUtils.add(filenames, name);
+					File f = new File(path, name);
 					fileItem.write(f);
 				}
 			}
+			message.resource("FILENAME", StringUtils.join(filenames, ","));
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Throwable throwable = ThrowableUtils.getThrowable(e);
+			message.message(ServiceMessage.FAILURE, "操作失败（"+throwable.getMessage()+"）");
 		}
 	}
 	else if(action.equals("del"))
@@ -69,15 +78,17 @@
 		String name = request.getParameter("name");
 		if (name == null || name.equals(""))
 		{
-			out.println("file name is null");
-			return;
+			message.message(ServiceMessage.FAILURE, "未选择文件");
 		}
-		File file = new File(path, name);
-		if(file != null)
+		else
 		{
-			if(file.exists())
+			File file = new File(path, name);
+			if(file != null)
 			{
-				file.delete();
+				if(file.exists())
+				{
+					file.delete();
+				}
 			}
 		}
 	}
@@ -110,7 +121,8 @@
     	}
     	catch (Exception e)
     	{
-    		e.printStackTrace();
+			Throwable throwable = ThrowableUtils.getThrowable(e);
+			message.message(ServiceMessage.FAILURE, "操作失败（"+throwable.getMessage()+"）");
     	}
     	finally
     	{
@@ -123,4 +135,5 @@
     	out.clear();
     	out = pageContext.pushBody();
 	}
+	out.println(message);
 %>

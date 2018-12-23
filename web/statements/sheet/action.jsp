@@ -1,3 +1,5 @@
+<%@page import="com.system.datasource.Datum"%>
+<%@page import="com.system.datasource.Data"%>
 <%@page import="com.system.variable.VariableService"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="org.apache.commons.lang3.ArrayUtils"%>
@@ -29,21 +31,21 @@
 			Connection connection = null;
 			try
 			{
-				String id = request.getParameter("id");
-				String value = request.getParameter("value");
-				JSONObject column = new JSONObject( request.getParameter("column") );
-				if(column != null)
+				String tableId = StringUtils.defaultString(request.getParameter("table"), "");
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
+				if(datastructure != null)
 				{
-					JSONObject table = column.getJSONObject("table");
-					if(table != null)
+					String tablename = datastructure.getProperty().optString("table");
+					JSONObject column = new JSONObject( request.getParameter("column") );
+					String key = request.getParameter("key");
+					String value = request.getParameter("value");
+					if(column != null)
 					{
-						String tablename = table.optString("name");
 						String columnname = column.optString("name");
 						
-						DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablename);
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	
-						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, id);
+						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, key);
 						
 						JSONObject editor = column.optJSONObject("editor");
 						if(editor != null)
@@ -63,7 +65,7 @@
 									}
 									else
 									{
-										message.message(ServiceMessage.FAILURE, "SQL构建起中不存在["+callbacks.optString(i)+"]。");
+										message.message(ServiceMessage.FAILURE, "SQL构建器中不存在["+callbacks.optString(i)+"]。");
 									}
 								}
 							}
@@ -98,11 +100,16 @@
 			{
 				String statementId = request.getParameter("statement");
 				String substatementId = request.getParameter("substatement");
-				String name = request.getParameter("name");
-				connection = DataSource.connection(SystemProperty.DATASOURCE);
-				DataSource datasource = new DataSource(connection);	
-				datasource.execute("insert into "+name+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
-				connection.commit();
+				String tableId = StringUtils.defaultString(request.getParameter("table"), "");
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
+				if(datastructure != null)
+				{
+					String tablename = datastructure.getProperty().optString("table");
+					connection = DataSource.connection(SystemProperty.DATASOURCE);
+					DataSource datasource = new DataSource(connection);	
+					datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
+					connection.commit();
+				}
 			}
 			catch(Exception e)
 			{
@@ -123,25 +130,35 @@
 		}
 		else if(mode.equals("3"))
 		{
-			String code = request.getParameter("code");
-			DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
+
+			String tableId = StringUtils.defaultString(request.getParameter("table"), "");
+			DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
 			if(datastructure != null)
 			{
-				Map<String, JSONObject> columnmap = datastructure.getColumns();
-				Set<String> columnnames = columnmap.keySet();
-				columnnames.remove("ID");
-				
-				String columnitem = StringUtils.join(columnnames, ", ");
 				Connection connection = null;
 				try
 				{
+					String tablename = datastructure.getProperty().optString("table");
+					connection = DataSource.connection(SystemProperty.DATASOURCE);
+					DataSource datasource = new DataSource(connection);	
+					
+					Data columns = datasource.find("PRAGMA table_info('"+tablename+"')");
+					
+					String[] columnnames = new String[]{};
+					
+					for(Datum column : columns)
+					{
+						String columnname = column.getString("name");
+						if(!columnname.equals("ID"))
+						{
+							columnnames = ArrayUtils.add(columnnames, columnname);
+						}
+					}
+					String columnitem = StringUtils.join(columnnames, ", ");
+					
 					String[] ids = StringUtils.defaultString(request.getParameter("ids"), "").split(",");
 					if(ids.length > 0)
 					{				
-						connection = DataSource.connection(SystemProperty.DATASOURCE);
-						DataSource datasource = new DataSource(connection);	
-
-						String tablename = datastructure.getProperty().optString("name");
 						for(String id : ids)
 						{
 							datasource.execute("insert into "+tablename+"(ID, "+columnitem+") select '"+SystemUtils.uuid()+"', "+columnitem+" from "+tablename+" where ID = ?", id);
@@ -170,6 +187,7 @@
 			{
 				message.message(ServiceMessage.FAILURE, "表结构配置文件错误。");
 			}
+			
 		}
 		else if(mode.equals("4"))
 		{
@@ -177,16 +195,16 @@
 			try
 			{
 				String[] ids = StringUtils.defaultString(request.getParameter("ids"), "").split(",");
-				String code = request.getParameter("code");
-				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(code);
+				String tableId = StringUtils.defaultString(request.getParameter("table"), "");
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
 				if(datastructure != null)
 				{
 					if(ids.length > 0)
 					{				
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	
-	
-						String tablename = datastructure.getProperty().optString("name");
+
+						String tablename = datastructure.getProperty().optString("table");
 						for(String id : ids)
 						{
 							datasource.execute("delete from "+tablename+" where ID = ?", id);

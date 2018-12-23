@@ -7,8 +7,10 @@ body{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px;}
 td{font-size:13px; color:#333333;}
 
 button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border:none; outline:none; cursor:pointer;}
+button i{margin-right:2px}
 
 input{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; margin:0px; outline:none; padding:0px 3px }
+
 
 textarea{font-family:"微软雅黑"; font-size:13px; color:#333333; box-sizing:border-box; outline:none; padding:3px}
 
@@ -33,6 +35,8 @@ li{padding:0px; margin:0px; list-style-type:none}
 .right{float:right}
 
 .button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 4px}
+
+.readonly{background-color:#fafafa}
 
 #loading-panel{}
 #loading-panel .loading-mask{position:fixed; width:100%; height:100%; top:0px; left:0px;right:0px; bottom:0px; background-color:#333333; filter:alpha(opacity=30); opacity:0.3;}
@@ -66,9 +70,23 @@ li{padding:0px; margin:0px; list-style-type:none}
 #choice-substatement-panel .substatement-panel ul li .substatement-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
 #choice-substatement-panel .substatement-panel ul li .substatement-items p{margin-top:5px; color:#aaaaaa}
 
+#choice-sheet-panel .choice-frame{position:absolute; width:1000px; background-color:#ffffff}
+#choice-sheet-panel .sheet-panel{overflow-y:scroll; box-sizing:border-box;}
+#choice-sheet-panel .sheet-panel .selected-sheet-panel{float:left; width:50%}
+#choice-sheet-panel .sheet-panel .unselect-sheet-panel{float:right; width:50%; background-color:#fafafa; color:#aaaaaa}
+#choice-sheet-panel .sheet-panel .selected-sheet-panel li .sheet-icon i{font-size:40px; color:green}
+#choice-sheet-panel .sheet-panel .unselect-sheet-panel li{background-color:#fafafa; }
+#choice-sheet-panel .sheet-panel ul li{cursor:pointer; box-sizing:border-box; padding:10px; border-bottom:1px solid #f1f1f1}
+#choice-sheet-panel .sheet-panel ul li .sheet-icon{width:55px; float:left; text-align:center}
+#choice-sheet-panel .sheet-panel ul li .sheet-icon i{font-size:40px}
+#choice-sheet-panel .sheet-panel ul li .sheet-items{margin-left:60px;}
+#choice-sheet-panel .sheet-panel ul li .sheet-items h4{font-size:15px; font-weight:400}
+#choice-sheet-panel .sheet-panel ul li .sheet-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
+#choice-sheet-panel .sheet-panel ul li .sheet-items p{margin-top:2px; color:#aaaaaa}
+
 #messages-panel{box-sizing:border-box; display:none; position:absolute; top:0px; left:0px; background-color:#fefbdf; width:100%; padding:30px; color:#333333; filter:alpha(opacity=90); opacity:0.9;}
 
-.grid-toolbar-panel{overflow:hidden;}
+.grid-toolbar-panel{box-sizing:border-box; overflow:hidden;}
 .grid-toolbar-panel .searcher-panel{}
 .grid-toolbar-panel .searcher-panel .search-title{color:#aaaaaa; margin:0px 10px 0px 4px}
 .grid-toolbar-panel .searcher-panel .searcher-keyword-panel{background-color:#ffffff; padding:0px 10px; border-radius:3px; width:300px}
@@ -100,7 +118,7 @@ li{padding:0px; margin:0px; list-style-type:none}
 
 
 .header-panel{background-color:#F7F7F7;}
-.header-panel .header-items{padding:20px}
+.header-panel .header-items{padding:10px}
 .header-panel .header-items .header-icon{float:left}
 .header-panel .header-items .header-icon img{width:80px; height:80px; display:block; margin-right:20px}
 .header-panel .header-items .header-title{float:left}
@@ -122,3 +140,9 @@ li{padding:0px; margin:0px; list-style-type:none}
 .fields-panel .field-panel div .field-button{border-radius:2px; height:30px; flex-grow:0; margin-left:5px}
 .fields-panel .button-panel{text-align:center; margin-top:20px}
 .fields-panel .button-panel button{padding:10px 50px}
+
+
+.tabs{border-bottom:1px solid #dddddd; padding:5px 5px 0px 5px; position:relative; height:40px; box-sizing:border-box}
+.tabs ul{position:absolute; bottom:-1px}
+.tabs ul li{float:left; box-sizing:border-box; height:35px; line-height:35px; padding: 0px 10px; background-color:#eeeeee; font-size:15px; border:1px solid #dddddd; margin-right:2px; cursor:pointer}
+.tabs ul li.selected{border-bottom:none; background-color:#f7f7f7}

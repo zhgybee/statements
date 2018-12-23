@@ -1,3 +1,0 @@
-[
-	{"code":"00001", "sql":"update A set A = B + C where ID = '[url:id]'"}
-]

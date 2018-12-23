@@ -74,7 +74,7 @@ var app = {};
 			content += '			<h5 class="left">父节点选择</h5>';
 			content += '			<div class="right"><input type="text" id="substatement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>';
 			content += '		</div>';
-			content += '		<div class="substatement-panel"><ul>21321321321</ul></div>';
+			content += '		<div class="substatement-panel"><ul></ul></div>';
 			content += '		<div class="choice-button-panel"><button class="save-button">确定</button><button class="close-button">关闭</button></div>';
 			content += '	</div>';
 			content += '</div>';
@@ -122,9 +122,8 @@ var app = {};
 
 					$substatement.on("click", function()
 					{
-						callback([$(this).data("substatement")]);
+						callback($(this).data("substatement"));
 						$choice.hide();
-
 					});
 				});
 			}
@@ -138,13 +137,13 @@ var app = {};
 
 		if($(document).scrollTop() > 0)
 		{
-			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
-			$choiceframe.css("top", $(document).scrollTop() + $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(document).scrollTop() + $(window).height() / 2 - $choiceframe.height() / 2 - 30);
 		}
 		else
 		{
-			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
-			$choiceframe.css("top", $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(window).height() / 2 - $choiceframe.height() / 2 - 30);
 		}
 
 		$choice.find(".save-button").on("click", function()
@@ -156,65 +155,68 @@ var app = {};
 
 	app.toTree = function(items)
 	{
-		var map = {};
-		$.each(items, function(i, item)
+		var data = null;
+		if(items != null)
 		{
-			map[item.ID] = item;
-		});
-
-		var data = items.concat();
-
-		for(var index = 0 ; index < items.length ; index++)
-		{
-			for(var i = 0 ; i < items.length ; i++)
+			var map = {};
+			$.each(items, function(i, item)
 			{
-				var item = items[i];
-				var parentId = item.PARENT_ID;
-				if(parentId != item.ID)
-				{
-					//如果本节点没有被移动过并且本节点存在父节点，本节点才可以移动
-					if(item["ISMOVE"] == null && parentId != "")
-					{
-						var parent = map[parentId];
-						if(parent != null)
-						{
-							//父节点已移动或者父节点是顶级节点 本节点才可以移动
-							if(parent["ISMOVE"] != null || parent.PARENT_ID == "")
-							{
-								parent["ISCHILD"] = true;
-								//当前节点层级为父节点层级上+1
-								var level = parseInt( parent["LEVEL"] || "0" );
-								item["LEVEL"] = level + 1;
-								
-								//父节点索引，移动至父节点后
-								var target = data.indexOf( parent ) + 1;
-								//当前节点索引
-								var current = data.indexOf(item);
+				map[item.ID] = item;
+			});
 
-								if(current > target)
+			data = items.concat();
+
+			for(var index = 0 ; index < items.length ; index++)
+			{
+				for(var i = 0 ; i < items.length ; i++)
+				{
+					var item = items[i];
+					var parentId = item.PARENT_ID;
+					if(parentId != item.ID)
+					{
+						//如果本节点没有被移动过并且本节点存在父节点，本节点才可以移动
+						if(item["ISMOVE"] == null && parentId != "")
+						{
+							var parent = map[parentId];
+							if(parent != null)
+							{
+								//父节点已移动或者父节点是顶级节点 本节点才可以移动
+								if(parent["ISMOVE"] != null || parent.PARENT_ID == "")
 								{
-									//从下往上
-									data.splice(target, 0, data[current]);
-									data.splice(current + 1, 1)
+									parent["ISCHILD"] = true;
+									//当前节点层级为父节点层级上+1
+									var level = parseInt( parent["LEVEL"] || "0" );
+									item["LEVEL"] = level + 1;
+									
+									//父节点索引，移动至父节点后
+									var target = data.indexOf( parent ) + 1;
+									//当前节点索引
+									var current = data.indexOf(item);
+
+									if(current > target)
+									{
+										//从下往上
+										data.splice(target, 0, data[current]);
+										data.splice(current + 1, 1)
+									}
+									else
+									{
+										//从上往下
+										data.splice(target, 0, data[current]);
+										data.splice(current, 1)
+									}
+									item["ISMOVE"] = true;
 								}
-								else
-								{
-									//从上往下
-									data.splice(target, 0, data[current]);
-									data.splice(current, 1)
-								}
+							}
+							else
+							{
 								item["ISMOVE"] = true;
 							}
-						}
-						else
-						{
-							item["ISMOVE"] = true;
 						}
 					}
 				}
 			}
 		}
-
 		return data;
 
 	}
@@ -289,13 +291,13 @@ var app = {};
 
 		if($(document).scrollTop() > 0)
 		{
-			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
-			$choiceframe.css("top", $(document).scrollTop() + $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(document).scrollTop() + $(window).height() / 2 - $choiceframe.height() / 2 - 30);
 		}
 		else
 		{
-			$choiceframe.css("left", $(window).outerWidth(true) / 2 - $choiceframe.width() / 2);
-			$choiceframe.css("top", $(window).outerHeight(true) / 2 - $choiceframe.height() / 2 - 30);
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(window).height() / 2 - $choiceframe.height() / 2 - 30);
 		}
 
 		$choice.find(".save-button").on("click", function()
@@ -304,6 +306,141 @@ var app = {};
 
 		$choice.show();
 	}
+
+
+	app.showSheetPanel = function(version, sheetcodes, callback)
+	{
+		var $choice = $("#choice-sheet-panel");
+		var height = $(window).height() - 100;
+		var sheetheight = height - 100;
+		if($choice.length == 0)
+		{
+			var content = '';
+			content += '<div class="choice-panel" id="choice-sheet-panel" style="display:none">';
+			content += '	<div class="choice-mask"></div>';
+			content += '	<div class="choice-frame" style="height:'+height+'px">';
+			content += '		<div class="choice-toolbar clearfix">';
+			content += '			<h5 class="left">选择表格</h5>';
+			content += '			<div class="right"><input type="text" id="sheet-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>';
+			content += '		</div>';
+			content += '		<div class="sheet-panel clearfix" style="height:'+sheetheight+'px"><ul class="selected-sheet-panel"></ul><ul class="unselect-sheet-panel"></ul></div>';
+			content += '		<div class="choice-button-panel"><button class="save-button">确定</button><button class="close-button">关闭</button></div>';
+			content += '	</div>';
+			content += '</div>';
+			$("body").append(content);
+			$choice = $("#choice-sheet-panel");
+			$choice.find(".close-button").on("click", function()
+			{
+				$choice.hide();
+			});
+		}
+		var $unselectsheets = $choice.find(".unselect-sheet-panel");
+		var $selectedsheets = $choice.find(".selected-sheet-panel");
+		
+		var isdefault = sheetcodes == null || sheetcodes.length == 0;
+
+		$.getJSON(app.getContextPath()+"/dictionary/list/sheet.jsp?version="+version, function(response)
+		{
+			if(response.status == "1")
+			{
+
+				var sheets = response.resource.sheets;
+				$unselectsheets.empty();
+				$selectedsheets.empty();
+				if(sheets != null)
+				{
+					$.each(sheets, function(i, sheet)
+					{
+						var isSelected = sheetcodes.indexOf(sheet.id) != -1;
+						var $sheet = $('<li class="clearfix" />');
+						$sheet.data("sheet", sheet);
+
+						var content = '';
+						content += '<div class="sheet-icon"><i class="fa fa-file-text"></i></div>';
+						content += '<div class="sheet-items">';
+						content += '<h4>'+sheet.name+'</h4>';
+						if(sheet.description != "")
+						{
+							content +='<p>'+sheet.DESCRIPTION+'</p>';
+						}
+						content += '</div>';
+						$sheet.html(content);
+						if(isdefault)
+						{
+							if(sheet.fixed)
+							{
+								$selectedsheets.append($sheet);
+							}
+							else
+							{
+								$unselectsheets.append($sheet);
+							}
+						}
+						else
+						{
+							if(isSelected)
+							{
+								$selectedsheets.append($sheet);
+							}
+							else
+							{
+								$unselectsheets.append($sheet);
+							}
+						}
+					});
+				}
+
+				$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
+
+				$(document).on("click", "#choice-sheet-panel .unselect-sheet-panel li", function()
+				{
+					$(this).appendTo($selectedsheets);					
+					$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
+				});
+				$(document).on("click", "#choice-sheet-panel .selected-sheet-panel li", function()
+				{
+					$(this).appendTo($unselectsheets);
+					$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
+				});
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+
+
+		var $choiceframe = $choice.find(".choice-frame");
+
+		if($(document).scrollTop() > 0)
+		{
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(document).scrollTop() + $(window).height() / 2 - $choiceframe.height() / 2);
+		}
+		else
+		{
+			$choiceframe.css("left", $(window).width() / 2 - $choiceframe.width() / 2);
+			$choiceframe.css("top", $(window).height() / 2 - $choiceframe.height() / 2);
+		}
+
+		$choice.find(".save-button").on("click", function()
+		{
+			var sheetcodes = [];
+			$selectedsheets.find("li").each(function(i, $sheet)
+			{
+				var sheet = $($sheet).data("sheet");
+				sheetcodes.push(sheet.id);
+			});
+			if(callback != null)
+			{
+				callback(sheetcodes);
+			}
+			$choice.hide();
+		});
+
+		$choice.show();
+	}
+
 
 	app.getParameter = function(m)
 	{
@@ -317,6 +454,40 @@ var app = {};
 		var index = pathname.substr(1).indexOf("/");
 		var result = pathname.substr(0,index+1);
 		return result;
+	}
+
+	app.tabs = function($tabs, callback)
+	{
+		$tabs.find("ul li").each
+		(
+			function(i, tab)
+			{
+				$(tab).on("click", function()
+				{
+					var $selected = $(this).parent().find("li.selected");					
+					$selected.removeClass();
+					var target = $selected.attr("target") || "";
+					if(target != "")
+					{
+						$("#"+target).hide();
+					}
+
+					$(this).removeClass();
+					$(this).addClass("selected");
+					target = $(this).attr("target") || "";
+					if(target != "")
+					{
+						$("#"+target).show();
+					}
+					
+					if(callback != null)
+					{
+						callback($(this));
+					}
+					
+				});
+			}
+		);
 	}
 
 	app.setParameter = function(url, name, value) 

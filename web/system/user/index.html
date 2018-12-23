@@ -8,12 +8,6 @@
 	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="../../lib/selection/selection.css"/>
 	<style>
-
-	#user-field-panel input{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:30px;}	
-	#user-field-panel textarea{color: #444444; margin-top:5px; width:100%; margin-right:10px; border:none; border-radius:2px; height:50px}	
-	#user-field-panel .close-button{text-align:center; margin:10px 0px; cursor:pointer}
-	#user-field-panel .close-button i{font-size:15px; color:#aaaaaa}
-
 	#users > li{background-color:#ffffff; margin:10px 0px; border-radius:5px; padding:15px; box-sizing:border-box}
 	#users > li .left {width:50px; text-align:center}
 	#users > li .left img{width:50px; height:50px;}
@@ -33,35 +27,41 @@
 	</style>
 </head>
 
-<body style="margin:0px; background-color:#EEEEEE">
+<body style="background-color:#EEEEEE">
 	
-	<div class="clearfix" style="background-color:#F7F7F7; margin:10px">
+	<div class="clearfix">
 	
-		<div class="clearfix" style="padding:20px">
-			<div class="left" style="font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;">
-				用户<span style="color:#468847">管理</span>
+		<div class="clearfix header-panel">
+			<div class="clearfix header-items">
+				<div class="header-title">
+					<h2>用户<span style="color:#468847">管理</span></h2>
+				</div>
+				<div class="header-buttons">
+					<button id="add-user-button"><i class="fa fa-plus"></i>增加用户</button>
+				</div>
 			</div>
-			<div class="right">
-				<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-plus" style="margin-right:3px;"></i>增加用户</button>
+
+
+			<div id="user-field-panel" class="fields-panel" style="display:none">
+				<div class="close-button">
+					<i class="fa fa-chevron-up"></i>
+				</div>
+				<div class="row-panel clearfix">
+					<div class="left field-panel" style="width:30%;"><label>编号</label><div><input type="text" id="code"/></div></div>
+					<div class="left field-panel" style="width:30%;"><label>姓名</label><div><input type="text" id="name"/></div></div>
+					<div class="left field-panel" style="width:40%;"><label>用户名</label><div><input type="text" id="loginname"/></div></div>
+				</div>
+				<div class="row-panel clearfix">
+					<div class="left field-panel" style="width:30%;"><label>密码</label><div><input type="text" id="password"/></div></div>
+					<div class="left field-panel" style="width:30%;"><label>角色</label><div><input type="text" id="role"/></div></div>
+				</div>
+				<div class="button-panel">
+					<button id="save-button">确定</button>
+				</div>
 			</div>
 		</div>
-		<div id="user-field-panel" style="padding:10px; display:none">
-			<div class="close-button">
-				<i class="fa fa-chevron-up"></i>
-			</div>
-			<div class="clearfix">
-				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">编号<input type="text" id="code"/></div>
-				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">姓名<input type="text" id="name"/></div>
-				<div class="left" style="width:40%; padding-right:10px; box-sizing:border-box;">用户名<input type="text" id="loginname"/></div>
-			</div>
-			<div class="clearfix" style="margin-top:10px">
-				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">密码<input type="text" id="password"/></div>
-				<div class="left" style="width:30%; padding-right:10px; box-sizing:border-box;">角色<input type="text" id="role"/></div>
-			</div>
-			<div style="text-align:center; margin-top:20px">
-				<button id="save-button" style="padding:10px 50px">确定</button>
-			</div>
-		</div>
+
+
 	</div>
 	
 		

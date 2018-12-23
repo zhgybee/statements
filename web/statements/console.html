@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="../style/css/app.css" />
 <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="../lib/uploadify/uploadify.css" />
 <title></title>
 
 <style>
@@ -25,6 +26,8 @@
 #left-panel ul li.substatement .substatement-items h6 .merge-statement-button{margin-left:10px; padding:1px 5px }
 #manager-module .button-panel button{display:inline-block; border:none; text-align: center; width:120px; font-size:20px; height:60px; line-height:60px; color:#ffffff; cursor:pointer; padding: 0px 20px; border-radius:4px}
 #manager-module .button-panel button i{font-size:20px; margin-right:3px}
+.uploadify-button{height:60px; font-size:20px; box-sizing:border-box}
+#import-file-items{display:inline-block;}
 </style>
 
 </head>
@@ -40,7 +43,9 @@
 			<p style="color:#aaaaaa"></p>			
 		</div>
 		<div class="header-buttons">
-			<button style="height:60px; padding:0px 20px; font-size:20px" id="add-user-button"><i class="fa fa-file-text" style="margin-right:6px;"></i>导出表格</button>
+			<button id="create-button" style="display:inline-block;"><i class="fa fa-file-text" style="margin-right:6px;"></i>生成表格</button>
+			<div id="import-button-panel" style="display:none"><button id="import-button"></button></div>
+			<div id="import-file-items" class="tollbar-file-items"></div>
 		</div>
 	</div>
 </div>
@@ -95,16 +100,96 @@
 
 <script type="text/javascript" src="../lib/jquery.js"></script>
 <script type="text/javascript" src="../lib/app.js"></script>
+<script type="text/javascript" src="../lib/uploadify/jquery.uploadify.js"></script>
 
 <script type="text/javascript">
 
+var CURRENTSUBSTATEMENT = null
+
 $(function()
 {
+
+	$("#create-button").on("click", function()
+	{
+		window.location.href = 'export.jsp?id=0001';
+	});
+
 	var statementId = app.getParameter("id");
 	initialise(statementId, "");
 	$("#statement-manager-button").on("click", function()
 	{
 		showManagerPanel();
+	});
+
+	$("#import-button").uploadify(
+	{
+		'buttonText':'<i class="fa fa-upload" style="margin-right:6px;"></i>导入数据', 
+		'uploader':'filemanager.jsp?action=up&folder='+encodeURIComponent('temp/'+statementId), 
+		'swf':'../lib/uploadify/uploadify.swf',
+		'cancelImg':'../lib/uploadify/uploadify-cancel.png', 
+		'queueID':'import-file-items', 
+		'width':'140',
+		'height':'60',
+		'cover':false,
+		'removeCompleted':false,
+		'multi':false,
+		'onUploadSuccess':function(file, message, response)
+		{
+			message = $.parseJSON(message);
+			if(message.status == 1)
+			{
+				var filename = message.resource.FILENAME;
+				var $deletebutton = $("#import-file-items .uploadify-queue-item[id='"+file.id+"'] .cancel a");  
+				$deletebutton.on("click", {filename:filename}, function(event) 
+				{  
+					app.showLoading();
+					$.ajax
+					({
+						type:'POST',
+						async:false,
+						url:'filemanager.jsp?action=del',
+						data:{folder:encodeURIComponent('temp/'+statementId), name:event.data.filename},
+						success:function(message) 
+						{
+							app.hideLoading();
+							var message = $.parseJSON(message);
+							if(message.status == 1)
+							{
+							}
+							else
+							{
+								app.message(message.messages);
+							}
+						}
+					});
+				});  
+
+				if(CURRENTSUBSTATEMENT != null)
+				{
+					$.post("import.jsp?statement="+statementId+"&substatement="+CURRENTSUBSTATEMENT+"&folder="+encodeURIComponent('temp/'+statementId)+"&name="+filename, function(message)
+					{
+						if(message.status == 1)
+						{
+							app.message("数据导入成功");
+						}
+						else
+						{
+							app.message(message.messages);
+						}
+					}, "json");
+				}
+				else
+				{
+					app.message("请选择分项目");
+				}
+
+
+			}
+			else
+			{
+				app.message(message.messages);
+			}
+		}
 	});
 })
 
@@ -139,14 +224,13 @@ function initialise(statementId)
 				$("#statement-all-button").on("click", function()
 				{
 					showEditorPanel();
+					$("#import-button-panel").css("display", "none");
 					getSheets(1, statementId, '');
 				});
 
 
 			}
 			substatements = app.toTree(substatements);
-
-			console.log(substatements);
 			
 			$("#statement-title h2").html(statement.TITLE);
 			$("#statement-title p").html(statement.DESCRIPTION);
@@ -184,12 +268,15 @@ function initialise(statementId)
 			{
 				showEditorPanel();
 				var substatementId = $(this).closest("li").attr("code");
+				CURRENTSUBSTATEMENT = substatementId;
+				$("#import-button-panel").css("display", "inline-block");
 				getSheets(0, statementId, substatementId)
 			});
 			$("li.substatement h6 .merge-statement-button").on("click", function()
 			{
 				showEditorPanel();
 				var substatementId = $(this).closest("li").attr("code");
+				$("#import-button-panel").css("display", "none");
 				getSheets(1, statementId, substatementId)
 			});
 
@@ -210,12 +297,13 @@ function getSheets(ismerge, statementId, substatementId)
 		if(response.status == "1")
 		{
 			var sheets = response.resource.sheets;
-			var children = response.resource.children;
+			var children = response.resource.children.join(",");
 			var $statements = $("#sheets-panel ul");
 			content = "";
 			$.each(sheets, function(i, sheet)
 			{
-				content += '<li code="'+sheet.ID+'">';
+				var transactor = sheet.ID == null ? "" : sheet.ID;
+				content += '<li code="'+transactor+'">';
 				content += '<div>';
 				if(ismerge == "1")
 				{
@@ -225,7 +313,7 @@ function getSheets(ismerge, statementId, substatementId)
 					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
 					content += '		<hr/>';
 					content += '		<div class="buttons">';
-					content += '		<a class="button" href="editor.html?merge=1&code='+sheet.SHEETCODE+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
+					content += '		<a class="button" href="sheet/sheet.html?merge=1&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
 					content += '		</div>';
 					content += '	</div>';
 				}
@@ -242,8 +330,15 @@ function getSheets(ismerge, statementId, substatementId)
 					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
 					content += '		<hr/>';
 					content += '		<div class="buttons">';
-					content += '		<a class="button" href="editor.html?merge=0&code='+sheet.SHEETCODE+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">编辑</a>';
-					content += '		<a class="button">导入</a>';
+					if(sheet.EDITOR)
+					{
+						content += '		<a class="button" href="sheet/sheet.html?merge=0&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">编辑</a>';
+					}
+					else
+					{
+						content += '		<a class="button" href="sheet/sheet.html?merge=1&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
+					}
+
 					content += '		<a class="button red">删除</a>';
 					content += '		</div>';
 					content += '	</div>';

@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<title></title>
+<link rel="stylesheet" href="../../style/css/app.css" />
+<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="../../lib/datagrid/datagrid.css" />
+<link rel="stylesheet" href="../../lib/selection/selection.css"/>
+<style>
+html, body{height:100%}
+</style>
+</head>
+<body>
+
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+		<button style="height:35px; width:80px" id="add-button"><i class="fa fa-plus"></i>增加</button>
+		<button style="height:35px; width:80px" id="copy-button"><i class="fa fa-random"></i>复制</button>
+		<button style="height:35px; width:80px" class="red" id="delete-button"><i class="fa fa-times"></i>删除</button>
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div class="datagrid" id="editor-panel" style="overflow:hidden; width:100%"></div>
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="../../lib/datagrid/datagrid.js"></script>
+<script type="text/javascript" src="../../lib/calendar/jquery.calendar.js"></script>
+<script type="text/javascript" src="../../lib/selection/selection.js"></script>
+<script type="text/javascript" src="datastructure.js"></script>
+
+<script type="text/javascript">
+
+	var tableId = app.getParameter("table");
+	var statementId = app.getParameter("statement");
+	var substatementId = app.getParameter("substatement");
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children");
+	
+	$(function()
+	{ 
+		resize();
+		$(window).resize( function(){resize()} ); 
+
+		initialize()
+	});
+
+	function initialize()
+	{
+
+		var parameters = {};
+		parameters["table"] = tableId;
+		parameters["statement"] = statementId;
+		parameters["substatement"] = substatementId;
+		parameters["merge"] = merge;
+		parameters["children"] = children;
+
+		app.showLoading();
+		$.getJSON("datastructure.jsp", parameters, function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				var datasource = response.resource.datasource;
+				var frozenheader = response.resource.frozenheader;
+				var activeheader = response.resource.activeheader;
+				var frozencolumns = response.resource.frozencolumns;
+				var activecolumns = response.resource.activecolumns;
+				var groups = response.resource.groups;
+
+
+				$(".datagrid").datagrid(
+				{
+					datasource:
+					{
+						url:app.getContextPath()+"/statements/sheet/dataset.jsp", 
+						args:parameters
+					},
+					editor:
+					{
+						update:app.getContextPath()+"/statements/sheet/action.jsp?mode=1",
+						copy:app.getContextPath()+"/statements/sheet/action.jsp?mode=3",
+						del:app.getContextPath()+"/statements/sheet/action.jsp?mode=4"
+					},
+					table:tableId,
+					groups:groups,
+					frozenheader:frozenheader,
+					activeheader:activeheader,
+					frozencolumns:frozencolumns,
+					activecolumns:activecolumns
+				});
+
+
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+
+		});
+
+		$("#add-button").off().on("click", function()
+		{
+			app.showLoading();
+			$.getJSON(app.getContextPath()+"/statements/sheet/action.jsp?mode=2&statement="+statementId+"&substatement="+substatementId+"&table="+tableId, function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					$(".datagrid").datagrid("url");
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+		});
+
+		$("#copy-button").off().on("click", function()
+		{
+			var rows = $(".datagrid").datagrid("getSelections");
+			var ids = [];
+			$.each(rows, function(i, row)
+			{
+				ids.push(row.ID);
+			});
+			if(ids.length > 0)
+			{
+				$(".datagrid").datagrid("copy", ids);
+			}
+		});
+
+		$("#delete-button").off().on("click", function()
+		{
+			var rows = $(".datagrid").datagrid("getSelections");
+			var ids = [];
+			$.each(rows, function(i, row)
+			{
+				ids.push(row.ID);
+			});
+			if(ids.length > 0)
+			{
+				$(".datagrid").datagrid("del", ids);
+			}
+		});
+	}
+
+	function resize()
+	{
+		$("#editor-panel").height( $(window).outerHeight() - $("#toolbar-panel").outerHeight(true) - 1 );
+	}
+	
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+[
+	{
+		"id":"S00", "table":"T01", "title":"试算平衡表", "datasource":"D00000",
+		"columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"XM", "editor":{}, "frozen":true, "style":{"width":"500px"}},
+			{"name":"XMBH", "editor":{}, "frozen":true, "style":{"width":"100px"}},
+			{"name":"QMSDQ", "editor":{}, "style":{"width":"100px"}},
+			{"name":"QMJF", "style":{"width":"100px"}},
+			{"name":"QMDF", "style":{"width":"100px"}},
+			{"name":"QMSDH", "style":{"width":"100px"}},
+			{"name":"QCSDQ", "editor":{}, "style":{"width":"100px"}},
+			{"name":"QCJF", "style":{"width":"100px"}},
+			{"name":"QCDF", "style":{"width":"100px"}},
+			{"name":"QCSDH", "style":{"width":"100px"}}
+		],
+		"header":
+		[
+			[
+				{"title":"序号", "frozen":true, "style":{"width":"50px"}},
+				{"title":"", "frozen":true, "style":{"width":"70px"}},
+				{"title":"项目", "frozen":true, "style":{"width":"500px", "height":"92px", "line-height":"92px"}},
+				{"title":"科目编号", "frozen":true, "style":{"width":"100px"}},
+				{"title":"期末数/本期累计数", "colspan":"4", "style":{"width":"400px"}},
+				{"title":"期初数/上期累计数", "colspan":"4", "style":{"width":"400px"}}
+			],
+			[
+				{"title":"审定前", "rowspan":"2", "style":{"width":"100px"}},
+				{"title":"审计调整", "colspan":"2", "style":{"width":"200px"}},
+				{"title":"审定后", "rowspan":"2", "style":{"width":"100px"}},
+				{"title":"审定前", "rowspan":"2", "style":{"width":"100px"}},
+				{"title":"审计调整", "colspan":"2", "style":{"width":"200px"}},
+				{"title":"审定后", "rowspan":"2", "style":{"width":"100px"}}
+			],
+			[
+				{"title":"借方", "style":{"width":"100px"}},
+				{"title":"贷方", "style":{"width":"100px"}},
+				{"title":"借方", "style":{"width":"100px"}},
+				{"title":"贷方", "style":{"width":"100px"}}
+			]
+		],
+		"groups":
+		[
+			{"type":"footer", "rule":{"column":"XM", "value":"*"}, "sum":"['QMSDQ']", "title":[{"column":"XM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
+		]
+	},
+
+
+	{
+		"id":"S0001", "table":"T02", "title":"期末数审计调整分录",
+		"columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"JFKM", "editor":{}, "style":{"width":"300px"}},
+			{"name":"JFEJKM", "editor":{}, "style":{"width":"200px"}},
+			{"name":"JFJE", "editor":{}, "style":{"width":"100px"}},
+			{"name":"DFKM", "editor":{}, "style":{"width":"300px"}},
+			{"name":"DFEJKM", "editor":{}, "style":{"width":"200px"}},
+			{"name":"DFJE", "editor":{}, "style":{"width":"100px"}},
+			{"name":"SXSM", "editor":{}, "style":{"width":"200px"}}
+
+		],
+		"header":
+		[
+			[
+				{"title":"序号", "frozen":true, "style":{"width":"50px"}},
+				{"title":"", "frozen":true, "style":{"width":"70px", "height":"61px"}},
+				{"title":"借方", "colspan":"3", "style":{"width":"600px"}},
+				{"title":"贷方", "colspan":"3", "style":{"width":"600px"}},
+				{"title":"调整事项说明", "rowspan":"2", "style":{"width":"200px"}}
+			],
+			[
+				{"title":"科目", "style":{"width":"300px"}},
+				{"title":"二级科目", "style":{"width":"200px"}},
+				{"title":"金额", "style":{"width":"100px"}},
+				{"title":"科目", "style":{"width":"300px"}},
+				{"title":"二级科目", "style":{"width":"200px"}},
+				{"title":"金额", "style":{"width":"100px"}}
+			]
+		],
+		"groups":
+		[
+			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE']", "title":[{"column":"JFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
+		]
+	},
+
+	{
+		"id":"S0002", "table":"T03", "title":"期初数审计调整分录",
+		"columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"JFKM", "editor":{}, "style":{"width":"300px"}},
+			{"name":"JFEJKM", "editor":{}, "style":{"width":"200px"}},
+			{"name":"JFJE", "editor":{}, "style":{"width":"100px"}},
+			{"name":"DFKM", "editor":{}, "style":{"width":"300px"}},
+			{"name":"DFEJKM", "editor":{}, "style":{"width":"200px"}},
+			{"name":"DFJE", "editor":{}, "style":{"width":"100px"}},
+			{"name":"SXSM", "editor":{}, "style":{"width":"200px"}}
+
+		],
+		"header":
+		[
+			[
+				{"title":"序号", "frozen":true, "style":{"width":"50px"}},
+				{"title":"", "frozen":true, "style":{"width":"70px", "height":"61px"}},
+				{"title":"借方", "colspan":"3", "style":{"width":"600px"}},
+				{"title":"贷方", "colspan":"3", "style":{"width":"600px"}},
+				{"title":"调整事项说明", "rowspan":"2", "style":{"width":"200px"}}
+			],
+			[
+				{"title":"科目", "style":{"width":"300px"}},
+				{"title":"二级科目", "style":{"width":"200px"}},
+				{"title":"金额", "style":{"width":"100px"}},
+				{"title":"科目", "style":{"width":"300px"}},
+				{"title":"二级科目", "style":{"width":"200px"}},
+				{"title":"金额", "style":{"width":"100px"}}
+			]
+		],
+		"groups":
+		[
+			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE']", "title":[{"column":"JFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
+		]
+	},
+
+
+	{
+		"id":"S0003", "table":"A", "title":"子表一", "columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"A", "editor":{}, "title":"项目"},
+			{"name":"B", "title":"科目编号"},
+			{"name":"C", "title":"审定前(期末数/本期累计数)"},
+			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
+			{"name":"CREATE_DATE", "title":"创建日期"}
+		]
+	},
+	{
+		"id":"S0004", "table":"B", "title":"子表二", "columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"A", "title":"项目"},
+			{"name":"B", "title":"科目编号"},
+			{"name":"C", "title":"审定前(期末数/本期累计数)"},
+			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
+			{"name":"CREATE_DATE", "title":"创建日期"}
+		]
+	},
+	{
+		"id":"S0005", "table":"C", "title":"子表三", "columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"A", "title":"项目"},
+			{"name":"B", "title":"科目编号"},
+			{"name":"C", "title":"审定前(期末数/本期累计数)"},
+			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
+			{"name":"CREATE_DATE", "title":"创建日期"}
+		]
+	},
+	{
+		"id":"S0006", "table":"D", "title":"子表四", "columns":
+		[
+			{"frozen":true, "type":"index", "style":{"width":"50px"}},
+			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "style":{"width":"70px"}},
+			{"name":"A", "title":"项目"},
+			{"name":"B", "title":"科目编号"},
+			{"name":"C", "title":"审定前(期末数/本期累计数)"},
+			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
+			{"name":"CREATE_DATE", "title":"创建日期"}
+		]
+	}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

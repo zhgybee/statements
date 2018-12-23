@@ -63,7 +63,7 @@
 				<i class="fa fa-chevron-up"></i>
 			</div>
 			<div class="row-panel clearfix">
-				<div class="left field-panel" style="width:75%;"><label>标题</label><div style="flex-grow:1"><input type="text" id="title"/><button class="field-button" style="width:100px">选择表格</button></div></div>
+				<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title"/><input type="hidden" id="sheets"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
 				<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson"/></div></div>
 			</div>
 			<div class="row-panel clearfix">
@@ -105,6 +105,20 @@
 		{
 			
 			initialise(0, app.pagesize);
+
+			$("#sheet-button").on("click", function()
+			{
+				var codes = [];
+				var sheets = $("#sheets").val();
+				if(sheets != "")
+				{
+					codes = sheets.split(",");
+				}
+				app.showSheetPanel("0001", codes, function(sheetcodes)
+				{
+					$("#sheets").val(sheetcodes.join(","));
+				})
+			});
 			
 
 			$("#save-button").on("click", function()
@@ -118,6 +132,7 @@
 				parameter["accountant"] = $("#accountant").val();
 				parameter["accountantofficer"] = $("#accountantofficer").val();
 				parameter["description"] = $("#description").val();
+				parameter["sheets"] = $("#sheets").val();
 				$.post("do.jsp?mode=2", parameter, function(response)
 				{
 					app.hideLoading();
@@ -259,7 +274,7 @@
 							content += '<div class="clearfix row-panel">';
 							content += '	<div class="left field-panel" style="width:40%;"><label>标题</label><div><input type="text" id="subtitle"/></div></div>';
 							content += '	<div class="left field-panel" style="width:30%;"><label>制表人</label><div><input type="text" id="manageruser"/></div></div>';
-							content += '	<div class="left field-panel" style="width:30%;"><label>父表格</label><div><input type="text" onclick="app.showSubStatementTreePanel(1)"/></div></div>';
+							content += '	<div class="left field-panel" style="width:30%;"><label>父表格</label><div><input type="hidden" id="parent"/><input type="text" id="parentname" class="readonly" readonly="readonly"/></div></div>';
 							content += '</div>';
 
 							content += '<div class="clearfix row-panel">';
@@ -281,6 +296,16 @@
 								}
 							);
 
+							$panel.find("#parentname").on("click", function()
+							{
+								var statement = $(this).closest("li[code]").attr("code");
+								app.showSubStatementTreePanel(statement, function(substatement)
+								{
+									$("#parentname").val(substatement.TITLE);
+									$("#parent").val(substatement.ID);
+								})
+							});
+
 							$panel.find(".close-button").on("click", function()
 							{
 								$("#substatement-panel").slideUp('fast');
@@ -291,6 +316,7 @@
 								var parameters = {};
 								parameters.title = $("#subtitle").val();
 								parameters.manageruser = $("#manageruser").val();
+								parameters.parent = $("#parent").val();
 								parameters.statement = $(this).closest("li[code]").attr("code");
 								parameters.description = $("#remark").val();
 								

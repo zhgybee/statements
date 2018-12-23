@@ -1,8 +1,7 @@
 function DataStructureUtils()
 {
-	this.getField = function(options)
+	this.getFields = function(options)
 	{
-		var $container = $('<span/>');
 		var column = options.column;
 		var name = column.name;
 		var dictionary = column.dictionary;
@@ -11,20 +10,17 @@ function DataStructureUtils()
 		var cache = column.cache || true;
 		var multiple = column.editor.multiple || false;
 								
-		var fieldname = column.table.name+"_"+name;
 		var $field= null;
 
 		if(type == "text")
 		{
-			$field = $('<input name="'+fieldname+'" class="field text-field"/>');
+			$field = $('<input name="'+name+'" class="field text-field"/>');
 			$field.val(value);
-			$container.append($field);
 		}
 		else if(type == "date")
 		{
-			$field = $('<input name="'+fieldname+'" class="field date-field"/>');
+			$field = $('<input name="'+name+'" class="field date-field"/>');
 			$field.val(value);
-			$container.append($field);
 		}
 		else if(type == "tree")
 		{
@@ -37,10 +33,9 @@ function DataStructureUtils()
 		{
 			if(dictionary != null)
 			{
-				$field = $('<input name="'+fieldname+'" class="field select-field"/>');
-				$field.val(value.key);
-				$field.attr("title", value.value);
-				$container.append($field);
+				$field = $('<input name="'+name+'" class="field select-field"/>');
+				$field.val(value.value);
+				$field.attr("title", value.description);
 				$field.selection
 				(
 					{
@@ -52,31 +47,7 @@ function DataStructureUtils()
 			}
 		}
 
-		return $container;
-	}
-
-	this.columns = function(datagridcolumns)
-	{
-		var frozencolumns = [];
-		var columns = [];
-
-		for(var i = 0 ; i < datagridcolumns.length ; i++)
-		{
-			var column = datagridcolumns[i];
-			if( column.datagrid != null && column.datagrid.frozen )
-			{
-				frozencolumns.push(column);
-			}
-			else
-			{
-				columns.push(column);
-			}
-		}
-		var datagridcolumns = {};
-		datagridcolumns.frozencolumns = frozencolumns;
-		datagridcolumns.columns = columns;
-
-		return datagridcolumns;
+		return $field;
 	}
 
 	this.getDictionary = function(url, value, cache)

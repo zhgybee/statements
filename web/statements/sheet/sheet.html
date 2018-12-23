@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<title></title>
+<link rel="stylesheet" href="../../style/css/app.css" />
+<style>
+html, body{height:100%}
+</style>
+</head>
+<body>
+
+<div class="tabs"><ul class="clearfix"></ul></div>
+
+<div id="editor-frame" style="position:relative;">
+	<iframe frameborder="0" style="width:100%; height:100%; border:none; position:absolute; top:0px; left:0px;"></iframe>
+</div>
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+
+<script type="text/javascript">
+
+	var sheetId = app.getParameter("sheet");
+	var statementId = app.getParameter("statement");
+	var substatementId = app.getParameter("substatement");
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children");
+	
+	$(function()
+	{ 
+		resize();
+		$(window).resize( function(){resize()} ); 
+
+		app.showLoading();
+		$.getJSON("sheet.jsp?mode=1", {sheet:sheetId}, function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				tables = response.resource.tables;
+				if(tables != null)
+				{
+					var $selection = null;
+					$.each(tables, function(i, table)
+					{
+						var $tab = $('<li>'+table.name+'</li>');
+						$tab.data("table", table);
+						$(".tabs ul").append($tab);
+						if(i == 0)
+						{
+							$selection = $tab;
+						}
+					});
+					app.tabs($(".tabs"), function($tab)
+					{
+						var table = $tab.data("table");
+						if(table.url != null)
+						{
+							$("#editor-frame iframe").attr("src", table.url+"&merge="+merge+"&table="+table.id+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
+						}
+						else
+						{
+							$("#editor-frame iframe").attr("src", "editor.html?merge="+merge+"&table="+table.id+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
+						}
+					});
+
+					$selection.click();
+
+				}
+				else
+				{
+					app.message("表格配置文件错误");
+				}
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+
+	});
+
+	function resize()
+	{
+		$("#editor-frame").height( $(window).outerHeight() - $(".tabs").outerHeight(true));
+	}
+	
+</script>
+
+</body>
+</html>

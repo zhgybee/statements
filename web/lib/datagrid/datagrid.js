@@ -5,327 +5,97 @@
 		var builder = function($container)
 		{
 			var options = $container.data("options");
-			var fixedcolumns = options.fixedcolumns;
-			var frozencolumns = options.frozencolumns;
-			var columns = options.columns;
+			var frozenheader = options.frozenheader;
+			var activeheader = options.activeheader;
 			
 			var result = "";
-			if(frozencolumns != null || fixedcolumns != null)
+			if(frozenheader != null)
 			{
-				var frozenheader = '';
-				frozenheader = '<div class="datagrid-frozen-header-container">';
-				frozenheader += '<table>';
-				frozenheader += '<tbody>';
-				frozenheader += '<tr>';
-				
-				for(var i = 0 ; i < fixedcolumns.length ; i++)
+				var frozencontent = '';
+				frozencontent = '<div class="datagrid-frozen-header-container">';
+				frozencontent += '<table>';
+				frozencontent += '<tbody>';
+
+
+				for(var i = 0 ; i < frozenheader.length ; i++)
 				{
-					var column = fixedcolumns[i];
-					frozenheader += '<td>';
-					if(column.checkbox)
+					var row = frozenheader[i];
+
+					frozencontent += '<tr>';
+					for(var j = 0 ; j < row.length ; j++)
 					{
-						frozenheader += '<div class="selection selection-item"><i class="fa fa-square-o"></i></div>';
+						var column = row[j];
+						var title = column.title || "";
+						var type = column.type;
+						var colspan = column.colspan;
+						var rowspan = column.rowspan;
+
+						frozencontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
+						frozencontent += '<div style="'+getStyle(column.style)+'">'+title+'</div>';
+						frozencontent += '</td>';
 					}
-					else if(column.index)
-					{
-						frozenheader += '<div class="datagrid-index">序号</div>';
-					}
-					else if(column.button != null)
-					{
-						frozenheader += '<div style="'+getHeaderStyle(column)+'"></div>';
-					}
-					frozenheader += '</td>';
+
+					frozencontent += '</tr>';
 				}
 
-				for(var i = 0 ; i < frozencolumns.length ; i++)
-				{
-					var column = frozencolumns[i];
-					var title = column.title;
-					var resizable = column.datagrid.resizable || true;
-					var sortable = column.datagrid.sortable || true;
 
-					frozenheader += '<td>';
-					if(column.button != null)
-					{
-						frozenheader += '<div style="'+getHeaderStyle(column)+'"></div>';
-					}
-					else
-					{
-						var classname = [];
-						if(resizable)
-						{
-							classname.push("resizable");
-						}
-						if(sortable)
-						{
-							classname.push("sortable");
-						}
-						frozenheader += '<div id="'+column.id+'" class="'+classname.join(" ")+'" style="'+getHeaderStyle(column)+'">'+column.title+'</div>';
-					}
-					frozenheader += '</td>';
-				}
 
-				frozenheader += '</tr>';
-				frozenheader += '</tbody>';
-				frozenheader += '</table>';
-				frozenheader += '</div>';
+				frozencontent += '</tbody>';
+				frozencontent += '</table>';
+				frozencontent += '</div>';
 
-				result += frozenheader;
+				result += frozencontent;
 			}
-
-			if(columns != null)
+			if(activeheader != null)
 			{
-				var header = '';
-				header += '<div class="datagrid-header-container">';
-				header += '<div class="inner">';
-				header += '<table>';
-				header += '<tbody>';
-				header += '<tr>';
-				for(var i = 0 ; i < columns.length ; i++)
+				var activecontent = '';
+				activecontent += '<div class="datagrid-header-container">';
+				activecontent += '<div class="inner">';
+				activecontent += '<table>';
+				activecontent += '<tbody>';
+
+				for(var i = 0 ; i < activeheader.length ; i++)
 				{
-					var column = columns[i];
-					var title = column.title;
-					var resizable = column.datagrid.resizable || true;
-					var sortable = column.datagrid.sortable || true;
-
-					header += '<td>';
-					if(column.button != null)
+					var row = activeheader[i];
+					activecontent += '<tr>';
+					for(var j = 0 ; j < row.length ; j++)
 					{
-						header += '<div style="'+getHeaderStyle(column)+'"></div>';
-					}
-					else
-					{
-						var classname = [];
-						if(resizable)
-						{
-							classname.push("resizable");
-						}
-						if(sortable)
-						{
-							classname.push("sortable");
-						}
+						var column = row[j];
+						var title = column.title || "";
+						var type = column.type;
+						var colspan = column.colspan;
+						var rowspan = column.rowspan;
 
-						header += '<div id="'+column.id+'" class="'+classname.join(" ")+'" style="'+getHeaderStyle(column)+'">'+column.title+'</div>';
+						activecontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
+						activecontent += '<div style="'+getStyle(column.style)+'">'+title+'</div>';
+						activecontent += '</td>';
 					}
-					header += '</td>';
+					activecontent += '</tr>';
 				}
 
-				header += '</tr>';
-				header += '</tbody>';
-				header += '</table>';
-				header += '</div>';
-				header += '</div>';
 
-				result += header;
+				activecontent += '</tbody>';
+				activecontent += '</table>';
+				activecontent += '</div>';
+				activecontent += '</div>';
+
+				result += activecontent;
 			}
 			result += '<div style="clear:both"></div>';
 			result += '<div class="datagrid-frozen-body-container"><div class="inner"><table><tbody></tbody></table></div></div>';
 			result += '<div class="datagrid-body-container"><table><tbody></tbody></table></div>';
 			result += '<div class="resizable-line"></div>';
 			$container.html(result);
-
-			
-			if(frozencolumns != null)
-			{
-				for(var i = 0 ; i < frozencolumns.length ; i++)
-				{
-					var column = frozencolumns[i];
-					$("#"+column.id).data("column", column);
-				}
-			}
-			if(columns != null)
-			{
-				for(var i = 0 ; i < columns.length ; i++)
-				{
-					var column = columns[i];
-					$("#"+column.id).data("column", column);
-				}
-			}
-
-			$container.find(".selection-item").on("click", function(event)
-			{
-				var classname = $(this).find("i").attr("class");
-				if(classname == "fa fa-square-o")
-				{
-					$(this).find("i").attr("class", "fa fa-check-square-o");
-				}
-				else
-				{
-					$(this).find("i").attr("class", "fa fa-square-o");
-				}
-
-				var $rows = $container.find(".datagrid-frozen-body-container tbody tr");
-				$.each($rows, function(i, row)
-				{
-					selected($(row));
-				});
-				event.stopPropagation();
-			});
-
-
-			$container.find(".sortable").on("click", {container:$container}, sort);
-
-			$container.find(".resizable").on("mousemove", function(event)
-			{
-				if(!options.isresizable)
-				{
-					var position = $(this).position();
-					var width = $(this).outerWidth(true);
-					
-					if(position.left + width - event.pageX < 5)
-					{
-						$("body").css("cursor", "e-resize");
-					}
-					else
-					{
-						$("body").css("cursor", "");
-					}
-				}
-			});
-
-			$container.find(".resizable").on("mouseout", function(event)
-			{
-				if(!options.isresizable)
-				{
-					$("body").css("cursor", "");
-				}
-			});
-
-			$container.find(".resizable").on("mousedown", function(event)
-			{
-				if(!options.isresizable)
-				{
-					var position = $(this).position();
-					var width = $(this).outerWidth(true);
-					if(position.left + width - event.pageX < 5)
-					{
-						var resizableline = $container.find(".resizable-line");
-						resizableline.css("height", $container.height()+"px");
-						resizableline.css("left", position.left + width+"px");
-						resizableline.css("top", position.top+"px");
-						resizableline.data("target", $(this));
-						resizableline.data("start", position.left + width);
-						resizableline.show();
-						options.isresizable = true;
-						$container.addClass("unselect");
-					}
-				}
-			});
-
-			$(window).on("mousemove", function(event)
-			{
-				if(options.isresizable)
-				{
-					var resizableline = $container.find(".resizable-line");
-					resizableline.css("left", event.clientX+"px");
-					event.stopPropagation();
-				}
-			});
-
-			$(window).on("mouseup", function(event)
-			{
-				if(options.isresizable)
-				{
-					options.isresizable = false;
-					$("body").css("cursor", "");
-					var resizableline = $container.find(".resizable-line");
-					resizableline.hide();
-
-					var target = resizableline.data("target");
-					var start = resizableline.data("start");
-					var width = target.width() + event.pageX - start;
-					target.width(width);
-
-					var columnid = target.attr("id");
-					var $targets = $container.find("."+columnid+"");
-					$targets.css("width", width+"px");
-					
-					var isFrozen = false;
-					for(var i = 0 ; i < frozencolumns.length ; i++)
-					{
-						var column = frozencolumns[i];
-						if(column.id == columnid)
-						{
-							setBodyStyle(column, "width", width+"px");
-							isFrozen = true;
-						}
-					}
-					for(var i = 0 ; i < columns.length ; i++)
-					{
-						var column = columns[i];
-						if(column.id == columnid)
-						{
-							setBodyStyle(column, "width", width+"px");
-						}
-					}
-					if(isFrozen)
-					{
-						var width = $container.width() - $container.find(".datagrid-frozen-header-container").outerWidth(true);
-						$container.find(".datagrid-header-container").width(width);
-						$container.find(".datagrid-body-container").width(width);
-					}
-
-					event.stopPropagation();
-				}
-			});
 		}
-		
-		var sort = function(event)
-		{
-			var $container = event.data.container;
 
-			var $sortcontainer = $(this).find("span");
-			if($sortcontainer.size() == 0)
-			{
-				$sortcontainer = $('<span class=""><i class=""></i></span>');
-				$(this).append($sortcontainer);
-			}
-			
-
-			var sort = $sortcontainer.attr("class");
-			if(sort == "")
-			{
-				$sortcontainer.find('i').attr("class", "fa fa-angle-down");
-				$sortcontainer.removeClass("none").addClass("desc");
-			}
-			else if(sort == "desc")
-			{
-				$sortcontainer.find('i').attr("class", "fa fa-angle-up");
-				$sortcontainer.removeClass("desc").addClass("asc");
-			}
-			else if(sort == "asc")
-			{
-				$sortcontainer.remove();
-				$sortcontainer.removeClass("asc").addClass("none");
-			}
-
-			var items = [];
-			$(".sortable span").each
-			(
-				function(i)
-				{
-					var classname = $(this).attr("class");
-					if(classname != "")
-					{
-						var column = $(this).parent().data("column");
-						var item = {table:column.table.name, column:column.name, type:classname};
-						items.push(item);
-					}
-				}
-			);
-
-			$container.data("options").datasource.args.sort = JSON.stringify(items);
-			flush( $container );
-		}
 
 		var flush = function($container)
 		{
 			var options = $container.data("options");
-			var fixedcolumns = options.fixedcolumns;
 			var frozencolumns = options.frozencolumns;
-			var columns = options.columns;
-			
-			var structureutils = new DataStructureUtils();
+			var activecolumns = options.activecolumns;
+
+
 
 			app.showLoading();
 			$.post(options.datasource.url, options.datasource.args, function(response)
@@ -333,155 +103,42 @@
 				app.hideLoading();
 				if(response.status == "1")
 				{
-					var rows = response.resource.rows;
+					var dataset = response.resource.dataset;
+
 					var $frozenbody = $container.find(".datagrid-frozen-body-container tbody");
-					var $body = $container.find(".datagrid-body-container tbody");
+					var $activebody = $container.find(".datagrid-body-container tbody");
 
 					$frozenbody.empty();
-					$body.empty();	
-					
-					for(var i = 0 ; i < rows.length ; i++)
+					$activebody.empty();	
+					if(dataset != null)
 					{
-						var row = rows[i];
-						var $frozentr = $("<tr/>");
-						var $tr = $("<tr/>");
-
-						if(frozencolumns != null || fixedcolumns != null)
+						for(var i = 0 ; i < dataset.length ; i++)
 						{
-							for(var j = 0 ; j < fixedcolumns.length ; j++)
-							{
-								var $cell = $("<td/>");
-								var column = fixedcolumns[j];
-								var id = column.id;if(column.checkbox)
-								{
-									$cell.append('<div class="'+id+' selection"><i class="fa fa-square-o"></i></div>');
-								}
-								else if(column.index)
-								{
-									$cell.append('<div class="'+id+' datagrid-index">'+(i+1)+'</div>');
-								}
-								else if(column.button != null)
-								{
-									$cell.append('<div class="'+id+'" style="'+getBodyStyle(column)+'">'+createButton(column.button)+'</div>');
-								}
-								$frozentr.append($cell);
-							}
-							for(var j = 0 ; j < frozencolumns.length ; j++)
-							{
-								var column = frozencolumns[j];
-								var id = column.id;
-								var cache = column.cache;
-								var value = row[id];
-								if(column.dictionary != null && column.dictionary != "")
-								{
-									if(cache == null)
-									{
-										cache = true;
-									}
-									value = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, value, cache);
-								}
+							var row = dataset[i];
+							var $frozenrow = null;
+							var $activerow = null;
 
-								var $cell = $("<td/>");
-								if(column.button != null)
-								{
-									$cell.append('<div class="'+id+'" style="'+getBodyStyle(column)+'">'+createButton(column.button)+'</div>');
-								}
-								else
-								{
-									if(column.editor != null)
-									{
-										var $editor = $('<span class="editor">'+((value == null || value == "") ? "&nbsp;" : value)+'</span>');
-										$editor.data("key", row[id]);
-										$editor.data("value", value);
-										var $cellcontent = $('<div class="'+id+'" style="'+getBodyStyle(column)+'"/>');
-										$cellcontent.append($editor);
-										$cell.append($cellcontent);
-									}
-									else
-									{
-										$cell.append('<div class="'+id+'" style="cursor:not-allowed; '+getBodyStyle(column)+'">'+((value == null || value == "") ? "&nbsp;" : value)+'</div>');
-									}
-								}
-								$frozentr.append($cell);
+							if(frozencolumns != null)
+							{
+								$frozenrow = createTableRow(i, frozencolumns, row);
+								$frozenbody.append($frozenrow);
 							}
-							$frozenbody.append($frozentr);
-							$frozentr.data("row", row);
 
+							if(activecolumns != null)
+							{
+								$activerow = createTableRow(i, activecolumns, row);
+								$activebody.append($activerow);
+							}
+
+							$frozenrow.data("contact", $activerow);
+							$activerow.data("contact", $frozenrow);
+
+							$frozenrow.on("mouseout", mouseoutRow);
+							$frozenrow.on("mouseover", mouseoverRow);
+							$activerow.on("mouseout", mouseoutRow);
+							$activerow.on("mouseover", mouseoverRow);
 						}
-						if(columns != null)
-						{
-							for(var j = 0 ; j < columns.length ; j++)
-							{
-								var column = columns[j];
-								var id = column.id;
-								var cache = column.cache;
-								var value = row[id];
-
-								if(options.backgrounds)
-								{
-									$.each(options.backgrounds, function(i)
-									{
-										if(this.name == id && this.value == value)
-										{
-											$frozentr.css("background-color", this.color);
-											$tr.css("background-color", this.color);
-
-											$frozentr.data("background-color", this.color)
-											$tr.data("background-color", this.color)
-										}
-									});
-								}
-								if(column.dictionary != null && column.dictionary != "")
-								{
-									if(cache == null)
-									{
-										cache = true;
-									}
-									value = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, value, cache);
-								}
-
-								var $cell = $("<td/>");
-								if(column.button)
-								{
-									$cell.append('<div class="'+id+'" style="'+getBodyStyle(column)+'">'+createButton(column.button)+'</div>');
-								}
-								else
-								{
-									if(column.editor != null)
-									{
-										var $editor = $('<span class="editor">'+((value == null || value == "") ? "&nbsp;" : value)+'</span>');
-										$editor.data("key", row[id]);
-										$editor.data("value", value);
-										var $cellcontent = $('<div class="'+id+'" style="'+getBodyStyle(column)+'"/>');
-										$cellcontent.append($editor);
-										$cell.append($cellcontent);
-									}
-									else
-									{
-										$cell.append('<div class="'+id+'" style="cursor:not-allowed; '+getBodyStyle(column)+'">'+((value == null || value == "") ? "&nbsp;" : value)+'</div>');
-									}
-								}
-								$tr.append($cell);
-							}
-							$body.append($tr);
-							$tr.data("row", row);
-						}
-						$frozentr.data("contact", $tr);
-						$tr.data("contact", $frozentr);
-
-
-						$frozentr.on("click", clickrow);
-						$frozentr.on("mouseout", mouseoutRow);
-						$frozentr.on("mouseover", mouseoverRow);
-
-						$tr.on("click", clickrow);
-						$tr.on("mouseout", mouseoutRow);
-						$tr.on("mouseover", mouseoverRow);
-
-
 					}
-
-
 
 					var groups = options.groups;
 					if(groups != null && groups.length > 0)
@@ -516,13 +173,8 @@
 									
 									var content = "";
 									content += '<tr class="group-item" style="'+getStyle(style)+'">';
-									if(frozencolumns != null || fixedcolumns != null)
+									if(frozencolumns != null)
 									{
-										for(var j = 0 ; j < fixedcolumns.length ; j++)
-										{
-											var column = fixedcolumns[j];
-											content += groupcell(column, $grouprows, group);
-										}
 										for(var j = 0 ; j < frozencolumns.length ; j++)
 										{
 											var column = frozencolumns[j];
@@ -542,11 +194,11 @@
 									
 									content = "";
 									content += '<tr class="group-item" style="'+getStyle(style)+'">';
-									if(columns != null)
+									if(activecolumns != null)
 									{
-										for(var j = 0 ; j < columns.length ; j++)
+										for(var j = 0 ; j < activecolumns.length ; j++)
 										{
-											var column = columns[j];
+											var column = activecolumns[j];
 											content += groupcell(column, $grouprows, group);
 										}
 									}
@@ -560,6 +212,9 @@
 									{
 										$($rows.get(index)).before(content);
 									}
+
+									
+
 								}
 
 							}
@@ -568,82 +223,117 @@
 
 					}
 
-
-					if(fixedcolumns != null)
+					$container.find(".copy-button").on("click", function(event)
 					{
-						onButtonEvent(fixedcolumns, $frozenbody);
-					}
-					if(frozencolumns != null)
-					{
-						onButtonEvent(frozencolumns, $frozenbody);
-					}
-					if(columns != null)
-					{
-						onButtonEvent(columns, $body);
-					}
-
-
-					$frozenbody.find("tr td div span.editor").on("click", {"container":$container}, onEditor);
-					$body.find("tr td div span.editor").on("click", {"container":$container}, onEditor);
-					$(window).off("mousedown.editor").on("mousedown.editor", {"container":$container}, function(event)
-					{
-						if($(event.target).closest(".field").size() == 0)
-						{
-							var $fields = $container.find(".field:visible");
-							if($fields.size() > 0)
-							{
-								$fields.each(function(i)
-								{
-									var $field = $(this);
-									var $cell = $field.parent();
-									var row = $field.data("row");
-									var column = $field.data("column");
-									var key = $field.data("key");
-									if(row != null && column != null)
-									{
-										var value = $field.val();
-
-										var $joint = $field.data("joint");
-										if($joint != null)
-										{
-											value = $joint.val();
-										}
-										
-										if(key != value)
-										{
-											app.showLoading();
-											$.post(options.editor.action, {column:JSON.stringify(column), id:row.ID, value:value}, function(response)
-											{
-												app.hideLoading();				
-												if(response.status == "1")
-												{
-													//$cell.html($field.val() == "" ? "&nbsp;" : $field.val());
-													//$cell.append('<i class="cell-success" title="保存成功">');
-													flush( $container );
-												}
-												else 
-												{
-													$cell.append('<i class="cell-error" title="'+response.messages+'">');
-												}
-											}, "json");
-										}
-										else
-										{
-											$cell.html($field.data("value"));
-										}
-
-									}
-								});
-							}
-						}
+						var id = $(this).closest("tr").data("row").ID;
+						copy($container, [id]);
+						event.stopPropagation();
 					});
+
+					$container.find(".delete-button").on("click", function(event)
+					{
+						var id = $(this).closest("tr").data("row").ID;
+						del($container, [id]);
+						event.stopPropagation();
+					});
+
+					setHeight($container);
 				}
 				else 
 				{
 					app.message(response.messages);
 				}
-			}, "json");
+			}, "json")
 		}
+
+		var createTableRow = function(index, columns, row)
+		{
+			var structureutils = new DataStructureUtils();
+			var $row = $("<tr/>");
+			for(var i = 0 ; i < columns.length ; i++)
+			{
+				var column = columns[i];
+				var name = column.name || "";
+				var value = row[name];
+				var type = column.type;
+
+				var description = value;
+				if(column.dictionary != null && column.dictionary != "")
+				{
+					description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
+				}
+
+				var $cell = $('<td/>');
+				if(type == "index")
+				{
+					$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+(index + 1)+'</div>');
+					$cell.on("click", clickrow);
+				}
+				else if(type == "button")
+				{
+					if(column.buttons != null)
+					{
+						$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+createButton(column.buttons)+'</div>');
+					}
+				}
+				else
+				{
+					$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+((description == null || description == "") ? "&nbsp;" : description)+'</div>');
+					if(column.editor != null)
+					{
+						$cell.on("click", {column:column, key:row.ID, value:value, description:description}, onEditor);
+						$cell.css("cursor", "text");
+					}
+					else
+					{
+						$cell.css("cursor", "not-allowed");
+					}
+				}
+				$row.append($cell);
+			}
+			$row.data("row", row);
+
+			return $row;
+		}
+
+		var copy = function($container, ids)
+		{
+			var options = $container.data("options");
+			var tableId = options.table;
+			app.showLoading();
+			$.getJSON(options.editor.copy, {ids:ids.join(","), table:tableId}, function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					flush( $container );
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+		}
+
+		var del = function($container, ids)
+		{
+			var options = $container.data("options");
+			var tableId = options.table;
+			app.showLoading();
+			$.getJSON(options.editor.del, {ids:ids.join(","), table:tableId}, function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					flush( $container );
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+		}
+
 
 		var groupcell = function(column, $grouprows, grouprule)
 		{
@@ -651,10 +341,10 @@
 			var sumcolumns = grouprule["sum"];
 			if(sumcolumns != null)
 			{
-				if(sumcolumns.indexOf(column.id) != -1)
+				if(sumcolumns.indexOf(column.name) != -1)
 				{
 
-					cell += '<td>'+sum($grouprows, column.id)+'</td>';
+					cell += '<td>'+sum($grouprows, column.name)+'</td>';
 				}
 			}
 
@@ -663,7 +353,7 @@
 			{
 				$.each(titlecolumns, function(i, titlecolumn)
 				{
-					if(titlecolumn["column"] == column.id)
+					if(titlecolumn["column"] == column.name)
 					{
 						cell += '<td>'+titlecolumn["text"]+'</td>';
 					}
@@ -693,7 +383,7 @@
 
 		var clickrow = function(event)
 		{
-			selected($(this));
+			selected($(this).closest("tr"));
 		}
 
 		var selected = function($tr)
@@ -701,20 +391,14 @@
 			if(!isSelected($tr))
 			{
 				$tr.attr("isselect", "1");
-				$tr.find(".selection i").removeClass("fa-square-o");
-				$tr.find(".selection i").addClass("fa-check-square-o");
 				$tr.css("background-color", "#fff4e3");
 
 				$tr.data("contact").attr("isselect", "1");
-				$tr.data("contact").find(".selection i").removeClass("fa-square-o");
-				$tr.data("contact").find(".selection i").addClass("fa-check-square-o");
 				$tr.data("contact").css("background-color", "#fff4e3");
 			}
 			else
 			{
 				$tr.attr("isselect", "0");
-				$tr.find(".selection i").removeClass("fa-check-square-o");
-				$tr.find(".selection i").addClass("fa-square-o");
 				if($tr.data("background-color") != null)
 				{
 					$tr.css("background-color", $tr.data("background-color"));
@@ -725,8 +409,6 @@
 				}
 
 				$tr.data("contact").attr("isselect", "0");
-				$tr.data("contact").find(".selection i").removeClass("fa-check-square-o");
-				$tr.data("contact").find(".selection i").addClass("fa-square-o");
 				if($tr.data("contact").data("background-color") != null)
 				{
 					$tr.data("contact").css("background-color", $tr.data("contact").data("background-color"));
@@ -755,58 +437,6 @@
 			return false;
 		}
 
-		var onEditor = function(event)
-		{
-			var $editor = $(this);
-
-			var $row = $editor.parents("tr");
-			var row = $row.data("row");
-
-			var $container = event.data.container;
-			var $cell = $editor.parents("div");
-			var id = $cell.attr("class");
-			var header = $container.find("#"+id)
-			var column = header.data("column");
-			
-
-			var key = $editor.data("key");
-			var value = $editor.data("value");
-			if(key == value)
-			{
-				column.editor.value = value;
-			}
-			else
-			{
-				column.editor.value = {key:key, value:value};
-			}
-
-			var structureutils = new DataStructureUtils();
-			$editor.html(structureutils.getField({column:column}).find(".field"));
-
-			var $field = $editor.find(".field:visible");
-
-			$field.data("key", key);
-			$field.data("value", value);
-			$field.data("row", row);
-			$field.data("column", column);
-
-
-			$field.on("click", function(event){event.stopPropagation()});
-			$field.on("dblclick", function(event){event.stopPropagation()});
-
-			if( $field.is(".select-field") )
-			{
-				$field.click();
-				$field.focus();
-			}
-			else
-			{
-				$field.focus();
-			}
-
-			event.stopPropagation();
-		}
-
 		var changeDictionary = function(column, value, $container)
 		{
 			if(value == "")
@@ -827,79 +457,16 @@
 			var result = "";
 			for(var i = 0 ; i < buttons.length ; i++)
 			{
-				var button = buttons[i];
-				result += '<span class="control-button '+button.id+'-button" style="'+button.style+'">'+button.title+'</span>';
+				if(buttons[i] == "copy")
+				{
+					result += '<span class="control-button copy-button" style="background-color:#4ab6ef">复制</span>';
+				}
+				else if(buttons[i] == "delete")
+				{
+					result += '<span class="control-button delete-button" style="background-color:#cd5050">删除</span>';
+				}
 			}
 			return result;
-		}		
-		
-		var onButtonEvent = function(columns, $parent)
-		{
-			for(var j = 0 ; j < columns.length ; j++)
-			{
-				var column = columns[j];
-				if(column.button != null)
-				{
-					var buttons = column.button;
-					for(var i = 0 ; i < buttons.length ; i++)
-					{
-						var button = buttons[i];
-						$parent.find("."+button.id+"-button").on("click", button.onclick);
-					}
-				}
-			}
-		}
-
-		var getBodyStyle = function(column)
-		{
-			if(column.datagrid.style != null)
-			{
-				if(column.datagrid.style.body != null)
-				{
-					return getStyle(column.datagrid.style.body);
-				}
-				else
-				{
-					return getStyle(column.datagrid.style);
-				}
-			}
-			return "";
-		}
-
-		var getHeaderStyle = function(column)
-		{
-			if(column.datagrid.style != null)
-			{
-				if(column.datagrid.style.header != null)
-				{
-					return getStyle(column.datagrid.style.header);
-				}
-				else
-				{
-					return getStyle(column.datagrid.style);
-				}
-			}
-			return "";
-		}
-
-		var setBodyStyle = function(column, key, value)
-		{
-			if(column.datagrid.style == null)
-			{
-				column.datagrid.style = {};
-				column.datagrid.style[key] = value;
-			}
-			else
-			{
-				if(column.datagrid.style.body != null)
-				{
-					column.datagrid.style.body[key] = value;
-				}
-				else
-				{
-					column.datagrid.style[key] = value;
-				}
-			}
 		}
 
 		var getStyle = function(items)
@@ -970,15 +537,126 @@
 			$container.find(".datagrid-frozen-body-container").height(height);
 		}
 
+		var setHeight = function($container)
+		{
+			$.each($container.find(".datagrid-frozen-body-container tr"), function()
+			{
+				var $contact = $(this).data("contact");
+				if($contact != null)
+				{
+					var height = Math.max($(this).height(), $contact.height());
+					var height = Math.max(height, 30);
+					$(this).height(height);
+					$contact.height(height);
+				}
+			});
+		}
+
+
+		var onEditor = function(event)
+		{
+			var column = event.data.column;
+			var key = event.data.key;
+			var value = event.data.value;
+			var description = event.data.description;
+			var $editor = $(this).find("div");
+
+			if(value == description)
+			{
+				column.editor.value = value;
+			}
+			else
+			{
+				column.editor.value = {value:value, description:description};
+			}
+
+			var structureutils = new DataStructureUtils();
+			$editor.html( structureutils.getFields({column:column}) );
+
+			var $field = $editor.find(".field:visible");
+
+			$field.data("key", key);
+			$field.data("value", value);
+			$field.data("column", column);
+
+			$field.height($editor.closest("td").height() - 1);
+
+			$field.on("click", function(event){event.stopPropagation()});
+			$field.on("dblclick", function(event){event.stopPropagation()});
+
+			if( $field.is(".select-field") )
+			{
+				$field.click();
+				$field.focus();
+			}
+			else
+			{
+				$field.focus();
+			}
+
+			event.stopPropagation();
+		}
 		var initialize = function($container)
 		{
 			var options = $container.data("options");
+			var tableId = options.table;
 
 			//构建表格
 			builder($container)
 			
 			//读取数据并填充表格
 			flush( $container );
+
+
+			$(window).off("mousedown.editor").on("mousedown.editor", {"container":$container}, function(event)
+			{
+				if($(event.target).closest(".field").size() == 0)
+				{
+					var $fields = $container.find(".field:visible");
+					if($fields.size() > 0)
+					{
+						$fields.each(function(i)
+						{
+							var $field = $(this);
+							var $cell = $field.parent();
+							var key = $field.data("key");
+							var source = $field.data("value");
+							var column = $field.data("column");
+							if(column != null)
+							{
+								var value = $field.val();
+								var $joint = $field.data("joint");
+								if($joint != null)
+								{
+									value = $joint.val();
+								}
+								
+								if(source != value)
+								{
+									app.showLoading();
+									$.post(options.editor.update, {column:JSON.stringify(column), key:key, value:value, table:tableId}, function(response)
+									{
+										app.hideLoading();				
+										if(response.status == "1")
+										{
+											flush( $container );
+										}
+										else 
+										{
+											app.message(response.messages);
+										}
+									}, "json");
+								}
+								else
+								{
+									$cell.html($field.data("value"));
+								}
+
+							}
+						});
+					}
+				}
+			});
 
 			$container.find(".datagrid-body-container").scroll
 			( 
@@ -991,6 +669,8 @@
 
 			$(window).resize( function(){resize($container)} ); 
 			resize($container);
+
+
 		}
 
 
@@ -1077,6 +757,14 @@
 					rows.push($tr.data("row"));
 				}
 				return rows;
+			},
+			copy: function($obj, ids)
+			{
+				copy($obj, ids);
+			},
+			del: function($obj, ids)
+			{
+				del($obj, ids);
 			}
 		};
 

@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<style>
+		table{background-color:#ffffff; table-layout:fixed; border-collapse:collapse; border-spacing:0px; border-top:1px solid #c5d0dc}
+		th, td{font-weight:400; box-sizing:border-box; text-align:center; font-size:15px; overflow:hidden; border-bottom:1px dotted #cccccc; border-right:1px dotted #cccccc}
+		th{background-color:#f1f5fa; height:30px; line-height:30px}
+		td{padding:5px}
+
+		td.editor{background-color:#e1ffff}
+		td.editor input{width:80px; border:none; text-align:center; border-radius:3px; outline:none;}
+		
+	</style>
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div id="T01">
+	<table>
+		<thead>
+			<tr>
+				<th rowspan="3" style="width:360px">项目</th>
+				<th rowspan="3" style="width:80px">科目编号</th>
+				<th colspan="4" style="width:400px">期末数/本期累计数</th>
+				<th colspan="4" style="width:400px">期初数/上期累计数</th>
+			</tr>
+			<tr>
+				<th rowspan="2" style="width:100px">审定前</th>
+				<th colspan="2">审计调整</th>
+				<th rowspan="2" style="width:100px">审定后</th>
+				<th rowspan="2" style="width:100px">审定前</th>
+				<th colspan="2">审计调整</th>
+				<th rowspan="2" style="width:100px">审定后</th>
+			</tr>
+			<tr>
+				<th style="width:100px">借方</th>
+				<th style="width:100px">贷方</th>
+				<th style="width:100px">借方</th>
+				<th style="width:100px">贷方</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</div>
+
+<div id="T02" style="display:none">
+	<table>
+		<thead>
+			<tr>
+				<th rowspan="2" style="width:60px">类别</th>
+				<th rowspan="2" style="width:60px">序号</th>
+				<th colspan="2" style="width:160px">科目编号</th>
+				<th colspan="3" style="width:500px">借方</th>
+				<th colspan="3" style="width:500px">贷方</th>
+				<th rowspan="2" style="width:200px">调整事项说明</th>
+			</tr>
+			<tr>
+				<th style="width:80px">借方</th>
+				<th style="width:80px">贷方</th>
+				<th style="width:200px">科目</th>
+				<th style="width:200px">二级科目</th>
+				<th style="width:100px">金额</th>
+				<th style="width:200px">科目</th>
+				<th style="width:200px">二级科目</th>
+				<th style="width:100px">金额</th>
+			</tr>
+			<tr>
+				<th colspan="4">合计</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+
+
+<div id="T03" style="display:none">
+	<table>
+		<thead>
+			<tr>
+				<th rowspan="2" style="width:60px">类别</th>
+				<th rowspan="2" style="width:60px">序号</th>
+				<th colspan="2" style="width:160px">科目编号</th>
+				<th colspan="3" style="width:500px">借方</th>
+				<th colspan="3" style="width:500px">贷方</th>
+				<th rowspan="2" style="width:200px">调整事项说明</th>
+			</tr>
+			<tr>
+				<th style="width:80px">借方</th>
+				<th style="width:80px">贷方</th>
+				<th style="width:200px">科目</th>
+				<th style="width:200px">二级科目</th>
+				<th style="width:100px">金额</th>
+				<th style="width:200px">科目</th>
+				<th style="width:200px">二级科目</th>
+				<th style="width:100px">金额</th>
+			</tr>
+			<tr>
+				<th colspan="4">合计</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript">
+
+		$(function()
+		{
+			var tableId = app.getParameter("table");
+			var statementId = app.getParameter("statement");
+			var substatementId = app.getParameter("substatement");
+			var merge = app.getParameter("merge") || 0;
+			var children = app.getParameter("children");
+
+			app.showLoading();
+			$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					var items = response.resource.items;
+
+					var content = "";
+					$.each(items, function(i, item)
+					{
+						var editor = "";
+						if(item["editor"])
+						{
+							editor = 'editor';
+						}
+						content += '<tr>';
+						content += '<td style="text-align:left">'+item["name"]+'</td>';
+						content += '<td>'+item["code"]+'</td>';
+						content += '<td class="'+editor+'"></td>';
+						content += '<td class="readonly"></td>';
+						content += '<td class="readonly"></td>';
+						content += '<td class="readonly"></td>';
+						content += '<td class="'+editor+'"></td>';
+						content += '<td class="readonly"></td>';
+						content += '<td class="readonly"></td>';
+						content += '<td class="readonly"></td>';
+						content += '</tr>';
+					});
+					var $t01 = $("#T01 tbody");
+					$t01.html(content);
+
+					
+					$(".editor").on("click", function()
+					{
+						var value = $(this).text();
+						var $field = $('<input />');
+						$field.val(value);
+						$(this).html($field);
+						$field.focus();
+					});
+
+
+					$(window).on("mousedown.editor", function(event)
+					{
+						if($(event.target).closest(".editor input").size() == 0)
+						{
+							var $fields = $(".editor input:visible");
+							if($fields.size() > 0)
+							{
+								$fields.each(function(i)
+								{
+									var $field = $(this);
+									var $cell = $field.parent();
+									$cell.html($field.val());
+								});
+							}
+						}	
+					});
+
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+		});
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

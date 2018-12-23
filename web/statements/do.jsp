@@ -61,7 +61,8 @@
 			String enddate = StringUtils.defaultString(request.getParameter("enddate"), "");
 			String accountant = StringUtils.defaultString(request.getParameter("accountant"), "");
 			String accountantofficer = StringUtils.defaultString(request.getParameter("accountantofficer"), "");			
-			String description = StringUtils.defaultString(request.getParameter("description"), "");
+			String description = StringUtils.defaultString(request.getParameter("description"), "");			
+			String sheets = StringUtils.defaultString(request.getParameter("sheets"), "");
 						
 			Connection connection = null;
 			try
@@ -71,6 +72,16 @@
 				String id = SystemUtils.uuid();
 				datasource.execute("INSERT INTO T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 						id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
+				
+				if(!sheets.equals(""))
+				{
+					String[] sheetcodes = sheets.split(",");
+					for(String sheetcode : sheetcodes)
+					{
+						datasource.execute("INSERT INTO T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheetcode);
+					}
+				}
+				
 				connection.commit();
 			}
 			catch(Exception e)
@@ -94,6 +105,7 @@
 		{
 			String title = StringUtils.defaultString(request.getParameter("title"), "");
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
+			String parentId = StringUtils.defaultString(request.getParameter("parent"), "");
 			String manageruser = StringUtils.defaultString(request.getParameter("manageruser"), "");
 			String description = StringUtils.defaultString(request.getParameter("description"), "");
 
@@ -102,13 +114,20 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("INSERT INTO T_SUBSTATEMENT(ID, TITLE, DESCRIPTION, STATEMENT_ID, MANAGER_USER_ID, STATUS, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-					SystemUtils.uuid(), title, description, statementId, manageruser, "01");
+				String id = SystemUtils.uuid();
+				datasource.execute("INSERT INTO T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+						id, statementId, parentId, manageruser, title, "001", description, sessionuser.getId());
+
+				Data sheets = datasource.find("select * from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 				
+				for(Datum sheet : sheets)
+				{
+					datasource.execute("INSERT INTO T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							SystemUtils.uuid(), statementId, id, sheet.getString("SHEET_ID"), manageruser, "001", "", sessionuser.getId());
+				}
 				
 				Datum statement = datasource.get("select * from T_STATEMENT where ID = ?", statementId);
-				
-				JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "statements" + SystemProperty.FILESEPARATOR + "initialise.json"), "UTF-8"));
+				JSONObject types = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "startor.json"), "UTF-8"));
 				JSONArray sqlmaps = types.getJSONArray("default");
 				if(sqlmaps != null)
 				{
