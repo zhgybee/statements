@@ -6,7 +6,7 @@
 .datagrid table td{padding:0px; margin:0px; border-style:dotted; border-width:0px 1px 1px 0px; border-color:#cccccc; box-sizing:border-box;}
 
 
-.datagrid table td div input{border-width:0px 0px 1px 0px; border-style:solid; border-color:#f1f1f1; width:100%; text-align:center; background-color:#f1f1f1; display:table-cell}
+.datagrid table td div input{border-width:0px 0px 1px 0px; border-style:solid; border-color:#fafafa; width:100%; text-align:center; background-color:#fafafa; display:table-cell}
 
 
 .datagrid .datagrid-header-container, .datagrid-frozen-header-container{float:left; overflow:hidden}

@@ -3,31 +3,35 @@
 	{
 		"sheets":
 		[
-			{"id":"0", "name":"试算平衡表", "description":"", "fixed":true, "tables":
+			{"id":"0", "sort":"0", "name":"试算平衡表", "description":"", "manager":"1", "fixed":true, "tables":
 			[
-				{"name":"试算平衡表", "url":"0.html?mode=1"},
-				{"id":"S0001", "name":"期末数审计调整分录"},
-				{"id":"S0002", "name":"期初数审计调整分录"}
+				{"name":"试算平衡表", "url":"0.html?mode=1", "system":true},
+				{"id":"S0001", "name":"期末数审计调整分录", "system":true},
+				{"id":"S0002", "name":"期初数审计调整分录", "system":true}
 			]},
-			{"id":"1", "name":"货币资金", "description":"", "tables":
+			{"id":"1", "sort":"1", "name":"合并利润表", "description":"", "manager":"1", "fixed":true, "tables":
 			[
-				{"id":"S0003", "name":"子表一", "item":"00003"},
-				{"id":"S0004", "name":"子表二", "item":"00004"}
+				{"name":"合并利润表", "url":"1.html?mode=1", "system":true}
 			]},
-			{"id":"2", "name":"存货", "description":"", "tables":
+			{"id":"2", "sort":"2", "name":"货币资金", "description":"", "tables":
 			[
-				{"id":"S0005", "name":"子表三", "item":"00005"},
-				{"id":"S0006", "name":"子表四", "item":"00006"}
+				{"id":"S0003", "name":"子表一", "items":["00003"]},
+				{"id":"S0004", "name":"子表二", "items":["00004"]}
+			]},
+			{"id":"3", "sort":"3", "name":"存货", "description":"", "tables":
+			[
+				{"id":"S0005", "name":"子表三", "items":["00005"]},
+				{"id":"S0006", "name":"子表四", "items":["00006"]}
 			]}
 		],
 		"items":
 		[
-			{"id":"00001", "type":"fixed", "code":"", "name":"资产项目", "value":""},
-			{"id":"00002", "type":"fixed", "code":"", "name":"流动资产", "value":""},
-			{"id":"00003", "code":"K1001", "editor":true, "name":"库存现金"},
-			{"id":"00004", "code":"K1002", "editor":true, "name":"银行存款"},
-			{"id":"00005", "code":"K1003", "editor":true, "name":"应收账款"},
-			{"id":"00006", "code":"K1004", "editor":true, "name":"存货净额"}
+			{"id":"00001", "type":"fixed", "code":"", "name":"资产项目", "value":"[K1001] + [K1002] + [K1003] + [K1004]", "style":{"text-align":"center", "font-weight":"600"}},
+			{"id":"00002", "type":"fixed", "code":"", "name":"流动资产", "value":"[K1001] + [K1002] + [K1003]"},
+			{"id":"00003", "code":"K1001", "editor":true, "name":"库存现金", "mode":"1"},
+			{"id":"00004", "code":"K1002", "editor":true, "name":"银行存款", "mode":"1"},
+			{"id":"00005", "code":"K1003", "editor":true, "name":"应收账款", "mode":"1"},
+			{"id":"00006", "code":"K1004", "editor":true, "name":"存货净额", "mode":"1"}
 		]
 	}
 }

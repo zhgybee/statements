@@ -11,20 +11,19 @@
 
 #selector-panel .item-panel
 {
-	background-color:#ffffff;
+	background-color:#fafafa;
 }
 
 #selector-panel .item-panel li
 {
-	padding:5px;
-	font-size:12px;
+	padding:10px;
 	color:#666666;
 }
 
 
 #selector-panel .list-container
 {
-	margin:3px;
+	margin:0px;
 	overflow:auto;
 	max-height:250px;
 

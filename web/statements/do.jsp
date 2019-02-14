@@ -34,6 +34,9 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				datasource.execute("delete from T_STATEMENT where id = ?", statementId);
+				datasource.execute("delete from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
+				datasource.execute("delete from T_STATEMENT_TRANSACTOR where STATEMENT_ID = ?", statementId);
+				datasource.execute("delete from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 				connection.commit();
 			}
 			catch(Exception e)
@@ -55,6 +58,8 @@
 		}
 		else if(mode.equals("2"))
 		{
+			/* 添加修改项目 */
+			String id = StringUtils.defaultString(request.getParameter("id"), "");
 			String title = StringUtils.defaultString(request.getParameter("title"), "");
 			String legalperson = StringUtils.defaultString(request.getParameter("legalperson"), "");
 			String startdate = StringUtils.defaultString(request.getParameter("startdate"), "");
@@ -69,16 +74,28 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				String id = SystemUtils.uuid();
-				datasource.execute("INSERT INTO T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-						id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
-				
+
+				if(id.equals(""))
+				{
+					id = SystemUtils.uuid();
+					datasource.execute("insert into T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
+				}
+				else
+				{
+					datasource.execute("update T_STATEMENT set CODE = ?, TITLE = ?, STARTDATE = ?, ENDDATE = ?, LEGALPERSON = ?, ACCOUNTANT = ?, ACCOUNTANTOFFICER = ?, STATUS = ?, DESCRIPTION = ? where ID = ?", 
+							"", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, id);
+					datasource.execute("delete from T_STATEMENT_SHEET where STATEMENT_ID = ?", id);
+				}
+
 				if(!sheets.equals(""))
 				{
-					String[] sheetcodes = sheets.split(",");
-					for(String sheetcode : sheetcodes)
+					JSONArray array = new JSONArray(sheets);
+					
+					for(int i = 0 ; i < array.length() ; i++)
 					{
-						datasource.execute("INSERT INTO T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheetcode);
+						JSONObject sheet = array.optJSONObject(i);
+						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheet.optString("id"));
 					}
 				}
 				
@@ -103,6 +120,7 @@
 		}
 		else if(mode.equals("3"))
 		{
+			/* 增加一个子项目 */
 			String title = StringUtils.defaultString(request.getParameter("title"), "");
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String parentId = StringUtils.defaultString(request.getParameter("parent"), "");
@@ -115,14 +133,14 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				String id = SystemUtils.uuid();
-				datasource.execute("INSERT INTO T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+				datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 						id, statementId, parentId, manageruser, title, "001", description, sessionuser.getId());
 
 				Data sheets = datasource.find("select * from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 				
 				for(Datum sheet : sheets)
 				{
-					datasource.execute("INSERT INTO T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 							SystemUtils.uuid(), statementId, id, sheet.getString("SHEET_ID"), manageruser, "001", "", sessionuser.getId());
 				}
 				
@@ -170,6 +188,7 @@
 		}
 		else if(mode.equals("4"))
 		{
+			/* 删除一个子项目 */
 			String substatementId = request.getParameter("substatement");
 			Connection connection = null;
 			try
@@ -177,6 +196,7 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
+				datasource.execute("delete from T_STATEMENT_TRANSACTOR where SUBSTATEMENT_ID = ?", substatementId);
 				connection.commit();
 			}
 			catch(Exception e)
@@ -198,6 +218,7 @@
 		}
 		else if(mode.equals("5"))
 		{
+			/* 修改填表人 */ 
 			String transactorId = request.getParameter("transactor");
 			String transactoruser = request.getParameter("transactoruser");
 			Connection connection = null;

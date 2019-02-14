@@ -9,11 +9,11 @@
 	<style>
 		table{background-color:#ffffff; table-layout:fixed; border-collapse:collapse; border-spacing:0px; border-top:1px solid #c5d0dc}
 		th, td{font-weight:400; box-sizing:border-box; text-align:center; font-size:15px; overflow:hidden; border-bottom:1px dotted #cccccc; border-right:1px dotted #cccccc}
-		th{background-color:#f1f5fa; height:30px; line-height:30px}
-		td{padding:5px}
+		th{background-color:#f1f5fa; height:30px; line-height:30px; font-size:12px}
+		td{padding:5px; font-size:12px}
 
 		td.editor{background-color:#e1ffff}
-		td.editor input{width:80px; border:none; text-align:center; border-radius:3px; outline:none;}
+		td.editor input{width:80px; border:none; text-align:center; border-radius:3px; outline:none; font-size:12px}
 		
 	</style>
 </head>
@@ -55,80 +55,6 @@
 	</table>
 </div>
 
-<div id="T02" style="display:none">
-	<table>
-		<thead>
-			<tr>
-				<th rowspan="2" style="width:60px">类别</th>
-				<th rowspan="2" style="width:60px">序号</th>
-				<th colspan="2" style="width:160px">科目编号</th>
-				<th colspan="3" style="width:500px">借方</th>
-				<th colspan="3" style="width:500px">贷方</th>
-				<th rowspan="2" style="width:200px">调整事项说明</th>
-			</tr>
-			<tr>
-				<th style="width:80px">借方</th>
-				<th style="width:80px">贷方</th>
-				<th style="width:200px">科目</th>
-				<th style="width:200px">二级科目</th>
-				<th style="width:100px">金额</th>
-				<th style="width:200px">科目</th>
-				<th style="width:200px">二级科目</th>
-				<th style="width:100px">金额</th>
-			</tr>
-			<tr>
-				<th colspan="4">合计</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-</div>
-
-
-<div id="T03" style="display:none">
-	<table>
-		<thead>
-			<tr>
-				<th rowspan="2" style="width:60px">类别</th>
-				<th rowspan="2" style="width:60px">序号</th>
-				<th colspan="2" style="width:160px">科目编号</th>
-				<th colspan="3" style="width:500px">借方</th>
-				<th colspan="3" style="width:500px">贷方</th>
-				<th rowspan="2" style="width:200px">调整事项说明</th>
-			</tr>
-			<tr>
-				<th style="width:80px">借方</th>
-				<th style="width:80px">贷方</th>
-				<th style="width:200px">科目</th>
-				<th style="width:200px">二级科目</th>
-				<th style="width:100px">金额</th>
-				<th style="width:200px">科目</th>
-				<th style="width:200px">二级科目</th>
-				<th style="width:100px">金额</th>
-			</tr>
-			<tr>
-				<th colspan="4">合计</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-</div>
 
 <script type="text/javascript" src="../../lib/jquery.js"></script>
 <script type="text/javascript" src="../../lib/app.js"></script>
@@ -136,12 +62,61 @@
 
 		$(function()
 		{
-			var tableId = app.getParameter("table");
-			var statementId = app.getParameter("statement");
-			var substatementId = app.getParameter("substatement");
+			var tableId = app.getParameter("table") || "";
+			var statementId = app.getParameter("statement") || "";
+			var substatementId = app.getParameter("substatement") || "";
 			var merge = app.getParameter("merge") || 0;
-			var children = app.getParameter("children");
+			var children = app.getParameter("children") || "";
 
+			getResource(statementId, substatementId, merge, children);
+
+			$(window).on("mousedown.editor", function(event)
+			{
+				if($(event.target).closest(".editor input").size() == 0)
+				{
+					var $fields = $(".editor input:visible");
+					if($fields.size() > 0)
+					{
+						$fields.each(function(i)
+						{
+							var $field = $(this);
+							var key = $field.data("key");
+							var name = $field.data("name");
+							var source = $field.data("source");
+							var itemname = $field.data("itemname");
+							var itemcode = $field.data("itemcode");
+							var $cell = $field.closest("td");
+							var value = $field.val();
+							if(source != value)
+							{
+								app.showLoading();
+								$.post(app.getContextPath()+"/statements/sheet/0.jsp?mode=2", {name:name, key:key, value:value, itemname:itemname, itemcode:itemcode, statement:statementId, substatement:substatementId, merge:merge}, function(response)
+								{
+									app.hideLoading();				
+									if(response.status == "1")
+									{
+										getResource(statementId, substatementId, merge, children)
+									}
+									else 
+									{
+										app.message(response.messages);
+									}
+								}, "json");
+							}
+							else
+							{
+								$cell.html($field.val());
+							}
+						});
+					}
+				}	
+			});
+
+
+		});
+
+		function getResource(statementId, substatementId, merge, children)
+		{
 			app.showLoading();
 			$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
 			{
@@ -158,17 +133,57 @@
 						{
 							editor = 'editor';
 						}
-						content += '<tr>';
-						content += '<td style="text-align:left">'+item["name"]+'</td>';
-						content += '<td>'+item["code"]+'</td>';
-						content += '<td class="'+editor+'"></td>';
-						content += '<td class="readonly"></td>';
-						content += '<td class="readonly"></td>';
-						content += '<td class="readonly"></td>';
-						content += '<td class="'+editor+'"></td>';
-						content += '<td class="readonly"></td>';
-						content += '<td class="readonly"></td>';
-						content += '<td class="readonly"></td>';
+	
+						var rowclass = "";
+						var expression = "";
+						var key = "";
+
+						var qmsdq = "";
+						var qmjfje = "";
+						var qmdfje = "";
+						var qmsdh = "";
+						var qcsdq = "";
+						var qcjfje = "";
+						var qcdfje = "";
+						var qcsdh = "";
+
+						if(item['value'] != null)
+						{
+							rowclass = "expression";
+							expression = item['value'];
+						}
+						else
+						{
+							rowclass = item["code"];
+							var resource = item['resource'];
+							if(resource != null)
+							{
+								key = resource['ID'] || "";
+								qmsdq = resource['QMSDQ'] || "";
+								qmjfje = resource['QMJFJE'] || "";
+								qmdfje = resource['QMDFJE'] || "";
+								qmsdh = resource['QMSDH'] || "";
+
+								qcsdq = resource['QCSDQ'] || "";
+								qcjfje = resource['QCJFJE'] || "";
+								qcdfje = resource['QCDFJE'] || "";
+								qcsdh = resource['QCSDH'] || "";
+							}
+						}
+
+
+
+						content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
+						content += '<td class="itemname" style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
+						content += '<td class="itemcode">'+item["code"]+'</td>';
+						content += '<td class="'+editor+'" name="QMSDQ">'+qmsdq+'</td>';
+						content += '<td class="readonly">'+qmjfje+'</td>';
+						content += '<td class="readonly">'+qmdfje+'</td>';
+						content += '<td class="readonly">'+qmsdh+'</td>';
+						content += '<td class="'+editor+'" name="QCSDQ">'+qcsdq+'</td>';
+						content += '<td class="readonly">'+qcjfje+'</td>';
+						content += '<td class="readonly">'+qcdfje+'</td>';
+						content += '<td class="readonly">'+qcsdh+'</td>';
 						content += '</tr>';
 					});
 					var $t01 = $("#T01 tbody");
@@ -177,30 +192,40 @@
 					
 					$(".editor").on("click", function()
 					{
-						var value = $(this).text();
-						var $field = $('<input />');
-						$field.val(value);
-						$(this).html($field);
-						$field.focus();
-					});
-
-
-					$(window).on("mousedown.editor", function(event)
-					{
-						if($(event.target).closest(".editor input").size() == 0)
+						if($(this).find("input").length == 0)
 						{
-							var $fields = $(".editor input:visible");
-							if($fields.size() > 0)
-							{
-								$fields.each(function(i)
-								{
-									var $field = $(this);
-									var $cell = $field.parent();
-									$cell.html($field.val());
-								});
-							}
-						}	
+							var $row = $(this).closest("tr");
+							var value = $(this).text();
+							var $field = $('<input />');
+							$field.val(value);
+							$field.data("name", $(this).attr("name"));
+							$field.data("key", $row.attr("id"));
+							$field.data("source", value);
+							$field.data("itemname", $row.find(".itemname").text());
+							$field.data("itemcode", $row.find(".itemcode").text());
+							$(this).html($field);
+							$field.focus();
+						}
 					});
+
+					$(".expression").each(function(i, row)
+					{
+						var $row = $(row);
+						var expression = $row.attr("expression");
+						
+						var $cells = $row.find("td");
+
+						$cells.each(function(j, cell)
+						{
+							if(j > 1)
+							{
+								var result = analyze(expression, j)
+								$(cell).text(eval(result));
+							}
+						});
+
+					});
+
 
 				}
 				else 
@@ -208,7 +233,44 @@
 					app.message(response.messages);
 				}
 			});
-		});
+		}
+
+		function getStyle(items)
+		{
+			if(items != null)
+			{
+				var style = [];
+				for(var item in items)
+				{
+					style.push(item+":"+items[item]);
+				}
+				return style.join("; ")
+			}
+			return "";
+		}
+			
+		function analyze(expression, index)
+		{
+			if(expression.indexOf("[") != -1 && expression.indexOf("]") != -1)
+			{
+				var name = expression.substring(expression.indexOf("[")+1, expression.indexOf("]"));
+				var $row = $("#T01 tbody ."+name);
+				var value = get(name, index) || 0;
+				expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
+				expression = analyze(expression, index);
+			}
+			return expression;
+		}
+
+		function get(name, index)
+		{
+			var $cells = $("#T01 tbody ."+name+" td");
+			if($cells.length > 0)
+			{
+				return app.toNumber( $($cells[index]).text() );
+			}
+			return null;
+		}
 
 </script>
 

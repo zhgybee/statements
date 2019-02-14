@@ -63,17 +63,17 @@
 				<i class="fa fa-chevron-up"></i>
 			</div>
 			<div class="row-panel clearfix">
-				<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title"/><input type="hidden" id="sheets"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
-				<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson"/></div></div>
+				<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title-field"/><input type="hidden" id="sheets-field"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
+				<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson-field"/></div></div>
 			</div>
 			<div class="row-panel clearfix">
-				<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate"/></div></div>
-				<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate"/></div></div>
-				<div class="left field-panel" style="width:25%;"><label>主管会计</label><div><input type="text" id="accountant"/></div></div>
-				<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate-field"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate-field"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>主管会计</label><div><input type="text" id="accountant-field"/></div></div>
+				<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer-field"/></div></div>
 			</div>
 			<div class="row-panel">
-				<div class="field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description"></textarea></div></div>
+				<div class="field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description-field"></textarea></div></div>
 			</div>
 			<div class="button-panel">
 				<button id="save-button">确定</button>
@@ -100,23 +100,29 @@
 	<script type="text/javascript" src="../lib/selection/selection.js"></script>
 
 	<script type="text/javascript">
-
+		
 		$(function()
 		{
 			
-			initialise(0, app.pagesize);
+			initialise(1, app.pagesize, '');
 
 			$("#sheet-button").on("click", function()
 			{
-				var codes = [];
-				var sheets = $("#sheets").val();
-				if(sheets != "")
+				var defaultsheets = [];
+				if($("#sheets-field").val() != "")
 				{
-					codes = sheets.split(",");
+					try
+					{
+						defaultsheets = JSON.parse($("#sheets-field").val());
+					}
+					catch (e)
+					{
+						console.log(e);
+					}
 				}
-				app.showSheetPanel("0001", codes, function(sheetcodes)
+				app.showSheetPanel("0001", defaultsheets, function(sheets)
 				{
-					$("#sheets").val(sheetcodes.join(","));
+					$("#sheets-field").val(JSON.stringify(sheets));
 				})
 			});
 			
@@ -125,14 +131,14 @@
 			{
 				app.showLoading();
 				var parameter = {};
-				parameter["title"] = $("#title").val();
-				parameter["legalperson"] = $("#legalperson").val();
-				parameter["startdate"] = $("#startdate").val();
-				parameter["enddate"] = $("#enddate").val();
-				parameter["accountant"] = $("#accountant").val();
-				parameter["accountantofficer"] = $("#accountantofficer").val();
-				parameter["description"] = $("#description").val();
-				parameter["sheets"] = $("#sheets").val();
+				parameter["title"] = $("#title-field").val();
+				parameter["legalperson"] = $("#legalperson-field").val();
+				parameter["startdate"] = $("#startdate-field").val();
+				parameter["enddate"] = $("#enddate-field").val();
+				parameter["accountant"] = $("#accountant-field").val();
+				parameter["accountantofficer"] = $("#accountantofficer-field").val();
+				parameter["description"] = $("#description-field").val();
+				parameter["sheets"] = $("#sheets-field").val();
 				$.post("do.jsp?mode=2", parameter, function(response)
 				{
 					app.hideLoading();
@@ -158,26 +164,37 @@
 				$("#statement-field-panel").slideToggle('fast');
 			});
 
+			
+			
+			$("#statement-searcher-field").keydown
+			(
+				function(event)
+				{
+					if(event.which == 13)
+					{
+						initialise(1, app.pagesize, $("#statement-searcher-field").val())
+					}
+				}
+			);
+
 		});
 		
-		function initialise(pagenumber, pagesize)
+		function initialise(pagenumber, pagesize, searcher)
 		{
 			app.showLoading();
-			$.getJSON("statement.jsp?mode=2", function(response)
+			$.getJSON("statement.jsp?mode=2", {pagenumber:pagenumber, pagesize:pagesize, searcher:searcher}, function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")
 				{
 					var $statements = $("#statements");
 					var statements = response.resource.rows;
+					var total = response.resource.total;
 					var content = [];
 
-
-					var number = pagenumber + 1;
-
-					$(".pagination-panel").html(app.pagination(50, pagesize, pagenumber, function(number)
+					$(".pagination-panel").html(app.pagination(total, pagenumber, pagesize, function(number)
 					{
-						initialise(number, pagesize);
+						initialise(number, pagesize, searcher);
 					}));
 
 
@@ -332,7 +349,7 @@
 									app.hideLoading();
 									if(response.status == "1")
 									{
-										initialise(pagenumber, pagesize);
+										initialise(pagenumber, pagesize, searcher);
 									}
 									else
 									{
@@ -361,7 +378,7 @@
 								app.hideLoading();
 								if(response.status == "1")
 								{
-									initialise(pagenumber, pagesize);
+									initialise(pagenumber, pagesize, searcher);
 								}
 								else
 								{

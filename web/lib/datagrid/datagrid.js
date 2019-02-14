@@ -7,6 +7,7 @@
 			var options = $container.data("options");
 			var frozenheader = options.frozenheader;
 			var activeheader = options.activeheader;
+			var dynamicheader = options.dynamicheader;
 			
 			var result = "";
 			if(frozenheader != null)
@@ -29,9 +30,11 @@
 						var type = column.type;
 						var colspan = column.colspan;
 						var rowspan = column.rowspan;
+						var width = column.width;
+						var height = column.height;
 
 						frozencontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
-						frozencontent += '<div style="'+getStyle(column.style)+'">'+title+'</div>';
+						frozencontent += '<div style="'+getSize(width, height) + getStyle(column.style)+'">'+title+'</div>';
 						frozencontent += '</td>';
 					}
 
@@ -64,11 +67,36 @@
 						var title = column.title || "";
 						var type = column.type;
 						var colspan = column.colspan;
-						var rowspan = column.rowspan;
+						var rowspan = column.rowspan;						
+						var width = column.width;
+						var height = column.height;
+						var meaning = column.meaning || "";
 
-						activecontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
-						activecontent += '<div style="'+getStyle(column.style)+'">'+title+'</div>';
-						activecontent += '</td>';
+						if(colspan == 'auto')
+						{
+							var target = column.target;
+							var dynamiccolumns = dynamicheader[target];
+							colspan = dynamiccolumns.length;
+							width = dynamiccolumns.length * width;
+						}
+
+						if(meaning == "jsonobject")
+						{
+							var target = column.target;
+							var dynamiccolumns = dynamicheader[target];
+							for(var l = 0 ; l < dynamiccolumns.length ; l++)
+							{
+								activecontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
+								activecontent += '<div style="'+getSize(width, height) + getStyle(column.style)+'">'+dynamiccolumns[l]+'</div>';
+								activecontent += '</td>';
+							}
+						}
+						else
+						{
+							activecontent += '<td '+(colspan != null ? 'colspan="'+colspan+'"' : '')+' '+(rowspan != null ? 'rowspan="'+rowspan+'"' : '')+'>';
+							activecontent += '<div style="'+getSize(width, height) + getStyle(column.style)+'">'+title+'</div>';
+							activecontent += '</td>';
+						}
 					}
 					activecontent += '</tr>';
 				}
@@ -95,8 +123,6 @@
 			var frozencolumns = options.frozencolumns;
 			var activecolumns = options.activecolumns;
 
-
-
 			app.showLoading();
 			$.post(options.datasource.url, options.datasource.args, function(response)
 			{
@@ -120,13 +146,13 @@
 
 							if(frozencolumns != null)
 							{
-								$frozenrow = createTableRow(i, frozencolumns, row);
+								$frozenrow = createTableRow($container, i, frozencolumns, row);
 								$frozenbody.append($frozenrow);
 							}
 
 							if(activecolumns != null)
 							{
-								$activerow = createTableRow(i, activecolumns, row);
+								$activerow = createTableRow($container, i, activecolumns, row);
 								$activebody.append($activerow);
 							}
 
@@ -150,13 +176,24 @@
 							var style = group["style"];
 							var rulecolumn = rule["column"];
 							var rulevalue = rule["value"];
+							var ruleexcludes = rule["exclude"];
 
 							
-							var $grouprows = $("div."+rulecolumn+":contains('"+rulevalue+"')").closest('tr');
+							var $grouprows = $("div."+rulecolumn+":contains('"+rulevalue+"')");
 							if(rulevalue == "*")
 							{
-								$grouprows = $("div."+rulecolumn+"").closest('tr');
+								$grouprows = $("div."+rulecolumn+"");
 							}
+							if(ruleexcludes != null)
+							{
+								$.each(ruleexcludes, function(j, ruleexclude)
+								{
+									$grouprows = $grouprows.not(":contains('"+ruleexclude+"')");
+								});
+							}
+							$grouprows = $grouprows.closest('tr');
+
+
 							if($grouprows.length > 0)
 							{
 								var $pointrow = $grouprows.last();
@@ -178,7 +215,7 @@
 										for(var j = 0 ; j < frozencolumns.length ; j++)
 										{
 											var column = frozencolumns[j];
-											content += groupcell(column, $grouprows, group);
+											content += groupcell($container, column, $grouprows, group);
 										}
 									}
 									content += '</tr>';
@@ -199,7 +236,7 @@
 										for(var j = 0 ; j < activecolumns.length ; j++)
 										{
 											var column = activecolumns[j];
-											content += groupcell(column, $grouprows, group);
+											content += groupcell($container, column, $grouprows, group);
 										}
 									}
 									content += '</tr>';
@@ -246,7 +283,7 @@
 			}, "json")
 		}
 
-		var createTableRow = function(index, columns, row)
+		var createTableRow = function($container, index, columns, row)
 		{
 			var structureutils = new DataStructureUtils();
 			var $row = $("<tr/>");
@@ -256,44 +293,88 @@
 				var name = column.name || "";
 				var value = row[name];
 				var type = column.type;
+				var width = column.width;
+				var height = column.height;
+				var meaning = column.meaning || "";
 
-				var description = value;
-				if(column.dictionary != null && column.dictionary != "")
-				{
-					description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
-				}
 
-				var $cell = $('<td/>');
-				if(type == "index")
+				if(meaning == "jsonobject")
 				{
-					$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+(index + 1)+'</div>');
-					$cell.on("click", clickrow);
-				}
-				else if(type == "button")
-				{
-					if(column.buttons != null)
+					var options = $container.data("options");	
+					var dynamicheader = options.dynamicheader;
+
+					var target = column.name;
+					var dynamiccolumns = dynamicheader[target];
+
+					value = $.parseJSON(value);
+					for(var l = 0 ; l < dynamiccolumns.length ; l++)
 					{
-						$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+createButton(column.buttons)+'</div>');
+						var description = value[dynamiccolumns[l]];
+						if(column.dictionary != null && column.dictionary != "")
+						{
+							description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
+						}
+						description = toValue(column, description);
+
+						var $cell = $('<td/>');
+						$cell.append('<div class="'+name+'_'+l+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+((description == null || description == "") ? "&nbsp;" : description)+'</div>');
+						$cell.css("cursor", "not-allowed");
+						$row.append($cell);
 					}
 				}
 				else
 				{
-					$cell.append('<div class="'+name+'" style="'+getStyle(column.style)+'">'+((description == null || description == "") ? "&nbsp;" : description)+'</div>');
-					if(column.editor != null)
+					var description = value;
+					if(column.dictionary != null && column.dictionary != "")
 					{
-						$cell.on("click", {column:column, key:row.ID, value:value, description:description}, onEditor);
-						$cell.css("cursor", "text");
+						description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
+					}
+					description = toValue(column, description);
+
+					var $cell = $('<td/>');
+					if(type == "index")
+					{
+						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+(index + 1)+'</div>');
+						$cell.on("click", clickrow);
+					}
+					else if(type == "button")
+					{
+						if(column.buttons != null)
+						{
+							$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+createButton(column.buttons)+'</div>');
+						}
 					}
 					else
 					{
-						$cell.css("cursor", "not-allowed");
+						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+((description == null || description == "") ? "&nbsp;" : description)+'</div>');
+						if(column.editor != null)
+						{
+							$cell.on("click", {column:column, key:row.ID, value:value, description:description}, onEditor);
+							$cell.css("cursor", "text");
+						}
+						else
+						{
+							$cell.css("cursor", "not-allowed");
+						}
 					}
+					$row.append($cell);
 				}
-				$row.append($cell);
+
 			}
 			$row.data("row", row);
 
 			return $row;
+		}
+
+
+		var toValue = function(column, value)
+		{
+			var modes = column.modes;
+			if(modes != null && modes.indexOf("percent") != -1)
+			{
+				value = app.toFixed((app.toNumber(value) * 100), 2) + "%";
+			}
+			return value;
 		}
 
 		var copy = function($container, ids)
@@ -335,16 +416,60 @@
 		}
 
 
-		var groupcell = function(column, $grouprows, grouprule)
+		var groupcell = function($container, column, $grouprows, grouprule)
 		{
 			var cell = "";
+			var meaning = column.meaning || "";
+			var width = column.width;
+			var height = column.height;
+
 			var sumcolumns = grouprule["sum"];
 			if(sumcolumns != null)
 			{
 				if(sumcolumns.indexOf(column.name) != -1)
 				{
+					if(meaning == "jsonobject")
+					{
+						var options = $container.data("options");	
+						var dynamicheader = options.dynamicheader;
 
-					cell += '<td>'+sum($grouprows, column.name)+'</td>';
+						var target = column.name;
+						var dynamiccolumns = dynamicheader[target];
+
+						for(var l = 0 ; l < dynamiccolumns.length ; l++)
+						{
+							cell += '<td><div style="'+getSize(width, height) + getStyle(column.style)+'">'+sum($grouprows, column, dynamiccolumns[l])+'</div></td>';
+						}
+					}
+					else
+					{
+						cell += '<td><div style="'+getSize(width, height) + getStyle(column.style)+'">'+sum($grouprows, column)+'</div></td>';
+					}
+				}
+			}
+
+			var avgolumns = grouprule["avg"];
+			if(avgolumns != null)
+			{
+				if(avgolumns.indexOf(column.name) != -1)
+				{
+					if(meaning == "jsonobject")
+					{
+						var options = $container.data("options");	
+						var dynamicheader = options.dynamicheader;
+
+						var target = column.name;
+						var dynamiccolumns = dynamicheader[target];
+
+						for(var l = 0 ; l < dynamiccolumns.length ; l++)
+						{
+							cell += '<td><div style="'+getSize(width, height) + getStyle(column.style)+'">'+avg($grouprows, column, dynamiccolumns[l])+'</div></td>';
+						}
+					}
+					else
+					{
+						cell += '<td><div style="'+getSize(width, height) + getStyle(column.style)+'">'+avg($grouprows, column)+'</div></td>';
+					}
 				}
 			}
 
@@ -355,31 +480,78 @@
 				{
 					if(titlecolumn["column"] == column.name)
 					{
-						cell += '<td>'+titlecolumn["text"]+'</td>';
+						cell += '<td><div style="'+getSize(width, height) + getStyle(column.style)+'">'+titlecolumn["text"]+'</div></td>';
 					}
 				});
 			}
 			
 			if(cell == "")
 			{
-				cell += '<td></td>';
-			}
+				if(meaning == "jsonobject")
+				{
+					var options = $container.data("options");	
+					var dynamicheader = options.dynamicheader;
 
+					var target = column.name;
+					var dynamiccolumns = dynamicheader[target];
+
+					for(var l = 0 ; l < dynamiccolumns.length ; l++)
+					{
+						cell += '<td></td>';
+					}
+				}
+				else
+				{
+					cell += '<td></td>';
+				}
+			}
 
 			return cell;
 		}
 
-		var sum = function($grouprows, columnname)
+		var sum = function($grouprows, column, key)
 		{
 			var number = 0
-			var $cells = $grouprows.find("."+columnname);
+			var columnname = column.name;
 			$.each($grouprows, function(i, grouprow)
 			{
 				var row = $(grouprow).data("row");
-				number += parseFloat(row[columnname]) || 0;
+				if(key == null)
+				{
+					number += app.toNumber(row[columnname]);
+				}
+				else
+				{
+					var value = $.parseJSON(row[columnname]);
+					number += app.toNumber( value[key] );
+				}
 			});
+			number = toValue(column, number);
 			return number;
 		}
+
+		var avg = function($grouprows, column, key)
+		{
+			var number = 0
+			var columnname = column.name;
+			$.each($grouprows, function(i, grouprow)
+			{
+				var row = $(grouprow).data("row");
+				if(key == null)
+				{
+					number += app.toNumber(row[columnname]);
+				}
+				else
+				{
+					var value = $.parseJSON(row[columnname]);
+					number += app.toNumber( value[key] );
+				}
+			});
+			number = number / $grouprows.length;
+			number = toValue(column, number);
+			return number;
+		}
+
 
 		var clickrow = function(event)
 		{
@@ -482,6 +654,20 @@
 			return style.join("; ")
 		}
 
+		var getSize = function(width, height)
+		{
+			var style = "";
+			if(width != null)
+			{
+				style += 'width:'+width+'px;'
+			}
+			if(height != null)
+			{
+				style += 'height:'+height+'px;'
+			}
+			return style;
+		}
+
 		var mouseoutRow = function(event)
 		{
 			if( !isSelected($(this)) )
@@ -577,6 +763,7 @@
 
 			$field.data("key", key);
 			$field.data("value", value);
+			$field.data("description", description);
 			$field.data("column", column);
 
 			$field.height($editor.closest("td").height() - 1);
@@ -618,9 +805,10 @@
 						$fields.each(function(i)
 						{
 							var $field = $(this);
-							var $cell = $field.parent();
+							var $cell = $field.closest("div");
 							var key = $field.data("key");
 							var source = $field.data("value");
+							var description = $field.data("description");
 							var column = $field.data("column");
 							if(column != null)
 							{
@@ -649,7 +837,14 @@
 								}
 								else
 								{
-									$cell.html($field.data("value"));
+									if(column['editor']['type'] == "choice")
+									{
+										$cell.html(description);
+									}
+									else
+									{
+										$cell.html(value);
+									}
 								}
 
 							}

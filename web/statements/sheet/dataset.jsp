@@ -1,3 +1,5 @@
+<%@page import="com.system.utils.StatementUtils"%>
+<%@page import="com.system.utils.SystemUtils"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="com.system.utils.ThrowableUtils"%>
 <%@page import="com.system.datasource.DataSource"%>
@@ -28,44 +30,51 @@
 		DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
 		if(datastructure != null)
 		{
+			connection = DataSource.connection(SystemProperty.DATASOURCE);	
+			DataSource datasource = new DataSource(connection);	
+			
+			
 			String number = datastructure.getProperty().optString("datasource");
 			String sql = null;
-			if(number.equals(""))
-			{
-				sql = "select * from "+datastructure.getProperty().optString("table");
-			}
-			else
+			if(!number.equals(""))
 			{
 				JSONObject sqls = SystemProperty.SQLBUILDER.get(number);
 				if(sqls != null)
 				{
 					sql = sqls.optString("sql");
 					sql = VariableService.parseUrlVariable(sql, 0, request);
-					sql = VariableService.parseSysVariable(sql, request);		
+					sql = VariableService.parseSysVariable(sql, request);
 				}
 			}
 			Data data = new Data();
-			
-			if(sql != null)
+			if(sql == null)
 			{
-				connection = DataSource.connection(SystemProperty.DATASOURCE);	
-				DataSource datasource = new DataSource(connection);	
+				sql = datastructure.getProperty().optString("table");
+
 				if(merge.equals("1"))
 				{
 					if(substatementId.equals(""))
 					{
-						data = datasource.find("select * from ("+sql+") T where T.STATEMENT_ID = ?", statementId);
+						data = datasource.find("select * from "+sql+" T where T.STATEMENT_ID = ?", statementId);
 					}
 					else
 					{
-						data = datasource.find("select * from ("+sql+") T where SUBSTATEMENT_ID in ("+children+")");
+						data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+")");
 					}
+					
+					//合并数据
+					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
 				}
 				else
 				{
-					data = datasource.find("select * from ("+sql+") T where SUBSTATEMENT_ID = ?", substatementId);
-				};
+					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID = ?", substatementId);
+				}
 			}
+			else
+			{
+				data = datasource.find(sql);
+			}
+			
 			message.resource("dataset", data);
 		}
 	}
@@ -81,5 +90,5 @@
 			connection.close();
 		}
 	}
-	out.println(message);
+	out.println(message.toString());
 %>

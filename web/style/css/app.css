@@ -4,7 +4,7 @@ a{text-decoration:none;}
 
 body{font-family:"微软雅黑"; font-size:13px; color:#333333; margin:0px;}
 
-td{font-size:13px; color:#333333;}
+td{font-size:12px; color:#333333;}
 
 button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border:none; outline:none; cursor:pointer;}
 button i{margin-right:2px}
@@ -34,7 +34,7 @@ li{padding:0px; margin:0px; list-style-type:none}
 
 .right{float:right}
 
-.button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 4px}
+.button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 3px}
 
 .readonly{background-color:#fafafa}
 
@@ -71,11 +71,13 @@ li{padding:0px; margin:0px; list-style-type:none}
 #choice-substatement-panel .substatement-panel ul li .substatement-items p{margin-top:5px; color:#aaaaaa}
 
 #choice-sheet-panel .choice-frame{position:absolute; width:1000px; background-color:#ffffff}
-#choice-sheet-panel .sheet-panel{overflow-y:scroll; box-sizing:border-box;}
-#choice-sheet-panel .sheet-panel .selected-sheet-panel{float:left; width:50%}
-#choice-sheet-panel .sheet-panel .unselect-sheet-panel{float:right; width:50%; background-color:#fafafa; color:#aaaaaa}
-#choice-sheet-panel .sheet-panel .selected-sheet-panel li .sheet-icon i{font-size:40px; color:green}
-#choice-sheet-panel .sheet-panel .unselect-sheet-panel li{background-color:#fafafa; }
+#choice-sheet-panel .sheet-panel{box-sizing:border-box;}
+#choice-sheet-panel .sheet-panel .selected-sheet-panel{float:left; width:50%; overflow-y:scroll; height:100%}
+#choice-sheet-panel .sheet-panel .unselect-sheet-panel{float:right; width:50%; overflow-y:scroll; height:100%}
+#choice-sheet-panel .sheet-panel .selected-sheet-panel ul{}
+#choice-sheet-panel .sheet-panel .unselect-sheet-panel ul{background-color:#fafafa; color:#aaaaaa}
+#choice-sheet-panel .sheet-panel .selected-sheet-panel ul li .sheet-icon i{font-size:40px; color:green}
+#choice-sheet-panel .sheet-panel .unselect-sheet-panel ul li{background-color:#fafafa; }
 #choice-sheet-panel .sheet-panel ul li{cursor:pointer; box-sizing:border-box; padding:10px; border-bottom:1px solid #f1f1f1}
 #choice-sheet-panel .sheet-panel ul li .sheet-icon{width:55px; float:left; text-align:center}
 #choice-sheet-panel .sheet-panel ul li .sheet-icon i{font-size:40px}
@@ -142,7 +144,20 @@ li{padding:0px; margin:0px; list-style-type:none}
 .fields-panel .button-panel button{padding:10px 50px}
 
 
-.tabs{border-bottom:1px solid #dddddd; padding:5px 5px 0px 5px; position:relative; height:40px; box-sizing:border-box}
-.tabs ul{position:absolute; bottom:-1px}
+.tabs{border-bottom:1px solid #dddddd; position:relative; height:40px; box-sizing:border-box; position: relative; z-index:0;}
+.tabs .inner{overflow:hidden; position:absolute; bottom:-1px; margin:0px 29px;}
+.tabs ul{width:7000px}
 .tabs ul li{float:left; box-sizing:border-box; height:35px; line-height:35px; padding: 0px 10px; background-color:#eeeeee; font-size:15px; border:1px solid #dddddd; margin-right:2px; cursor:pointer}
 .tabs ul li.selected{border-bottom:none; background-color:#f7f7f7}
+.tabs .left-button{box-sizing:border-box; font-size:12px; background-color:#fafafa; border-top:1px solid #c5d0dc; border-left:1px solid #c5d0dc; border-right:1px solid #c5d0dc; cursor:pointer; height:34px; line-height:33px; width:20px; text-align:center; display:block; position:absolute; left:5px; bottom:0px;}
+.tabs .right-button{box-sizing:border-box; font-size:12px; background-color:#fafafa; border-top:1px solid #c5d0dc; border-left:1px solid #c5d0dc; border-right:1px solid #c5d0dc; cursor:pointer; height:34px; line-height:33px; width:20px; text-align:center; display:block; position:absolute; right:5px; bottom:0px;}
+
+
+
+.tabs.bottom{border-bottom:none; border-top:1px solid #dddddd}
+.tabs.bottom .inner{bottom:0px; top:-1px}
+.tabs.bottom ul li{}
+.tabs.bottom ul li.selected{border-top:none; border-bottom:1px solid #dddddd; background-color:#ffffff}
+.tabs.bottom .left-button{top:0px; border-top:none; border-bottom:1px solid #dddddd; background-color:#ffffff}
+.tabs.bottom .right-button{top:0px; border-top:none; border-bottom:1px solid #dddddd; background-color:#ffffff}
+

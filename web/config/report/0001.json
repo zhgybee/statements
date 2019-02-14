@@ -1,10 +1,44 @@
 [
-	{"type":"text", "content":"中文中[data:NAME]文中文", "dateset":"S000001"},
-	{"type":"text", "content":"中文中[data:NAME]文中文", "dateset":"S000001"},
-	{"type":"text", "content":"中文中[data:NAME]文中文", "dateset":"S000001"},
-	{"type":"table", "dateset":"S000001", "columns":[{"title":"姓名", "name":"NAME", width:2000}, {"title":"登录名", "name":"LOGINNAME", width:2000}]},
-	{"type":"table", "dateset":"S000001", "columns":[{"title":"姓名", "name":"NAME", width:2000}, {"title":"登录名", "name":"LOGINNAME", width:2000}]},
-	{"type":"table", "dateset":"S000001", "columns":[{"title":"姓名", "name":"NAME", width:2000}, {"title":"登录名", "name":"LOGINNAME", width:2000}]},
-	{"type":"table", "dateset":"S000001", "columns":[{"title":"姓名", "name":"NAME", width:2000}, {"title":"登录名", "name":"LOGINNAME", width:2000}]},
-	{"type":"text", "content":"中文中文中文123123"}
+	{
+		"type":"text", "content":"中文中[data:NAME]文中文", "dateset":"R000001"
+	},
+	{
+		"type":"newline"
+	},
+	{
+		"id":"S0003", "type":"table", "dateset":"R000002", "columns":
+		[
+
+			{"name":"A", "width":"2000", "merge":{"group":true}, "align":"left"},
+			{"name":"B", "meaning":"jsonobject", "width":"2000", "merge":{}, "modes":["percent"], "avg":{"exclude":["aaa"]}},
+			{"name":"C", "meaning":"jsonobject", "width":"2000", "merge":{}}
+
+		],
+		"header":
+		[
+			[
+				{"title":"A列", "rowspan":"restart", "width":"2000", "align":"left"},
+				{"title":"总列1", "colspan":"auto", "width":"2000", "target":"B"},
+				{"title":"总列2", "colspan":"auto", "width":"2000", "target":"C"}
+			],
+			[
+				{"rowspan":"continue"},
+				{"meaning":"jsonobject", "width":"2000", "target":"B"},
+				{"meaning":"jsonobject", "width":"2000", "target":"C"}
+			]
+		]
+	},
+	{
+		"type":"newline"
+	},
+	{
+		"id":"S0003", "type":"table", "columns":
+		[
+
+			{"name":"A", "width":"2000", "merge":{"group":true}},
+			{"name":"B", "meaning":"jsonobject", "width":"2000", "merge":{}, "modes":["percent"], "sum":{}},
+			{"name":"C", "meaning":"jsonobject", "width":"2000", "merge":{}, "sum":{"exclude":["交易"]}}
+
+		]
+	}
 ]

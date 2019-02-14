@@ -9,25 +9,25 @@ function DataStructureUtils()
 		var value = column.editor.value || "";
 		var cache = column.cache || true;
 		var multiple = column.editor.multiple || false;
-								
+							
+		var $container = $('<span/>');
+		
 		var $field= null;
 
 		if(type == "text")
 		{
 			$field = $('<input name="'+name+'" class="field text-field"/>');
 			$field.val(value);
+			$container.append($field);
 		}
 		else if(type == "date")
 		{
 			$field = $('<input name="'+name+'" class="field date-field"/>');
 			$field.val(value);
+			$container.append($field);
 		}
 		else if(type == "tree")
 		{
-			if(dictionary != null)
-			{
-
-			}
 		}
 		else if(type == "choice")
 		{
@@ -36,18 +36,19 @@ function DataStructureUtils()
 				$field = $('<input name="'+name+'" class="field select-field"/>');
 				$field.val(value.value);
 				$field.attr("title", value.description);
+				$container.append($field);
 				$field.selection
 				(
 					{
-						url: app.getContextPath()+"/"+dictionary.list,
-						cache: cache,
-						ismultiple: multiple
+						url:app.getContextPath()+"/"+dictionary.list,
+						cache:cache,
+						ismultiple:multiple
 					}
 				);
 			}
 		}
 
-		return $field;
+		return $container;
 	}
 
 	this.getDictionary = function(url, value, cache)

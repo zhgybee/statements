@@ -1,7 +1,7 @@
 var app = {};
 (function (app) 
 {
-	app.pagesize = 10;
+	app.pagesize = 5;
 	app.showLoading = function() 
 	{
 		var $loading = $("#loading-panel");
@@ -28,6 +28,32 @@ var app = {};
 		}
 
 		$loading.show();
+	}
+	
+	app.toNumber = function(text)
+	{
+		if(text == null || text == "")
+		{
+			return 0
+		}
+		else
+		{
+			if(!isNaN(text))
+			{
+				return parseFloat(text);
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
+
+	app.toFixed = function(number)
+	{
+		number = Math.round(number * 100) / 100;
+		return number.toString();
+		//return number.toFixed(2);
 	}
 
 	app.message = function(text, title) 
@@ -84,6 +110,25 @@ var app = {};
 			{
 				$choice.hide();
 			});
+
+			$choice.find("#substatement-searcher-field").keyup
+			(
+				function(event)
+				{
+					var value = $(this).val();
+					if(value != "")
+					{
+						$(".substatement-panel ul li h4:contains('"+value+"')").closest("li").show();
+						$(".substatement-panel ul li h4").not(":contains('"+value+"')").closest("li").hide();
+					}
+					else
+					{
+						$(".substatement-panel ul li").show();
+					}
+
+				}
+			);
+
 		}
 
 		$.getJSON(app.getContextPath()+"/statements/statement.jsp?mode=7&statement="+statementId, function(response)
@@ -244,6 +289,24 @@ var app = {};
 			{
 				$choice.hide();
 			});
+
+			$choice.find("#user-searcher-field").keyup
+			(
+				function(event)
+				{
+					var value = $(this).val();
+					if(value != "")
+					{
+						$(".user-panel ul li span:contains('"+value+"')").closest("li").show();
+						$(".user-panel ul li span").not(":contains('"+value+"')").closest("li").hide();
+					}
+					else
+					{
+						$(".user-panel ul li").show();
+					}
+
+				}
+			);
 		}
 		
 		$.getJSON(app.getContextPath()+"/system/user/user.jsp?mode=1", function(response)
@@ -261,7 +324,7 @@ var app = {};
 					{
 						icon = "user.png"
 					}
-					var $user = $('<li><i class="fa fa-check-circle selection"></i><img src="'+app.getContextPath()+'/resource/usericon/'+icon+'"><br/>'+row.NAME+'</li>');
+					var $user = $('<li><i class="fa fa-check-circle selection"></i><img src="'+app.getContextPath()+'/resource/usericon/'+icon+'"><br/><span>'+row.NAME+'</span></li>');
 					$user.data("user", row);
 					$users.append($user);
 
@@ -308,7 +371,7 @@ var app = {};
 	}
 
 
-	app.showSheetPanel = function(version, sheetcodes, callback)
+	app.showSheetPanel = function(version, defaultsheets, callback)
 	{
 		var $choice = $("#choice-sheet-panel");
 		var height = $(window).height() - 100;
@@ -323,7 +386,14 @@ var app = {};
 			content += '			<h5 class="left">选择表格</h5>';
 			content += '			<div class="right"><input type="text" id="sheet-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>';
 			content += '		</div>';
-			content += '		<div class="sheet-panel clearfix" style="height:'+sheetheight+'px"><ul class="selected-sheet-panel"></ul><ul class="unselect-sheet-panel"></ul></div>';
+			content += '		<div class="sheet-panel clearfix" style="height:'+sheetheight+'px">';
+			content += '			<div class="selected-sheet-panel">';
+			content += '				<ul></ul>';
+			content += '			</div>';
+			content += '			<div class="unselect-sheet-panel">';
+			content += '				<ul></ul>';
+			content += '			</div>';
+			content += '		</div>';
 			content += '		<div class="choice-button-panel"><button class="save-button">确定</button><button class="close-button">关闭</button></div>';
 			content += '	</div>';
 			content += '</div>';
@@ -333,17 +403,38 @@ var app = {};
 			{
 				$choice.hide();
 			});
+			$choice.find("#sheet-searcher-field").keyup
+			(
+				function(event)
+				{
+					var value = $(this).val();
+					if(value != "")
+					{
+						$(".unselect-sheet-panel ul li h4:contains('"+value+"')").closest("li").show();
+						$(".unselect-sheet-panel ul li h4").not(":contains('"+value+"')").closest("li").hide();
+					}
+					else
+					{
+						$(".unselect-sheet-panel ul li").show();
+					}
+
+				}
+			);
 		}
-		var $unselectsheets = $choice.find(".unselect-sheet-panel");
-		var $selectedsheets = $choice.find(".selected-sheet-panel");
+		var $unselectsheets = $choice.find(".unselect-sheet-panel ul");
+		var $selectedsheets = $choice.find(".selected-sheet-panel ul");
 		
-		var isdefault = sheetcodes == null || sheetcodes.length == 0;
+		var isdefault = defaultsheets == null || defaultsheets.length == 0;
+		var sheetcodes = [];
+		$.each(defaultsheets, function(i, defaultsheet)
+		{
+			sheetcodes.push(defaultsheet.id);
+		});
 
 		$.getJSON(app.getContextPath()+"/dictionary/list/sheet.jsp?version="+version, function(response)
 		{
 			if(response.status == "1")
 			{
-
 				var sheets = response.resource.sheets;
 				$unselectsheets.empty();
 				$selectedsheets.empty();
@@ -392,12 +483,12 @@ var app = {};
 
 				$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
 
-				$(document).on("click", "#choice-sheet-panel .unselect-sheet-panel li", function()
+				$(document).on("click", "#choice-sheet-panel .unselect-sheet-panel ul li", function()
 				{
 					$(this).appendTo($selectedsheets);					
 					$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
 				});
-				$(document).on("click", "#choice-sheet-panel .selected-sheet-panel li", function()
+				$(document).on("click", "#choice-sheet-panel .selected-sheet-panel ul li", function()
 				{
 					$(this).appendTo($unselectsheets);
 					$unselectsheets.height( Math.max(Math.max($unselectsheets.height(), $selectedsheets.height()), sheetheight) );
@@ -425,15 +516,15 @@ var app = {};
 
 		$choice.find(".save-button").on("click", function()
 		{
-			var sheetcodes = [];
+			var sheets = [];
 			$selectedsheets.find("li").each(function(i, $sheet)
 			{
 				var sheet = $($sheet).data("sheet");
-				sheetcodes.push(sheet.id);
+				sheets.push({id:sheet.id});
 			});
 			if(callback != null)
 			{
-				callback(sheetcodes);
+				callback(sheets);
 			}
 			$choice.hide();
 		});
@@ -458,6 +549,28 @@ var app = {};
 
 	app.tabs = function($tabs, callback)
 	{
+		var $items = $tabs.find("ul");
+		var $inner = $('<div class="inner"/>');
+		var $leftbutton = $('<div class="left-button"><i class="fa fa-angle-double-left"></i></div>');
+		var $rightbutton = $('<div class="right-button"><i class="fa fa-angle-double-right"></i></div>');		
+		
+		$inner.append($items);
+		$tabs.append($leftbutton);
+		$tabs.append($inner);
+		$tabs.append($rightbutton);
+
+		$inner.width($tabs.outerWidth(true) - $leftbutton.outerWidth(true) - $rightbutton.outerWidth(true));
+
+		$leftbutton.on("click", function()
+		{
+			$inner.scrollLeft( Math.max($($inner).scrollLeft() - 200, 0) ); 
+		});
+
+		$rightbutton.on("click", function()
+		{
+			$inner.scrollLeft($($inner).scrollLeft() + 200); 
+		});
+
 		$tabs.find("ul li").each
 		(
 			function(i, tab)
@@ -488,6 +601,8 @@ var app = {};
 				});
 			}
 		);
+
+
 	}
 
 	app.setParameter = function(url, name, value) 
@@ -517,9 +632,9 @@ var app = {};
 		return r;
 	}
 
-	app.pagination = function(total, pagesize, pagenumber, callback)
+	app.pagination = function(total, pagenumber, pagesize, callback)
 	{
-		var pagecount = Math.ceil(total / pagesize) - 1;
+		var pagecount = Math.ceil(total / pagesize);
 		var $pagination = $('<ul>');
 
 		
@@ -538,7 +653,7 @@ var app = {};
 		}
 
 		var $previous = null;
-		if(pagenumber == 0)
+		if(pagenumber == 1)
 		{
 			$previous = $('<li><a class="disabled"><i class="fa fa-angle-left"></i></a></li>');
 		}

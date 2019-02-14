@@ -14,6 +14,8 @@
 #sheets-panel li .icon i{font-size:40px; color:#1eaaf1}
 #sheets-panel li .icon img{width:50px; height:50px}
 #sheets-panel li .icon .changeuser-button{cursor:pointer}
+#sheets-panel li .icon .unchangeuser-button{color:#cccccc}
+
 #sheets-panel li .items{margin-left:62px; position:relative}
 #sheets-panel li .items h5{font-weight:400px; font-size:14px; color:#666666; margin-right:24px}
 #sheets-panel li .items hr{margin:5px 0px 7px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
@@ -68,7 +70,7 @@
 		<div class="module-panel clearfix" id="statement-module">	
 			<div class="grid-toolbar-panel clearfix">
 				<div class="searcher-panel left">
-					<div class="searcher-keyword-panel"><input type="text" id="statement-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+					<div class="searcher-keyword-panel"><input type="text" id="sheet-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
 				</div>
 			</div>
 			<div id="sheets-panel" style="margin-right:-10px"><ul></ul></div>
@@ -76,21 +78,22 @@
 		<div class="module-panel clearfix" id="manager-module" style="display:none">
 			<div id="statement-field-panel" class="fields-panel">
 				<div class="clearfix row-panel">
-					<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title"/></div></div>
-					<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson"/></div></div>
+					<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title-field"/><input type="hidden" id="sheets-field"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
+
+					<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson-field"/></div></div>
 				</div>
 				<div class="clearfix row-panel">
-					<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate"/></div></div>
-					<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate"/></div></div>
-					<div class="left field-panel" style="width:25%;"><label>主管会计工作负责人</label><div><input type="text" id="accountant"/></div></div>
-					<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>报告期初日</label><div><input type="text" id="startdate-field"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>报告期末日</label><div><input type="text" id="enddate-field"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>主管会计</label><div><input type="text" id="accountant-field"/></div></div>
+					<div class="left field-panel" style="width:25%;"><label>会计机构负责人</label><div><input type="text" id="accountantofficer-field"/></div></div>
 				</div>
 				<div class="clearfix row-panel">
-					<div class="left field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description"></textarea></div></div>
+					<div class="left field-panel" style="width:100%;"><label>备注</label><div><textarea type="text" id="description-field"></textarea></div></div>
 				</div>
 				<div class="button-panel">
-					<button id="save-button" class="blue" style="display:none"><i class="fa fa-trash-o"></i>修改</button>
-					<button id="delete-button" class="red" style="display:none"><i class="fa fa-pencil-square-o"></i>删除</button>
+					<button id="save-button" class="blue" style="display:none"><i class="fa fa-pencil-square-o"></i>修改</button>
+					<button id="delete-button" class="red" style="display:none"><i class="fa fa-trash-o"></i>删除</button>
 				</div>
 			</div>
 		</div>
@@ -104,17 +107,19 @@
 
 <script type="text/javascript">
 
-var CURRENTSUBSTATEMENT = null
+var CURRENTSUBSTATEMENT = '';
+var CHILDREN = '';
+var ISMERGE = 0;
+var statementId = app.getParameter("id");
 
 $(function()
 {
 
 	$("#create-button").on("click", function()
 	{
-		window.location.href = 'export.jsp?id=0001';
+		window.location.href = 'export.jsp?version=0001&statement='+statementId+'&substatement='+CURRENTSUBSTATEMENT+"&merge="+ISMERGE+"&children="+CHILDREN;
 	});
 
-	var statementId = app.getParameter("id");
 	initialise(statementId, "");
 	$("#statement-manager-button").on("click", function()
 	{
@@ -164,19 +169,27 @@ $(function()
 					});
 				});  
 
-				if(CURRENTSUBSTATEMENT != null)
+				if(CURRENTSUBSTATEMENT != '')
 				{
-					$.post("import.jsp?statement="+statementId+"&substatement="+CURRENTSUBSTATEMENT+"&folder="+encodeURIComponent('temp/'+statementId)+"&name="+filename, function(message)
+					if(ISMERGE == 0)
 					{
-						if(message.status == 1)
+						$.post("import.jsp?statement="+statementId+"&substatement="+CURRENTSUBSTATEMENT+"&folder="+encodeURIComponent('temp/'+statementId)+"&name="+filename, function(message)
 						{
-							app.message("数据导入成功");
-						}
-						else
-						{
-							app.message(message.messages);
-						}
-					}, "json");
+							if(message.status == 1)
+							{
+								app.message("数据导入成功");
+							}
+							else
+							{
+								app.message(message.messages);
+							}
+						}, "json");
+					}
+					else
+					{
+						app.message("不能导入合并数据");
+					}
+
 				}
 				else
 				{
@@ -191,6 +204,95 @@ $(function()
 			}
 		}
 	});
+
+	$("#sheet-searcher-field").keyup
+	(
+		function(event)
+		{
+			var value = $(this).val();
+			if(value != "")
+			{
+				$("#sheets-panel ul li h5:contains('"+value+"')").closest("li").show();
+				$("#sheets-panel ul li h5").not(":contains('"+value+"')").closest("li").hide();
+			}
+			else
+			{
+				$("#sheets-panel ul li").show();
+			}
+		}
+	);
+
+	$("#sheet-button").on("click", function()
+	{
+		var defaultsheets = [];
+		if($("#sheets-field").val() != "")
+		{
+			try
+			{
+				defaultsheets = JSON.parse($("#sheets-field").val());
+			}
+			catch (e)
+			{
+				console.log(e);
+			}
+		}
+		app.showSheetPanel("0001", defaultsheets, function(sheets)
+		{
+			$("#sheets-field").val(JSON.stringify(sheets));
+		})
+	});
+	$("#save-button").on("click", function()
+	{
+		app.showLoading();
+		var parameter = {};
+		parameter["id"] = statementId;
+		parameter["title"] = $("#title-field").val();
+		parameter["legalperson"] = $("#legalperson-field").val();
+		parameter["startdate"] = $("#startdate-field").val();
+		parameter["enddate"] = $("#enddate-field").val();
+		parameter["accountant"] = $("#accountant-field").val();
+		parameter["accountantofficer"] = $("#accountantofficer-field").val();
+		parameter["description"] = $("#description-field").val();
+		parameter["sheets"] = $("#sheets-field").val();
+		$.post("do.jsp?mode=2", parameter, function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				initialise(0, app.pagesize);
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		}, "json");
+	});
+
+	$("#delete-button").on("click", function()
+	{
+		if(confirm("删除项目后，项目中的表格数据也将同时删除，确定删除项目吗？"))
+		{
+			app.showLoading();
+			var parameter = {};
+			parameter["statement"] = statementId;
+			$.post("do.jsp?mode=1", parameter, function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					window.location.href = 'statement.html';
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			}, "json");
+		}
+
+	});
+
+	
+
 })
 
 function showEditorPanel()
@@ -204,6 +306,19 @@ function showManagerPanel()
 	$("#manager-module").show();
 }
 
+function setEditor(statement)
+{
+	$("#title-field").val(statement.TITLE);
+
+	$("#legalperson-field").val(statement.LEGALPERSON);
+	$("#startdate-field").val(statement.STARTDATE);
+	$("#enddate-field").val(statement.ENDDATE);
+	$("#accountant-field").val(statement.ACCOUNTANT);
+	$("#accountantofficer-field").val(statement.ACCOUNTANTOFFICER);
+	$("#description-field").val(statement.DESCRIPTION);
+	$("#sheets-field").val(JSON.stringify(statement.SHEETS));
+}
+
 function initialise(statementId)
 {
 	app.showLoading();
@@ -214,24 +329,9 @@ function initialise(statementId)
 		{
 			var statement = response.resource.statement;
 			var substatements = response.resource.substatements;
+			setEditor(statement);
 			var iscreaotr = statement.ISCREATOR;
-			if(iscreaotr == "1")
-			{
-				$("#save-button").show();
-				$("delete-button").show();
 
-				$("#statement-all-button h5").html(statement.TITLE);
-				$("#statement-all-button").on("click", function()
-				{
-					showEditorPanel();
-					$("#import-button-panel").css("display", "none");
-					getSheets(1, statementId, '');
-				});
-
-
-			}
-			substatements = app.toTree(substatements);
-			
 			$("#statement-title h2").html(statement.TITLE);
 			$("#statement-title p").html(statement.DESCRIPTION);
 			var icon = statement.USERICON || "";
@@ -241,7 +341,23 @@ function initialise(statementId)
 			}
 			$("#statement-icon img").attr("src", "../resource/usericon/"+icon);
 
+			if(iscreaotr == "1")
+			{
+				$("#save-button").show();
+				$("#delete-button").show();
 
+				$("#statement-all-button h5").html(statement.TITLE);
+				$("#statement-all-button").on("click", function()
+				{
+					showEditorPanel();
+					$("#import-button-panel").css("display", "none");
+					getSheets(1, statementId, '');
+				});
+			}
+			
+
+
+			substatements = app.toTree(substatements);
 			var content = "";
 			$.each(substatements, function(i, substatement)
 			{
@@ -250,15 +366,18 @@ function initialise(statementId)
 				{
 					icon = "user.png"
 				}
-				content += '<li class="clearfix substatement" code="'+substatement.ID+'" style="padding-left:'+((substatement.LEVEL || 0) * 15)+'px">';
 
+				if(iscreaotr == "1")
+				{
+					substatement.MANAGER = "1";
+				}
+
+				content += '<li class="clearfix substatement" manager="'+substatement.MANAGER+'" code="'+substatement.ID+'" style="padding-left:'+((substatement.LEVEL || 0) * 15)+'px">';
 				content += '<div class="left"><img src="../resource/usericon/'+icon+'"></div>';
 				content += '<div class="substatement-items">';
 				content += '	<h6><span class="substatement-title">'+substatement.TITLE+'</span>'+(substatement.ISCHILD != null ? '<span class="button merge-statement-button">合并</span>' : '')+'</h6>';
 				content += '	<p>'+substatement.USERNAME+'</p>';
 				content += '</div>';
-
-
 				content += '</li>';
 			});
 			$("li.substatement").remove();
@@ -267,17 +386,22 @@ function initialise(statementId)
 			$("li.substatement h6 .substatement-title").on("click", function()
 			{
 				showEditorPanel();
-				var substatementId = $(this).closest("li").attr("code");
-				CURRENTSUBSTATEMENT = substatementId;
 				$("#import-button-panel").css("display", "inline-block");
-				getSheets(0, statementId, substatementId)
+
+				var $substatement = $(this).closest("li");
+				var substatementId = $substatement.attr("code");
+				var manager = $substatement.attr("manager");
+				getSheets(0, statementId, substatementId, manager);
 			});
 			$("li.substatement h6 .merge-statement-button").on("click", function()
 			{
 				showEditorPanel();
-				var substatementId = $(this).closest("li").attr("code");
 				$("#import-button-panel").css("display", "none");
-				getSheets(1, statementId, substatementId)
+
+				var $substatement = $(this).closest("li");
+				var substatementId = $substatement.attr("code");
+				var manager = $substatement.attr("manager");
+				getSheets(1, statementId, substatementId, manager)
 			});
 
 		}
@@ -288,16 +412,19 @@ function initialise(statementId)
 	});
 }
 
-function getSheets(ismerge, statementId, substatementId)
+function getSheets(ismerge, statementId, substatementId, manager)
 {
+	ISMERGE = ismerge;
+	CURRENTSUBSTATEMENT = substatementId;
 	app.showLoading();
-	$.getJSON("statement.jsp?mode=6&merge="+ismerge+"&statement="+statementId+"&substatement="+substatementId, function(response)
+	$.getJSON("statement.jsp?mode=6&merge="+ismerge+"&statement="+statementId+"&substatement="+substatementId+"&manager="+manager, function(response)
 	{
 		app.hideLoading();
 		if(response.status == "1")
 		{
 			var sheets = response.resource.sheets;
 			var children = response.resource.children.join(",");
+			CHILDREN = children;
 			var $statements = $("#sheets-panel ul");
 			content = "";
 			$.each(sheets, function(i, sheet)
@@ -305,43 +432,70 @@ function getSheets(ismerge, statementId, substatementId)
 				var transactor = sheet.ID == null ? "" : sheet.ID;
 				content += '<li code="'+transactor+'">';
 				content += '<div>';
-				if(ismerge == "1")
+				if(sheet["MANAGERTABLE"] == 1)
 				{
-					content += '	<div class="icon"><img src="../style/images/merge.png"><div>合并数据</div></div>';
-					content += '	<div class="items">';
-					content += '		<strong>'+sheet.COUNT+'</strong>';
-					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
-					content += '		<hr/>';
-					content += '		<div class="buttons">';
-					content += '		<a class="button" href="sheet/sheet.html?merge=1&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
-					content += '		</div>';
-					content += '	</div>';
-				}
-				else
-				{
+					//合并或不合并都可以填写，并且不可修改填表人
 					var icon = sheet.USERICON || "";
 					if(icon == "")
 					{
 						icon = "user.png"
 					}
-					content += '	<div class="icon"><img src="../resource/usericon/'+icon+'" /><div class="changeuser-button">'+sheet.USERNAME+'</div></div>';
+					content += '	<div class="icon"><img src="../resource/usericon/'+icon+'" /><div class="unchangeuser-button">'+(sheet.USERNAME || "")+'</div></div>';
 					content += '	<div class="items">';
-					content += '		<strong>'+sheet.COUNT+'</strong>';
 					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
 					content += '		<hr/>';
 					content += '		<div class="buttons">';
 					if(sheet.EDITOR)
 					{
-						content += '		<a class="button" href="sheet/sheet.html?merge=0&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">编辑</a>';
+						content += '		<a class="button" href="sheet/sheet.html?merge='+ismerge+'&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">编辑</a>';
 					}
 					else
 					{
-						content += '		<a class="button" href="sheet/sheet.html?merge=1&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
+						content += '		<a class="button green" href="sheet/sheet.html?merge='+ismerge+'&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">查看</a>';
 					}
 
-					content += '		<a class="button red">删除</a>';
 					content += '		</div>';
 					content += '	</div>';
+				}
+				else
+				{
+					if(ismerge == "1")
+					{
+						content += '	<div class="icon"><img src="../style/images/merge.png"><div>合并数据</div></div>';
+						content += '	<div class="items">';
+						content += '		<strong>'+sheet.COUNT+'</strong>';
+						content += '		<h5>'+sheet.SHEETNAME+'</h5>';
+						content += '		<hr/>';
+						content += '		<div class="buttons">';
+						content += '		<a class="button green" href="sheet/sheet.html?merge=1&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'&children='+children+'" target="_blank">合并表</a>';
+						content += '		</div>';
+						content += '	</div>';
+					}
+					else
+					{
+						var icon = sheet.USERICON || "";
+						if(icon == "")
+						{
+							icon = "user.png"
+						}
+						content += '	<div class="icon"><img src="../resource/usericon/'+icon+'" /><div class="'+ (manager == "1" ? "changeuser-button" : "unchangeuser-button") +'">'+(sheet.USERNAME || "")+'</div></div>';
+						content += '	<div class="items">';
+						content += '		<strong>'+sheet.COUNT+'</strong>';
+						content += '		<h5>'+sheet.SHEETNAME+'</h5>';
+						content += '		<hr/>';
+						content += '		<div class="buttons">';
+						if(sheet.EDITOR)
+						{
+							content += '		<a class="button" href="sheet/sheet.html?merge=0&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">编辑</a>';
+						}
+						else
+						{
+							content += '		<a class="button green" href="sheet/sheet.html?merge=0&sheet='+sheet.SHEET_ID+'&statement='+statementId+'&substatement='+substatementId+'" target="_blank">查看</a>';
+						}
+
+						content += '		</div>';
+						content += '	</div>';
+					}
 				}
 				content += '</div>';
 				content += '</li>';
@@ -376,6 +530,10 @@ function getSheets(ismerge, statementId, substatementId)
 					}, "json");
 
 				});
+			});
+			$statements.find(".unchangeuser-button").on("click", function()
+			{
+				alert('不能修改制表人');
 			});
 
 		}

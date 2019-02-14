@@ -71,6 +71,7 @@ html, body{height:100%}
 				var activeheader = response.resource.activeheader;
 				var frozencolumns = response.resource.frozencolumns;
 				var activecolumns = response.resource.activecolumns;
+				var dynamicheader = response.resource.dynamicheader;
 				var groups = response.resource.groups;
 
 
@@ -92,7 +93,8 @@ html, body{height:100%}
 					frozenheader:frozenheader,
 					activeheader:activeheader,
 					frozencolumns:frozencolumns,
-					activecolumns:activecolumns
+					activecolumns:activecolumns,
+					dynamicheader:dynamicheader
 				});
 
 
@@ -107,7 +109,7 @@ html, body{height:100%}
 		$("#add-button").off().on("click", function()
 		{
 			app.showLoading();
-			$.getJSON(app.getContextPath()+"/statements/sheet/action.jsp?mode=2&statement="+statementId+"&substatement="+substatementId+"&table="+tableId, function(response)
+			$.getJSON(app.getContextPath()+"/statements/sheet/action.jsp?mode=2&merge="+merge+"&statement="+statementId+"&substatement="+substatementId+"&table="+tableId, function(response)
 			{
 				app.hideLoading();
 				if(response.status == "1")

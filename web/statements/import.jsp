@@ -61,14 +61,17 @@
 		}
 		
 		//根据表格得到数据库表
-		String[] tablenames = new String[]{};
+		String[] tableIds = new String[]{};
 		
 		ConfigService configService = new ConfigService("0001");
 		JSONArray tables = configService.getTables(sheetIds);
 		for(int i = 0 ; i < tables.length() ; i++)
 		{
 			JSONObject table = tables.optJSONObject(i);
-			tablenames = ArrayUtils.add(tablenames, table.optString("id"));
+			if(!table.optBoolean("system"))
+			{
+				tableIds = ArrayUtils.add(tableIds, table.optString("id"));
+			}
 		}
 		
 		
@@ -77,14 +80,14 @@
 		String name = request.getParameter("name");
 		
 		File source = new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + folder + SystemProperty.FILESEPARATOR + name);
-		JSONArray configs = new JSONArray(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "import.json"), "UTF-8"));
+		JSONObject configs = new JSONObject(FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "import.json"), "UTF-8"));
 	
 
 		Gatherer gatherer = new Gatherer();
 		gatherer.source = source;
 		gatherer.configs = configs;
 		
-		if(gatherer.startor(tablenames))
+		if(gatherer.startor(tableIds))
 		{
 		
 			List<String> sqls = new ArrayList<String>();
@@ -119,7 +122,9 @@
 				for(String column : columns)
 				{
 					cs = ArrayUtils.add(cs, column);
-					vs = ArrayUtils.add(vs, "'"+values.get(column)+"'");
+					String value = values.get(column);
+					value = StringUtils.replace(value, "'", "''");					
+					vs = ArrayUtils.add(vs, "'"+value+"'");
 				}
 				
 				String sql = "insert into "+tablename+"("+StringUtils.join(cs, ", ")+") values("+StringUtils.join(vs, ", ")+")";
@@ -145,6 +150,10 @@
 			}
 			catch(Exception e)
 			{
+				if(connection != null)
+				{
+					connection.rollback();
+				}
 				Throwable throwable = ThrowableUtils.getThrowable(e);
 				message.message(ServiceMessage.FAILURE, throwable.getMessage());
 			}

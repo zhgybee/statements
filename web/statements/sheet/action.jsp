@@ -107,7 +107,36 @@
 					String tablename = datastructure.getProperty().optString("table");
 					connection = DataSource.connection(SystemProperty.DATASOURCE);
 					DataSource datasource = new DataSource(connection);	
-					datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
+					
+					String sql = null;
+					JSONObject property = datastructure.getProperty();
+					if(property != null)
+					{
+						JSONObject sqls =  property.optJSONObject("sqls");
+						if(sqls != null)
+						{
+							if(sqls.has("add"))
+							{
+								JSONObject dataset = SystemProperty.SQLBUILDER.get( sqls.optString("add") );
+								if(dataset != null)
+								{
+									sql = dataset.optString("sql");
+									sql = VariableService.parseUrlVariable(sql, 0, request);
+									sql = VariableService.parseSysVariable(sql, request);	
+								}
+							}
+						}
+					}
+					
+					if(sql != null)
+					{							
+						datasource.execute(sql);
+					}
+					else
+					{
+						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
+					}
+					
 					connection.commit();
 				}
 			}
