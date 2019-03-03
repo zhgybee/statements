@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="../style/css/app.css" />
+<link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css" />
+<title></title>
+<style>
+
+#warnings-panel{margin:10px;}
+#warnings-panel li{background-color:#ffffff; position:relative; padding:10px 10px 10px 60px; box-sizing:border-box; margin-bottom:10px}
+#warnings-panel li .icon{position:absolute; top:15px; left:10px; font-size:40px; color:#ffaa00}
+#warnings-panel li h4{font-size:16px; }
+#warnings-panel li .detail{}
+#warnings-panel li .detail .item-name{margin:8px 0px; font-size:14px; font-weight:bold}
+#warnings-panel li .detail .item-value{margin:8px 0px; font-size:14px}
+#warnings-panel li .detail .item-value span:last-child{color:red}
+
+</style>
+</head>
+
+
+<body style="background-color:#eeeeee">
+	
+<ul id="warnings-panel">
+</ul>
+
+
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/app.js"></script>
+
+<script type="text/javascript">
+
+
+$(function()
+{
+	var statementId = app.getParameter("statement") || "";
+	var substatementId = app.getParameter("substatement") || "";
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children") || "";
+
+	app.showLoading();
+	$.getJSON("checkup.jsp?statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var $warnings = $("#warnings-panel");
+
+			var warnings = response.resource.warnings;
+			$.each(warnings, function(i, warning)
+			{
+				var description = warning['description'];
+				var details = warning['details'];
+
+				var $item = $("<li/>");
+
+				var content = '';
+				
+				content += '<i class="icon fa fa-warning"></i>'
+				content += '<h4>'+description+'</h4>';
+
+				content += '<div class="clearfix detail">';
+				$.each(details, function(j, detail)
+				{
+					content += '<div class="item-name">'+detail['name']+'</div>';
+					content += '<div class="item-value"><span>'+detail['item1']+'</span>：<span>'+(detail['value1'] == "" ? '无' : detail['value1'])+'</span></div>';
+					content += '<div class="item-value"><span>'+detail['item2']+'</span>：<span>'+(detail['value2'] == "" ? '无' : detail['value2'])+'</span></div>';
+				});
+				content += '</div>';
+				
+
+				$item.append(content);
+				$warnings.append($item);
+
+			});
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+
+});
+
+
+</script>
+
+</body>
+</html>

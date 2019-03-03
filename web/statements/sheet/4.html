@@ -1,0 +1,409 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="table.css" />
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	<button style="height:35px; width:80px" id="export-button">导出</button>
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">本期发生额</th>
+				<th style="width:100px">上期发生额</th>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">本期发生额</th>
+				<th style="width:100px">上期发生额</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="R1">
+				<td class="title bold">一、经营活动产生的现金流量</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　购建固定资产、无形资产和其他长期资产支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R35.BQSDQ] + [R35.BQTZS]"></td>
+				<td class="T05" expression="[R35.SQSDQ] + [R35.SQTZS]"></td>
+			</tr>
+			<tr id="R2">
+				<td class="title">　　销售商品、提供劳务收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R2.BQSDQ] + [R2.BQTZS]"></td>
+				<td class="T05" expression="[R2.SQSDQ] + [R2.SQTZS]"></td>
+				<td class="title">　　投资支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R36.BQSDQ] + [R36.BQTZS]"></td>
+				<td class="T05" expression="[R36.SQSDQ] + [R36.SQTZS]"></td>
+			</tr>
+			<tr id="R3">
+				<td class="title">　　客户存款和同业存放款项净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R3.BQSDQ] + [R3.BQTZS]"></td>
+				<td class="T05" expression="[R3.SQSDQ] + [R3.SQTZS]"></td>
+				<td class="title">　　质押贷款净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R37.BQSDQ] + [R37.BQTZS]"></td>
+				<td class="T05" expression="[R37.SQSDQ] + [R37.SQTZS]"></td>
+			</tr>
+			<tr id="R4">
+				<td class="title">　　向中央银行借款净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R4.BQSDQ] + [R4.BQTZS]"></td>
+				<td class="T05" expression="[R4.SQSDQ] + [R4.SQTZS]"></td>
+				<td class="title">　　取得子公司及其他营业单位支付的现金净额</td>
+				<td></td>
+				<td class="T05" expression="[R38.BQSDQ] + [R38.BQTZS]"></td>
+				<td class="T05" expression="[R38.SQSDQ] + [R38.SQTZS]"></td>
+			</tr>
+			<tr id="R5">
+				<td class="title">　　向其他金融机构拆入资金净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R5.BQSDQ] + [R5.BQTZS]"></td>
+				<td class="T05" expression="[R5.SQSDQ] + [R5.SQTZS]"></td>
+				<td class="title">　　支付其他与投资活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R39.BQSDQ] + [R39.BQTZS]"></td>
+				<td class="T05" expression="[R39.SQSDQ] + [R39.SQTZS]"></td>
+			</tr>
+			<tr id="R6">
+				<td class="title">　　收到原保险合同保费取得的现金</td>
+				<td></td>
+				<td class="T05" expression="[R6.BQSDQ] + [R6.BQTZS]"></td>
+				<td class="T05" expression="[R6.SQSDQ] + [R6.SQTZS]"></td>
+				<td class="title bold">　　投资活动现金流出小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R7">
+				<td class="title">　　收到再保险业务现金净额</td>
+				<td></td>
+				<td class="T05" expression="[R7.BQSDQ] + [R7.BQTZS]"></td>
+				<td class="T05" expression="[R7.SQSDQ] + [R7.SQTZS]"></td>
+				<td class="title bold center">投资活动产生的现金流量净额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R8">
+				<td class="title">　　保户储金及投资款净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R8.BQSDQ] + [R8.BQTZS]"></td>
+				<td class="T05" expression="[R8.SQSDQ] + [R8.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R9">
+				<td class="title">　　处置以公允价值计量且其变动计入当期损益的金融资产净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R9.BQSDQ] + [R9.BQTZS]"></td>
+				<td class="T05" expression="[R9.SQSDQ] + [R9.SQTZS]"></td>
+				<td class="title bold">三、筹资活动产生的现金流量</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R10">
+				<td class="title">　　收取利息、手续费及佣金的现金</td>
+				<td></td>
+				<td class="T05" expression="[R10.BQSDQ] + [R10.BQTZS]"></td>
+				<td class="T05" expression="[R10.SQSDQ] + [R10.SQTZS]"></td>
+				<td class="title">　　吸收投资收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R43.BQSDQ] + [R43.BQTZS]"></td>
+				<td class="T05" expression="[R43.SQSDQ] + [R43.SQTZS]"></td>
+			</tr>
+			<tr id="R11">
+				<td class="title">　　拆入资金净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R11.BQSDQ] + [R11.BQTZS]"></td>
+				<td class="T05" expression="[R11.SQSDQ] + [R11.SQTZS]"></td>
+				<td class="title merge-item">　　　其中：子公司吸收少数股东投资收到的现金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R12">
+				<td class="title">　　回购业务资金净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R12.BQSDQ] + [R12.BQTZS]"></td>
+				<td class="T05" expression="[R12.SQSDQ] + [R12.SQTZS]"></td>
+				<td class="title">　　取得借款收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R44.BQSDQ] + [R44.BQTZS]"></td>
+				<td class="T05" expression="[R44.SQSDQ] + [R44.SQTZS]"></td>
+			</tr>
+			<tr id="R13">
+				<td class="title">　　收到的税费返还</td>
+				<td></td>
+				<td class="T05" expression="[R13.BQSDQ] + [R13.BQTZS]"></td>
+				<td class="T05" expression="[R13.SQSDQ] + [R13.SQTZS]"></td>
+				<td class="title">　　发行债券收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R45.BQSDQ] + [R45.BQTZS]"></td>
+				<td class="T05" expression="[R45.SQSDQ] + [R45.SQTZS]"></td>
+			</tr>                                           
+			<tr id="R14">                                      
+				<td class="title">　　收到其他与经营活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R14.BQSDQ] + [R14.BQTZS]"></td>
+				<td class="T05" expression="[R14.SQSDQ] + [R14.SQTZS]"></td>
+				<td class="title">　　收到其他与筹资活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R46.BQSDQ] + [R46.BQTZS]"></td>
+				<td class="T05" expression="[R46.SQSDQ] + [R46.SQTZS]"></td>
+			</tr>
+			<tr id="R15">
+				<td class="title bold">　　经营活动现金流入小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">　　筹资活动现金流入小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R16">
+				<td class="title">　　购买商品、接受劳务支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R17.BQSDQ] + [R17.BQTZS]"></td>
+				<td class="T05" expression="[R17.SQSDQ] + [R17.SQTZS]"></td>
+				<td class="title">　　偿还债务支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R49.BQSDQ] + [R49.BQTZS]"></td>
+				<td class="T05" expression="[R49.SQSDQ] + [R49.SQTZS]"></td>
+			</tr>
+			<tr id="R17">
+				<td class="title">　　客户贷款及垫款净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R18.BQSDQ] + [R18.BQTZS]"></td>
+				<td class="T05" expression="[R18.SQSDQ] + [R18.SQTZS]"></td>
+				<td class="title">　　分配股利、利润或偿付利息支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R50.BQSDQ] + [R50.BQTZS]"></td>
+				<td class="T05" expression="[R50.SQSDQ] + [R50.SQTZS]"></td>
+			</tr>
+			<tr id="R18">
+				<td class="title">　　存放中央银行和同业款项净增加额</td>
+				<td></td>
+				<td class="T05" expression="[R19.BQSDQ] + [R19.BQTZS]"></td>
+				<td class="T05" expression="[R19.SQSDQ] + [R19.SQTZS]"></td>
+				<td class="title merge-item">　　　其中：子公司支付给少数股东的股利、利润</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R19">
+				<td class="title">　　支付原保险合同赔付款项的现金</td>
+				<td></td>
+				<td class="T05" expression="[R20.BQSDQ] + [R20.BQTZS]"></td>
+				<td class="T05" expression="[R20.SQSDQ] + [R20.SQTZS]"></td>
+				<td class="title">　　支付其他与筹资活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R51.BQSDQ] + [R51.BQTZS]"></td>
+				<td class="T05" expression="[R51.SQSDQ] + [R51.SQTZS]"></td>
+			</tr>
+			<tr id="R20">
+				<td class="title">　　支付利息、手续费及佣金的现金</td>
+				<td></td>
+				<td class="T05" expression="[R21.BQSDQ] + [R21.BQTZS]"></td>
+				<td class="T05" expression="[R21.SQSDQ] + [R21.SQTZS]"></td>
+				<td class="title bold">　　筹资活动现金流出小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R21">
+				<td class="title">　　支付保单红利的现金</td>
+				<td></td>
+				<td class="T05" expression="[R22.BQSDQ] + [R22.BQTZS]"></td>
+				<td class="T05" expression="[R22.SQSDQ] + [R22.SQTZS]"></td>
+				<td class="title bold center">筹资活动产生的现金流量净额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R22">
+				<td class="title">　　支付给职工以及为职工支付的现金</td>
+				<td></td>
+				<td class="T05" expression="[R23.BQSDQ] + [R23.BQTZS]"></td>
+				<td class="T05" expression="[R23.SQSDQ] + [R23.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R23">
+				<td class="title">　　支付的各项税费</td>
+				<td></td>
+				<td class="T05" expression="[R24.BQSDQ] + [R24.BQTZS]"></td>
+				<td class="T05" expression="[R24.SQSDQ] + [R24.SQTZS]"></td>
+				<td class="title bold">四、汇率变动对现金及现金等价物的影响</td>
+				<td></td>
+				<td class="T05" expression="[R54.BQSDQ] + [R54.BQTZS]"></td>
+				<td class="T05" expression="[R54.SQSDQ] + [R54.SQTZS]"></td>
+			</tr>
+			<tr id="R24">
+				<td class="title">　　支付其他与经营活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R241.BQSDQ] + [R241.BQTZS]"></td>
+				<td class="T05" expression="[R241.SQSDQ] + [R241.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R25">
+				<td class="title bold">　　经营活动现金流出小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">五、现金及现金等价物净增加额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R26">
+				<td class="title bold center">经营活动产生的现金流量净额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　加：期初现金及现金等价物余额</td>
+				<td></td>
+				<td class="T05" expression="[R56.BQSDQ] + [R56.BQTZS]"></td>
+				<td class="T05" expression="[R56.SQSDQ] + [R56.SQTZS]"></td>
+			</tr>
+			<tr id="R27">
+				<td class="title bold">二、投资活动产生的现金流量</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R28">
+				<td class="title">　　收回投资收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R28.BQSDQ] + [R28.BQTZS]"></td>
+				<td class="T05" expression="[R28.SQSDQ] + [R28.SQTZS]"></td>
+				<td class="title bold">六、期末现金及现金等价物余额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R29">
+				<td class="title">　　取得投资收益收到的现金</td>
+				<td></td>
+				<td class="T05" expression="[R29.BQSDQ] + [R29.BQTZS]"></td>
+				<td class="T05" expression="[R29.SQSDQ] + [R29.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R30">
+				<td class="title">　　处置固定资产、无形资产和其他长期资产收回的现金净额</td>
+				<td></td>
+				<td class="T05" expression="[R30.BQSDQ] + [R30.BQTZS]"></td>
+				<td class="T05" expression="[R30.SQSDQ] + [R30.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R31">
+				<td class="title">　　处置子公司及其他营业单位收到的现金净额</td>
+				<td></td>
+				<td class="T05" expression="[R31.BQSDQ] + [R31.BQTZS]"></td>
+				<td class="T05" expression="[R31.SQSDQ] + [R31.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R32">
+				<td class="title">　　收到其他与投资活动有关的现金</td>
+				<td></td>
+				<td class="T05" expression="[R32.BQSDQ] + [R32.BQTZS]"></td>
+				<td class="T05" expression="[R32.SQSDQ] + [R32.SQTZS]"></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R33">
+				<td class="title bold">　　投资活动现金流入小计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+
+
+		</tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="table.js"></script>
+<script type="text/javascript">
+
+$(function()
+{
+	var tableId = app.getParameter("table") || "";
+	var statementId = app.getParameter("statement") || "";
+	var substatementId = app.getParameter("substatement") || "";
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children") || "";
+
+
+	expression(statementId, substatementId, merge, children);
+	setExport('现金流量表');
+
+});
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

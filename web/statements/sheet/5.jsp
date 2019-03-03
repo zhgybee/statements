@@ -40,7 +40,7 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				String sql = "select * from T05 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ?";
+				String sql = "select * from T06 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ?";
 				Data items = datasource.find(sql, statementId, substatementId, merge);
 				
 
@@ -81,16 +81,16 @@
 				String substatementId = request.getParameter("substatement");
 				String merge = request.getParameter("merge");
 				
-				Data items = datasource.find("select ID from T05 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", statementId, substatementId, merge, key);
+				Data items = datasource.find("select ID from T06 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", statementId, substatementId, merge, key);
 				
 				if(items.size() == 0)
 				{
-					datasource.execute("insert into T05(ID, BM, "+columnname+", MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T06(ID, BM, "+columnname+", MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 							SystemUtils.uuid(), key, value, merge, statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update T05 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", 
+					datasource.execute("update T06 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", 
 							value, statementId, substatementId, merge, key);
 				}
 				connection.commit();

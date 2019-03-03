@@ -1,0 +1,420 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="table.css" />
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	<button style="height:35px; width:80px" id="export-button">导出</button>
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">本期发生额</th>
+				<th style="width:100px">上期发生额</th>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">本期发生额</th>
+				<th style="width:100px">上期发生额</th>
+			</tr>
+		</thead>
+		<tbody>
+
+			<tr id="R1">
+				<td class="title bold">一、营业总收入</td>
+				<td></td>
+				<td class="expression" expression="[R2.2] + [R3.2] + [R4.2] + [R5.2]"></td>
+				<td class="expression" expression="[R2.3] + [R3.3] + [R4.3] + [R5.3]"></td>
+				<td class="title bold">四、利润总额（亏损总额以“－”号填列）</td>
+				<td></td>
+				<td class="expression" expression="[R28.2] + [R29.2] - [R30.2]"></td>
+				<td class="expression" expression="[R28.3] + [R29.3] - [R30.3]"></td>
+			</tr>
+			<tr id="R2">
+				<td class="title">其中：营业收入</td>
+				<td></td>
+				<td class="T01" expression="[K1001.QCSDH]"></td>
+				<td class="T01" expression="[K1001.QMSDH]"></td>
+				<td class="title">减：所得税费用</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R3">
+				<td class="title">　　　利息收入</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>				
+			</tr>
+			<tr id="R4">
+				<td class="title">　　　已赚保费</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title bold">五、净利润（净亏损以“－”号填列）</td>
+				<td></td>
+				<td class="expression" expression="[R1.6] - [R2.6]"></td>
+				<td class="expression" expression="[R1.7] - [R2.7]"></td>
+			</tr>
+			<tr id="R5">
+				<td class="title">　　　手续费及佣金收入</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title">（一）按经营持续性分类：</td>
+				<td></td>
+				<td class="expression" expression="[R6.6] + [R7.6]"></td>
+				<td class="expression" expression="[R6.7] + [R7.7]"></td>
+			</tr>
+			<tr id="R6">
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">1、持续经营净利润（净亏损以“－”号填列）</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R7">
+				<td class="title bold">二、营业总成本</td>
+				<td></td>
+				<td class="expression" expression="[R8.2] + [R9.2] + [R10.2] + [R11.2] + [R12.2] + [R13.2] + [R14.2] + [R15.2] + [R16.2] + [R17.2] + [R18.2] + [R19.2] + [R20.2]"></td>
+				<td class="expression" expression="[R8.3] + [R9.3] + [R10.3] + [R11.3] + [R12.3] + [R13.3] + [R14.3] + [R15.3] + [R16.3] + [R17.3] + [R18.3] + [R19.3] + [R20.3]"></td>
+				<td class="title">2、终止经营净利润（净亏损以“－”号填列）</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R8">
+				<td class="title">其中：营业成本</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title merge-item">（二）按所有权归属分类：</td>
+				<td class="merge-item"></td>
+				<td class="expression merge-item" expression="[R9.6] + [R10.6]"></td>
+				<td class="expression merge-item" expression="[R9.7] + [R10.7]"></td>
+			</tr>
+			<tr id="R9">
+				<td class="title">　　　利息支出</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title merge-item">1、少数股东损益（净亏损以“－”号填列）</td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+			</tr>
+			<tr id="R10">
+				<td class="title">　　　手续费及佣金支出</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title merge-item">2、归属于母公司所有者的净利润（净亏损以“－”号填列）</td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+			</tr>
+			<tr id="R11">
+				<td class="title">　　　退保金</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R12">
+				<td class="title">　　　赔付支出净额</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title bold">六、其他综合收益的税后净额</td>
+				<td></td>
+				<td class="expression" expression="[R13.6] + [R16.6]"></td>
+				<td class="expression" expression="[R13.7] + [R16.7]"></td>
+			</tr>
+			<tr id="R13">
+				<td class="title">　　　提取保险合同准备金净额</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title">（一）以后不能重分类进损益的其他综合收益</td>
+				<td></td>
+				<td class="expression" expression="[R14.6] + [R15.6]"></td>
+				<td class="expression" expression="[R14.7] + [R15.7]"></td>
+			</tr>
+			<tr id="R14">
+				<td class="title">　　　保单红利支出</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title">1、重新计量设定受益计划净负债或净资产的变动</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R15">
+				<td class="title">　　　分保费用</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td class="title">2、权益法下在被投资单位不能重分类进损益的其他综合收益中享有的份额</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R16">
+				<td class="title">　　　税金及附加</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">（二）以后将重分类进损益的其他综合收益</td>
+				<td></td>
+				<td class="expression" expression="[R17.6] + [R18.6] + [R19.6] + [R20.6] + [R21.6] + [R22.6]"></td>
+				<td class="expression" expression="[R17.7] + [R18.7] + [R19.7] + [R20.7] + [R21.7] + [R22.7]"></td>
+			</tr>
+			<tr id="R17">
+				<td class="title">　　　销售费用</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">1、权益法下在被投资单位以后将重分类进损益的其他综合收益中享有的份额</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R18">
+				<td class="title">　　　管理费用</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">2、可供出售金融资产公允价值变动损益</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R19">
+				<td class="title">　　　财务费用</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">3、持有至到期投资重分类为可供出售金融资产损益</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R20">
+				<td class="title">　　　资产减值损失</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">4、现金流量套期损益的有效部分</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R21">
+				<td class="title">加：公允价值变动收益（损失以“－”号填列）</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">5、外币财务报表折算差额</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R22">
+				<td class="title">　　投资收益（损失以“－”号填列）</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">6、其他</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R23">
+				<td class="title">　　　其中：对联营企业和合营企业的投资收益</td>
+				<td></td>
+				<td class="editor" name="BQFSE1"></td>
+				<td class="editor" name="SQFSE1"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R24">
+				<td class="title">　　汇兑收益（损失以“-”号填列）</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">七、综合收益总额</td>
+				<td></td>
+				<td class="expression" expression="[R4.6] + [R12.6]"></td>
+				<td class="expression" expression="[R4.7] + [R12.7]"></td>
+			</tr>
+			<tr id="R25">
+				<td class="title">　　资产处置收益（损失以“-”号填列）</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title merge-item">　　归属于母公司所有者的综合收益总额</td>
+				<td class="merge-item"></td>
+				<td class="editor merge-item" name="BQFSE2"></td>
+				<td class="editor merge-item" name="SQFSE2"></td>
+			</tr>
+			<tr id="R26">
+				<td class="title">　　其他收益</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title merge-item">　　归属于少数股东的综合收益总额</td>
+				<td class="merge-item"></td>
+				<td class="editor merge-item" name="BQFSE2"></td>
+				<td class="editor merge-item" name="SQFSE2"></td>
+			</tr>
+			<tr id="R27">
+				<td></td>
+				<td>　</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R28">
+				<td class="title bold">三、营业利润（亏损以“－”号填列）</td>
+				<td></td>
+				<td class="expression" expression="[R1.2] - [R7.2] + [R21.2] + [R22.2] + [R23.2] + [R24.2] + [R25.2]"></td>
+				<td class="expression" expression="[R1.3] - [R7.3] + [R21.3] + [R22.3] + [R23.3] + [R24.3] + [R25.3]"></td>
+				<td class="title bold">八、每股收益：</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R29">
+				<td class="title">加：营业外收入</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">（一）基本每股收益</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+			<tr id="R30">
+				<td class="title">减：营业外支出</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">（二）稀释每股收益</td>
+				<td></td>
+				<td class="editor" name="BQFSE2"></td>
+				<td class="editor" name="SQFSE2"></td>
+			</tr>
+
+
+		</tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="table.js"></script>
+<script type="text/javascript">
+
+$(function()
+{
+	var tableId = app.getParameter("table") || "";
+	var statementId = app.getParameter("statement") || "";
+	var substatementId = app.getParameter("substatement") || "";
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children") || "";
+
+	getResource(statementId, substatementId, merge, children);
+
+	setEditor(app.getContextPath()+"/statements/sheet/3.jsp?mode=2");
+	setExport('合并利润表');
+
+})
+function getResource(statementId, substatementId, merge, children)
+{
+	app.showLoading();
+	$.getJSON("3.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var items = response.resource.items;
+
+			$.each(items, function(i, item)
+			{
+				var $row = $("#"+item['BM']);
+				if( $row.length > 0 )
+				{
+					var $cells = $row.find("td[name]");
+					$cells.each(function(j, cell)
+					{
+						var $cell = $(cell);
+						var name = $cell.attr("name");
+
+						$cell.text(item[name]);
+
+					});
+				}
+			});
+
+			expression(statementId, substatementId, merge, children);
+
+
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+}
+
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

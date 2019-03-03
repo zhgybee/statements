@@ -1,3 +1,8 @@
+<%@page import="org.json.JSONException"%>
+<%@page import="org.json.JSONArray"%>
+<%@page import="java.io.File"%>
+<%@page import="org.apache.commons.io.FileUtils"%>
+<%@page import="org.json.JSONObject"%>
 <%@page import="com.system.utils.StatementUtils"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
@@ -18,45 +23,42 @@
 	String ismerge = StringUtils.defaultString(request.getParameter("merge"), "0");
 	String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
+	String children = StringUtils.defaultString(request.getParameter("children"), "");
+	
+	JSONArray configs = new JSONArray( FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "checkup.json"), "UTF-8" ));
+	
 	
 	Connection connection = null;
 	try
 	{
-		String[] warnings = new String[]{};
+		JSONArray warnings = new JSONArray();
 		connection = DataSource.connection(SystemProperty.DATASOURCE);	
 		DataSource datasource = new DataSource(connection);	
-		
-		
-		
 
-		Data substatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
-		Datum substatement = null;
-		//得到所选择的子项目
-		for(Datum item : substatements)
+		
+		for(int i = 0 ; i < configs.length() ; i++)
 		{
-			if(item.getString("ID").equals(substatementId))
+			JSONObject checkup =  configs.optJSONObject(i);
+			String description = checkup.optString("description");
+			JSONObject item1 = checkup.optJSONObject("item1");
+			JSONObject item2 = checkup.optJSONObject("item2");
+			
+			Datum datum1 = datasource.get(toSql(item1.optString("sql"), ismerge, statementId, substatementId, children));
+			Datum datum2 = datasource.get(toSql(item2.optString("sql"), ismerge, statementId, substatementId, children));
+
+			JSONArray details = warning(item1.optString("name"), item2.optString("name"), datum1, datum2);
+			if(details.length() > 0)
 			{
-				substatement = item;
+				JSONObject warning = new JSONObject();
+				warning.put("details", details);
+				warning.put("description", description);
+				
+				
+				warnings.put(warning);
 			}
 		}
-
-		String[] substatementIds = new String[]{};
-
-		//找到当前子项目下的下级项目（包括当前子项目）
-		Set<Datum> children = new HashSet<Datum>();
-		children.addAll(StatementUtils.getChildSubStatements(new HashSet<Datum>(), substatement, substatements));
-		children.add(substatement);
-		for(Datum child : children)
-		{
-			substatementIds = ArrayUtils.add(substatementIds, "'"+child.getString("ID")+"'");
-		}
-		Datum datum1 = datasource.get(toSql("select QMSDQ as 'N', STATEMENT_ID, SUBSTATEMENT_ID from T01 where XMBH = 'K1001'", ismerge, statementId, substatementId, substatementIds));
-		Datum datum2 = datasource.get(toSql("select sum(json_extract(B, '$.B1-1列')) as 'N', STATEMENT_ID, SUBSTATEMENT_ID FROM A", ismerge, statementId, substatementId, substatementIds));
 		
-		if(isWarning(datum1, datum2))
-		{
-			warnings = ArrayUtils.add(warnings, "发生错误");
-		}
+		
 		
 		message.resource("warnings", warnings);
 	}
@@ -64,7 +66,6 @@
 	{
 		Throwable throwable = ThrowableUtils.getThrowable(e);
 		message.message(ServiceMessage.FAILURE, throwable.getMessage());
-		
 		e.printStackTrace();
 	}
 	finally
@@ -79,7 +80,7 @@
 %>
 
 <%!
-	public String toSql(String sql, String ismerge, String statementId, String substatementId, String[] substatementIds)
+	public String toSql(String sql, String ismerge, String statementId, String substatementId, String children)
 	{
 		if(ismerge.equals("1"))
 		{
@@ -89,7 +90,7 @@
 			}
 			else
 			{
-				return "select * from ("+sql+") where SUBSTATEMENT_ID in ("+StringUtils.join(substatementIds, ",")+")";
+				return "select * from ("+sql+") where SUBSTATEMENT_ID in ("+children+")";
 			}
 		}
 		else
@@ -98,9 +99,56 @@
 		}
 	}
 
-	public boolean isWarning(Datum datum1, Datum datum2)
+	public JSONArray warning(String name1, String name2, Datum datum1, Datum datum2) throws JSONException
 	{
-		return datum1 == null || datum2 == null || datum1.getDouble("N") != datum2.getDouble("N");
+		JSONArray warnings = new JSONArray();
+		if(datum1 == null && datum2 == null)
+		{
+			JSONObject warning = new JSONObject();
+			warning.put("name", "数据不完整");
+			warning.put("item1", name1);
+			warning.put("value1", "");
+			warning.put("item2", name2);
+			warning.put("value2", "");
+			warnings.put(warning);
+		}
+		else
+		{
+			if(datum1 != null && datum2 != null)
+			{
+				Set<String> keys = datum1.keySet();
+				for(String key : keys)
+				{
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					{
+						String value1 = datum1.getString(key);
+						String value2 = datum2.getString(key);
+
+						if(!value1.equals(value2))
+						{
+							JSONObject warning = new JSONObject();
+							warning.put("name", key);
+							warning.put("item1", name1);
+							warning.put("value1", value1);
+							warning.put("item2", name2);
+							warning.put("value2", value2);
+							warnings.put(warning);
+						}
+					}
+				}
+			}
+			else
+			{
+				JSONObject warning = new JSONObject();
+				warning.put("name", "数据不完整");
+				warning.put("item1", name1);
+				warning.put("value1", "");
+				warning.put("item2", name2);
+				warning.put("value2", "");
+				warnings.put(warning);
+			}			
+		}
+		return warnings;
 	}
 %>
 

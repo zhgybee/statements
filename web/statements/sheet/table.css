@@ -1,0 +1,17 @@
+table{background-color:#ffffff; table-layout:fixed; border-collapse:collapse; border-spacing:0px; border-top:1px solid #c5d0dc}
+th, td{font-weight:400; box-sizing:border-box; text-align:center; font-size:15px; overflow:hidden; border-bottom:1px dotted #cccccc; border-right:1px dotted #cccccc}
+th{background-color:#f1f5fa; height:30px; line-height:30px; font-size:12px}
+td{padding:5px; font-size:12px}
+td.title{text-align:left;}
+td.bold{font-weight:bold}
+td.center{text-align:center}
+
+td.editor{background-color:#f1ffff}
+td.editor input{width:80px; border:none; text-align:center; border-radius:3px; outline:none; font-size:12px}
+
+td.expression{background-color:#fafafa}
+td.T01{background-color:#fafafa}
+td.T05{background-color:#fafafa}
+td.T06{background-color:#fafafa}
+
+td.merge-item, th.merge-item{}

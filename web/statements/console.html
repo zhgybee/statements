@@ -72,6 +72,9 @@
 				<div class="searcher-panel left">
 					<div class="searcher-keyword-panel"><input type="text" id="sheet-searcher-field" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
 				</div>
+				<div class="right">
+					<div class="warnings-panel"><i class="icon fa fa-warning"></i><span>0</span></div>
+				</div>
 			</div>
 			<div id="sheets-panel" style="margin-right:-10px"><ul></ul></div>
 		</div>
@@ -120,7 +123,7 @@ $(function()
 		window.location.href = 'export.jsp?version=0001&statement='+statementId+'&substatement='+CURRENTSUBSTATEMENT+"&merge="+ISMERGE+"&children="+CHILDREN;
 	});
 
-	initialise(statementId, "");
+	initialise(statementId);
 	$("#statement-manager-button").on("click", function()
 	{
 		showManagerPanel();
@@ -259,7 +262,7 @@ $(function()
 			app.hideLoading();
 			if(response.status == "1")
 			{
-				initialise(0, app.pagesize);
+				initialise(statementId);
 			}
 			else 
 			{
@@ -351,7 +354,7 @@ function initialise(statementId)
 				{
 					showEditorPanel();
 					$("#import-button-panel").css("display", "none");
-					getSheets(1, statementId, '');
+					getSheets(1, statementId, '', 1);
 				});
 			}
 			
@@ -535,6 +538,34 @@ function getSheets(ismerge, statementId, substatementId, manager)
 			{
 				alert('不能修改制表人');
 			});
+
+
+			$(".warnings-panel").hide();
+			app.showLoading();
+			$.getJSON("checkup.jsp?statement="+statementId+"&substatement="+substatementId+"&merge="+ismerge+"&children="+children+"", function(response)
+			{
+				app.hideLoading();
+				if(response.status == "1")
+				{
+					var warnings = response.resource.warnings;
+					if(warnings.length > 0)
+					{
+						$(".warnings-panel span").html(warnings.length);
+						$(".warnings-panel").show();
+						$(".warnings-panel").on("click", function()
+						{
+							window.open('checkup.html?merge='+ismerge+'&statement='+statementId+'&substatement='+substatementId+'&children='+children);
+						});
+					}
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+
+
+
 
 		}
 		else 

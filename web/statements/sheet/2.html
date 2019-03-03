@@ -1,0 +1,594 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="table.css" />
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	<button style="height:35px; width:80px" id="export-button">导出</button>
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">期末余额</th>
+				<th style="width:100px">期初余额</th>
+				<th style="width:430px">项目</th>
+				<th style="width:60px">附注</th>
+				<th style="width:100px">期末余额</th>
+				<th style="width:100px">期初余额</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="R1">
+				<td class="title bold">一、流动资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">三、流动负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R2">
+				<td class="title">　　货币资金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　短期借款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                   
+			<tr id="R3">
+				<td class="title">　　结算备付金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　向中央银行借款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                            
+			<tr id="R4">
+				<td class="title">　　拆出资金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　吸收存款及同业存放</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                          
+			<tr id="R5">
+				<td class="title">　　以公允价值计量且其变动计入当期损益的金融资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　拆入资金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R6">
+				<td class="title">　　衍生金融资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　以公允价值计量且其变动计入当期损益的金融负债  </td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                
+			<tr id="R7">
+				<td class="title">　　应收票据</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　衍生金融负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                            
+			<tr id="R8">
+				<td class="title">　　应收账款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付票据</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R9">
+				<td class="title">　　预付款项</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付账款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R10">
+				<td class="title">　　应收保费</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　预收款项</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                 
+			<tr id="R11">
+				<td class="title">　　应收分保账款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　卖出回购金融资产款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                    
+			<tr id="R12">
+				<td class="title">　　应收分保合同准备金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付手续费及佣金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                           
+			<tr id="R13">
+				<td class="title">　　应收利息</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付职工薪酬</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                              
+			<tr id="R14">
+				<td class="title">　　应收股利</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　长期应付职工薪酬</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                      
+			<tr id="R15">
+				<td class="title">　　其他应收款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应交税费</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R16">
+				<td class="title">　　买入返售金融资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付利息</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                   
+			<tr id="R17">
+				<td class="title">　　存货</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付股利</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R18">
+				<td class="title">　　持有待售资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　其他应付款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R19">
+				<td class="title">　　一年内到期的非流动资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付分保账款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                           
+			<tr id="R20">
+				<td class="title">　　其他流动资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　保险合同准备金</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                          
+			<tr id="R21">
+				<td class="title bold">　　流动资产合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　代理买卖证券款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                           
+			<tr id="R22">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　代理承销证券款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R23">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　持有待售负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R24">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　一年内到期的非流动负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                        
+			<tr id="R25">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　其他流动负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R26">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">　　流动负债合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R27">
+				<td class="title bold">二、非流动资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">四、非流动负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R28">
+				<td class="title">　　发放贷款及垫款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　长期借款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R29">
+				<td class="title">　　可供出售金融资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　应付债券</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R30">
+				<td class="title">　　持有至到期投资</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　长期应付款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R31">
+				<td class="title">　　长期股权投资</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　专项应付款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R32">
+				<td class="title">　　投资性房地产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　预计负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R33">
+				<td class="title">　　长期应收款</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　递延收益</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R34">
+				<td class="title">　　固定资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　递延所得税负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R35">
+				<td class="title">　　在建工程</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　其他非流动负债</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R36">
+				<td class="title">　　工程物资</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">　　非流动负债合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                
+			<tr id="R37">
+				<td class="title">　　固定资产清理</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold center">负债合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R38">
+				<td class="title">　　生产性生物资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">五、所有者权益</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R39">
+				<td class="title">　　油气资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　股本（实收资本）</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                              
+			<tr id="R40">
+				<td class="title">　　无形资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　其他权益工具</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R41">
+				<td class="title">　　商誉</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　资本公积</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R42">
+				<td class="title">　　开发支出</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　减：库存股</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R43">
+				<td class="title">　　长期待摊费用</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　其他综合收益</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R44">
+				<td class="title">　　递延所得税资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　专项储备</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R45">
+				<td class="title">　　待处理财产损溢</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　盈余公积</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                      
+			<tr id="R46">
+				<td class="title">　　其他非流动资产</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　一般风险准备</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                  
+			<tr id="R47">
+				<td class="title bold">　　非流动资产合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　未分配利润</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                                    
+			<tr id="R48">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title">　　外币报表折算差额</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>                                              
+			<tr id="R49">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title merge-item">　　归属于母公司所有者权益合计</td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+			</tr>                                    
+			<tr id="R50">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title merge-item">　　少数股东权益</td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+				<td class="merge-item"></td>
+			</tr>                                                  
+			<tr id="R51">
+				<td class="title"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold">　　所有者权益合计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="R52">
+				<td class="title bold center">资产总计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="title bold center">负债及所有者权益总计</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr> 
+
+		</tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="table.js"></script>
+<script type="text/javascript">
+
+$(function()
+{
+	var tableId = app.getParameter("table") || "";
+	var statementId = app.getParameter("statement") || "";
+	var substatementId = app.getParameter("substatement") || "";
+	var merge = app.getParameter("merge") || 0;
+	var children = app.getParameter("children") || "";
+
+});
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

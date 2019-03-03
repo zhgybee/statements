@@ -9,16 +9,34 @@
 				{"id":"S0001", "name":"期末数审计调整分录", "system":true},
 				{"id":"S0002", "name":"期初数审计调整分录", "system":true}
 			]},
-			{"id":"1", "sort":"1", "name":"合并利润表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"1", "sort":"1", "name":"现金流量试算平衡表", "description":"", "manager":"1", "fixed":true, "tables":
 			[
-				{"name":"合并利润表", "url":"1.html?mode=1", "system":true}
+				{"name":"现金流量试算平衡表", "url":"1.html?mode=1", "system":true},
 			]},
-			{"id":"2", "sort":"2", "name":"货币资金", "description":"", "tables":
+			{"id":"2", "sort":"2", "name":"资产负债表", "description":"", "manager":"1", "fixed":true, "tables":
+			[
+				{"name":"资产负债表", "url":"2.html?mode=1", "system":true}
+			]},
+
+			{"id":"3", "sort":"3", "name":"利润表", "description":"", "manager":"1", "fixed":true, "tables":
+			[
+				{"name":"利润表", "url":"3.html?mode=1", "system":true}
+			]},
+			{"id":"4", "sort":"4", "name":"现金流量表", "description":"", "manager":"1", "fixed":true, "tables":
+			[
+				{"name":"现金流量表", "url":"4.html?mode=1", "system":true}
+			]},
+			{"id":"5", "sort":"5", "name":"所有者权益变动表", "description":"", "manager":"1", "fixed":true, "tables":
+			[
+				{"name":"所有者权益变动表（本期）", "url":"5-1.html?mode=1", "system":true},
+				{"name":"所有者权益变动表（上期）", "url":"5-2.html?mode=1", "system":true}
+			]},
+			{"id":"6", "sort":"6", "name":"货币资金", "description":"", "tables":
 			[
 				{"id":"S0003", "name":"子表一", "items":["00003"]},
 				{"id":"S0004", "name":"子表二", "items":["00004"]}
 			]},
-			{"id":"3", "sort":"3", "name":"存货", "description":"", "tables":
+			{"id":"7", "sort":"7", "name":"存货", "description":"", "tables":
 			[
 				{"id":"S0005", "name":"子表三", "items":["00005"]},
 				{"id":"S0006", "name":"子表四", "items":["00006"]}

@@ -95,6 +95,11 @@ li{padding:0px; margin:0px; list-style-type:none}
 .grid-toolbar-panel .searcher-panel .searcher-keyword-panel input{width:275px}
 .grid-toolbar-panel .searcher-panel input{border-radius:2px; margin-right:5px; background-color:#ffffff; border:0px none; color:#838383; width:100px; height:35px; padding:0px 5px}
 .grid-toolbar-panel .searcher-panel i{font-size:14px; color:#999999}
+
+.grid-toolbar-panel .warnings-panel{display:none; height:35px; background-color:#d15b47; color:#ffffff; line-height:35px; overflow:hidden; padding:0px 10px; cursor:pointer}
+.grid-toolbar-panel .warnings-panel i{font-size:18px}
+.grid-toolbar-panel .warnings-panel span{font-size:16px; margin-left:5px}
+
 .grid-toolbar-panel .pagination-panel {margin:0px auto}
 .grid-toolbar-panel .pagination-panel ul{margin:0px auto}
 .grid-toolbar-panel .pagination-panel ul li{float:left; margin-left:5px}
