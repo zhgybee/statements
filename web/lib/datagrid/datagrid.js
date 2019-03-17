@@ -309,27 +309,27 @@
 					value = $.parseJSON(value);
 					for(var l = 0 ; l < dynamiccolumns.length ; l++)
 					{
-						var description = value[dynamiccolumns[l]];
+						var description = toValue(column, value[dynamiccolumns[l]]);
 						if(column.dictionary != null && column.dictionary != "")
 						{
 							description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
 						}
-						description = toValue(column, description);
 
 						var $cell = $('<td/>');
 						$cell.append('<div class="'+name+'_'+l+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+((description == null || description == "") ? "&nbsp;" : description)+'</div>');
 						$cell.css("cursor", "not-allowed");
 						$row.append($cell);
+						//json单元格的修改未完成
 					}
 				}
 				else
 				{
+					value = toValue(column, value);
 					var description = value;
 					if(column.dictionary != null && column.dictionary != "")
 					{
 						description = structureutils.getDictionary(app.getContextPath()+"/"+column.dictionary.map, description, true);
 					}
-					description = toValue(column, description);
 
 					var $cell = $('<td/>');
 					if(type == "index")
@@ -370,9 +370,33 @@
 		var toValue = function(column, value)
 		{
 			var modes = column.modes;
-			if(modes != null && modes.indexOf("percent") != -1)
+			if(modes != null)
 			{
-				value = app.toFixed((app.toNumber(value) * 100), 2) + "%";
+				if(modes.indexOf("percent") != -1)
+				{
+					value = app.toFixed((app.toNumber(value) * 100), 2) + "%";
+				}
+				else if(modes.indexOf("monery") != -1)
+				{
+					value = app.changeMoney(value);
+				}
+			}
+			return value;
+		}
+		var fromValue = function(column, value)
+		{
+			var modes = column.modes;
+			if(modes != null)
+			{
+				if(modes.indexOf("percent") != -1)
+				{
+					value = value.replace("%","");
+					value = app.toFixed(app.toNumber(value) / 100, 2);
+				}
+				else if(modes.indexOf("monery") != -1)
+				{
+					value = value.replace(/,/ig,"");
+				}
 			}
 			return value;
 		}
@@ -743,8 +767,8 @@
 		{
 			var column = event.data.column;
 			var key = event.data.key;
-			var value = event.data.value;
-			var description = event.data.description;
+			var value = fromValue(column, event.data.value);
+			var description = fromValue(column, event.data.description);
 			var $editor = $(this).find("div");
 
 			if(value == description)
@@ -755,6 +779,8 @@
 			{
 				column.editor.value = {value:value, description:description};
 			}
+
+
 
 			var structureutils = new DataStructureUtils();
 			$editor.html( structureutils.getFields({column:column}) );
@@ -843,7 +869,7 @@
 									}
 									else
 									{
-										$cell.html(value);
+										$cell.html(app.changeMoney(value));
 									}
 								}
 

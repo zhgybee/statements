@@ -102,19 +102,36 @@
 	public JSONArray warning(String name1, String name2, Datum datum1, Datum datum2) throws JSONException
 	{
 		JSONArray warnings = new JSONArray();
-		if(datum1 == null && datum2 == null)
+
+		if(datum1 != null && datum2 != null)
 		{
-			JSONObject warning = new JSONObject();
-			warning.put("name", "数据不完整");
-			warning.put("item1", name1);
-			warning.put("value1", "");
-			warning.put("item2", name2);
-			warning.put("value2", "");
-			warnings.put(warning);
+			Set<String> keys = datum1.keySet();
+			for(String key : keys)
+			{
+				if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+				{
+					double value1 = datum1.getDouble(key);
+					double value2 = datum2.getDouble(key);
+
+
+					
+
+					if(value1 != value2)
+					{
+						JSONObject warning = new JSONObject();
+						warning.put("name", key);
+						warning.put("item1", name1);
+						warning.put("value1", value1);
+						warning.put("item2", name2);
+						warning.put("value2", value2);
+						warnings.put(warning);
+					}
+				}
+			}
 		}
 		else
 		{
-			if(datum1 != null && datum2 != null)
+			if(datum1 != null && datum2 == null)
 			{
 				Set<String> keys = datum1.keySet();
 				for(String key : keys)
@@ -122,32 +139,38 @@
 					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
 					{
 						String value1 = datum1.getString(key);
-						String value2 = datum2.getString(key);
-
-						if(!value1.equals(value2))
-						{
-							JSONObject warning = new JSONObject();
-							warning.put("name", key);
-							warning.put("item1", name1);
-							warning.put("value1", value1);
-							warning.put("item2", name2);
-							warning.put("value2", value2);
-							warnings.put(warning);
-						}
+						JSONObject warning = new JSONObject();
+						warning.put("name", "数据不完整");
+						warning.put("item1", name1);
+						warning.put("value1", value1);
+						warning.put("item2", name2);
+						warning.put("value2", "");
+						warnings.put(warning);
 					}
 				}
 			}
-			else
+			else if(datum1 == null && datum2 != null)
 			{
-				JSONObject warning = new JSONObject();
-				warning.put("name", "数据不完整");
-				warning.put("item1", name1);
-				warning.put("value1", "");
-				warning.put("item2", name2);
-				warning.put("value2", "");
-				warnings.put(warning);
-			}			
-		}
+				Set<String> keys = datum2.keySet();
+				for(String key : keys)
+				{
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					{
+						String value2 = datum2.getString(key);
+						JSONObject warning = new JSONObject();
+						warning.put("name", "数据不完整");
+						warning.put("item1", name1);
+						warning.put("value1", "");
+						warning.put("item2", name2);
+						warning.put("value2", value2);
+						warnings.put(warning);
+					}
+				}
+			}
+
+		}	
+
+
 		return warnings;
 	}
 %>

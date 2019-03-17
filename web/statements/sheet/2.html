@@ -47,17 +47,17 @@
 			<tr id="R2">
 				<td class="title">　　货币资金</td>
 				<td></td>
-				<td></td>
-				<td></td>
+				<td class="T01" expression="[K1001.QMSDH]"></td>
+				<td class="T01" expression="[K1001.QCSDH]"></td>
 				<td class="title">　　短期借款</td>
 				<td></td>
-				<td></td>
-				<td></td>
+				<td class="T01" expression="[K1002.QMSDH]"></td>
+				<td class="T01" expression="[K1002.QCSDH]"></td>
 			</tr>                                                   
 			<tr id="R3">
 				<td class="title">　　结算备付金</td>
 				<td></td>
-				<td></td>
+				<td class="expression" expression="[R2.2] + [R2.3]"></td>
 				<td></td>
 				<td class="title">　　向中央银行借款</td>
 				<td></td>
@@ -574,6 +574,8 @@ $(function()
 	var merge = app.getParameter("merge") || 0;
 	var children = app.getParameter("children") || "";
 
+	expression(statementId, substatementId, merge, children);
+	setExport('资产负债表');
 });
 
 

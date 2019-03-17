@@ -7,7 +7,7 @@
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
 			{"name":"JFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300"},
 			{"name":"JFEJKM", "editor":{}, "width":"200"},
-			{"name":"JFJE", "editor":{}, "width":"100"},
+			{"name":"JFJE", "editor":{}, "width":"100", "modes":["monery"]},
 			{"name":"DFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300"},
 			{"name":"DFEJKM", "editor":{}, "width":"200"},
 			{"name":"DFJE", "editor":{}, "width":"100"},
@@ -86,7 +86,7 @@
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
 			{"name":"A", "width":"200", "merge":{"group":true}},
-			{"name":"B", "meaning":"jsonobject",  "width":"80", "merge":{}, "modes":["percent"]},
+			{"name":"B", "meaning":"jsonobject",  "width":"80", "merge":{}},
 			{"name":"C", "meaning":"jsonobject", "width":"80", "merge":{}},
 			{"name":"CREATE_USER_ID", "dictionary":{"map":"dictionary/map/user.json"}, "width":"200"},
 			{"name":"CREATE_DATE", "width":"200"}
@@ -130,7 +130,7 @@
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
 			{"name":"A", "title":"项目"},
-			{"name":"B", "title":"科目编号"},
+			{"name":"B", "title":"科目编号", "modes":["monery"], "editor":{}},
 			{"name":"C", "title":"审定前(期末数/本期累计数)"},
 			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
 			{"name":"CREATE_DATE", "title":"创建日期"}
@@ -142,7 +142,7 @@
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
 			{"name":"A", "title":"项目"},
-			{"name":"B", "title":"科目编号"},
+			{"name":"B", "title":"科目编号", "modes":["percent"], "editor":{}},
 			{"name":"C", "title":"审定前(期末数/本期累计数)"},
 			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
 			{"name":"CREATE_DATE", "title":"创建日期"}

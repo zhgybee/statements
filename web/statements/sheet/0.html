@@ -78,6 +78,7 @@
 							var itemcode = $field.data("itemcode");
 							var $cell = $field.closest("td");
 							var value = $field.val();
+
 							if(source != value)
 							{
 								app.showLoading();
@@ -96,7 +97,7 @@
 							}
 							else
 							{
-								$cell.html($field.val());
+								$cell.html( app.changeMoney($field.val()) );
 							}
 						});
 					}
@@ -167,14 +168,14 @@
 						content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
 						content += '<td class="itemname" style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
 						content += '<td class="itemcode">'+item["code"]+'</td>';
-						content += '<td class="'+editor+'" name="QMSDQ">'+qmsdq+'</td>';
-						content += '<td class="readonly">'+qmjfje+'</td>';
-						content += '<td class="readonly">'+qmdfje+'</td>';
-						content += '<td class="readonly">'+qmsdh+'</td>';
-						content += '<td class="'+editor+'" name="QCSDQ">'+qcsdq+'</td>';
-						content += '<td class="readonly">'+qcjfje+'</td>';
-						content += '<td class="readonly">'+qcdfje+'</td>';
-						content += '<td class="readonly">'+qcsdh+'</td>';
+						content += '<td class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qmjfje)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qmdfje)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qmsdh)+'</td>';
+						content += '<td class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qcjfje)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qcdfje)+'</td>';
+						content += '<td class="readonly">'+app.changeMoney(qcsdh)+'</td>';
 						content += '</tr>';
 					});
 					var $t01 = $("#T01 tbody");
@@ -187,6 +188,7 @@
 						{
 							var $row = $(this).closest("tr");
 							var value = $(this).text();
+							value = value.replace(/,/ig,"");
 							var $field = $('<input />');
 							$field.val(value);
 							$field.data("name", $(this).attr("name"));
@@ -211,7 +213,7 @@
 							if(j > 1)
 							{
 								var result = analyze(expression, j)
-								$(cell).text(eval(result));
+								$(cell).text( app.changeMoney(eval(result)) );
 							}
 						});
 
@@ -258,7 +260,9 @@
 			var $cells = $("#T01 tbody ."+name+" td");
 			if($cells.length > 0)
 			{
-				return app.toNumber( $($cells[index]).text() );
+				var text = $($cells[index]).text();
+				text = text.replace(/,/ig,"");
+				return app.toNumber( text );
 			}
 			return null;
 		}

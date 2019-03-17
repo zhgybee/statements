@@ -86,7 +86,6 @@ li{padding:0px; margin:0px; list-style-type:none}
 #choice-sheet-panel .sheet-panel ul li .sheet-items h4 span{font-size:10px; margin-left:5px; font-weight:300; color:#aaaaaa}
 #choice-sheet-panel .sheet-panel ul li .sheet-items p{margin-top:2px; color:#aaaaaa}
 
-#messages-panel{box-sizing:border-box; display:none; position:absolute; top:0px; left:0px; background-color:#fefbdf; width:100%; padding:30px; color:#333333; filter:alpha(opacity=90); opacity:0.9;}
 
 .grid-toolbar-panel{box-sizing:border-box; overflow:hidden;}
 .grid-toolbar-panel .searcher-panel{}
@@ -166,3 +165,6 @@ li{padding:0px; margin:0px; list-style-type:none}
 .tabs.bottom .left-button{top:0px; border-top:none; border-bottom:1px solid #dddddd; background-color:#ffffff}
 .tabs.bottom .right-button{top:0px; border-top:none; border-bottom:1px solid #dddddd; background-color:#ffffff}
 
+
+#messages-panel{box-sizing:border-box; display:none; position:absolute; top:0px; left:0px; border-bottom:1px solid #faebcc; background-color:#fcf8e3; width:100%; padding:30px; color:#333333; filter:alpha(opacity=95); opacity:0.95;}
+#messages-panel .messages-text{font-size:15px; color:#ff6600;}

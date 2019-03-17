@@ -62,18 +62,17 @@ var app = {};
 		if($loading.length == 0)
 		{
 			var content = '<div id="messages-panel" style="display:none">';
-			content += text+'<div class="close-button">关闭</div>';
+			content += '<div class="messages-text">'+text+'</div>';
 			content += '</div>';
 			$("body").append(content);
 			$loading = $("#messages-panel");
 			
-			$("#messages-panel .close-button").on("click", function()
+			$("#messages-panel").on("click", function()
 			{
-				$loading.hide();
+				$loading.slideUp('fast');
 			});
-
 		}
-		$loading.show();
+		$loading.slideDown('fast');
 	}
 
 	app.alert = function(text) 
@@ -531,6 +530,26 @@ var app = {};
 
 		$choice.show();
 	}
+
+	app.changeMoney = function(text)
+	{
+		if((text || "") != "")
+		{
+			text = text.toString();
+			text = text.replace(/^(\d*)$/,"$1.");
+			text = (text + "00").replace(/(\d*\.\d\d)\d*/,"$1");
+			text = text.replace(".",",");
+			var code = /(\d)(\d{3},)/;
+			while(code.test(text))
+			{
+				  text = text.replace(code, "$1,$2");
+			}
+			text = text.replace(/,(\d\d)$/, ".$1");
+			return text.replace(/^\./, "0.")
+		}
+		return "";
+	}
+
 
 
 	app.getParameter = function(m)

@@ -42,6 +42,8 @@
 		String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
 		String merge = StringUtils.defaultString(request.getParameter("merge"), "");
 		String children = StringUtils.defaultString(request.getParameter("children"), "");
+		String statementname = StringUtils.defaultString(request.getParameter("statementname"), "");
+		String substatementname = StringUtils.defaultString(request.getParameter("substatementname"), "");
 		
 
 		children = URLDecoder.decode(children, "UTF-8");
@@ -340,53 +342,56 @@
 								
 								if(dynamiccolumns != null)
 								{
-									JSONObject valuemap = new JSONObject(value);
-									for(String dynamiccolumn : dynamiccolumns)
+									if(!value.equals(""))
 									{
-										xml.append("	<w:tc>");
-										xml.append("		<w:tcPr>");
-										xml.append("			<w:tcW w:w=\""+column.optInt("width")+"\" w:type=\"dxa\"/>");
-										xml.append("			<w:vAlign w:val=\"center\"/>");
-										xml.append("		</w:tcPr>");
-										xml.append("		<w:p>");
-										xml.append("			<w:pPr>");
-										xml.append("				<w:jc w:val=\""+align+"\"/>");
-										xml.append("			</w:pPr>");
-										xml.append("			<w:r>");
-										xml.append("				<w:t>"+toValue(column, valuemap.optString(dynamiccolumn))+"</w:t>");
-										xml.append("			</w:r>");
-										xml.append("		</w:p>");
-										xml.append("	</w:tc>");
-										if(issum)
+										JSONObject valuemap = new JSONObject(value);
+										for(String dynamiccolumn : dynamiccolumns)
 										{
-											boolean isexclude = false;
-											if(sumexcludes != null)
+											xml.append("	<w:tc>");
+											xml.append("		<w:tcPr>");
+											xml.append("			<w:tcW w:w=\""+column.optInt("width")+"\" w:type=\"dxa\"/>");
+											xml.append("			<w:vAlign w:val=\"center\"/>");
+											xml.append("		</w:tcPr>");
+											xml.append("		<w:p>");
+											xml.append("			<w:pPr>");
+											xml.append("				<w:jc w:val=\""+align+"\"/>");
+											xml.append("			</w:pPr>");
+											xml.append("			<w:r>");
+											xml.append("				<w:t>"+toValue(column, valuemap.optString(dynamiccolumn))+"</w:t>");
+											xml.append("			</w:r>");
+											xml.append("		</w:p>");
+											xml.append("	</w:tc>");
+											if(issum)
 											{
-												if(mergecolumn != null)
+												boolean isexclude = false;
+												if(sumexcludes != null)
 												{
-													String groupvalue = datum.getString(mergecolumn.optString("name"));
-													for(int k = 0 ; k < sumexcludes.length() ; k++)
+													if(mergecolumn != null)
 													{
-														if(groupvalue.indexOf(sumexcludes.optString(k)) != -1)
+														String groupvalue = datum.getString(mergecolumn.optString("name"));
+														for(int k = 0 ; k < sumexcludes.length() ; k++)
 														{
-															isexclude = true;
+															if(groupvalue.indexOf(sumexcludes.optString(k)) != -1)
+															{
+																isexclude = true;
+															}
 														}
 													}
 												}
-											}
-											if(!isexclude)
-											{
-												Double sum = summap.get(dynamiccolumn);
-												if(sum == null)
+												if(!isexclude)
 												{
-													summap.put(dynamiccolumn, NumberUtils.toDouble(valuemap.optString(dynamiccolumn), 0));
-												}
-												else
-												{
-													summap.put(dynamiccolumn, sum + NumberUtils.toDouble(valuemap.optString(dynamiccolumn), 0));
+													Double sum = summap.get(dynamiccolumn);
+													if(sum == null)
+													{
+														summap.put(dynamiccolumn, NumberUtils.toDouble(valuemap.optString(dynamiccolumn), 0));
+													}
+													else
+													{
+														summap.put(dynamiccolumn, sum + NumberUtils.toDouble(valuemap.optString(dynamiccolumn), 0));
+													}
 												}
 											}
-										}										
+										}
 									}
 								}
 								else
@@ -544,9 +549,9 @@
 				connection.close();
 			}
 		}
-
-		FileUtils.writeStringToFile(new File("D:\\123.doc"), xml.toString(), "UTF-8");
-		
+		String name = statementname + (substatementname.equals("") ? "" : "-"+substatementname) + "-" + (merge.equals("1") ? "合并" : "单体" ) + ".doc";
+		FileUtils.writeStringToFile(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "resource" + SystemProperty.FILESEPARATOR + "report" + SystemProperty.FILESEPARATOR + name), xml.toString(), "UTF-8");
+		message.resource("filename", name);
 		if(warnings.size() > 0)
 		{
 			for(String warning : warnings)

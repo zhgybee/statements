@@ -113,14 +113,33 @@
 var CURRENTSUBSTATEMENT = '';
 var CHILDREN = '';
 var ISMERGE = 0;
+var MANAGER = '';
 var statementId = app.getParameter("id");
 
+var substatementname = "";
 $(function()
 {
 
 	$("#create-button").on("click", function()
 	{
-		window.location.href = 'export.jsp?version=0001&statement='+statementId+'&substatement='+CURRENTSUBSTATEMENT+"&merge="+ISMERGE+"&children="+CHILDREN;
+		var statementname = $("#statement-title h2").text();
+		app.showLoading();
+		$.getJSON('export.jsp?version=0001&statement='+statementId+'&substatement='+CURRENTSUBSTATEMENT+"&merge="+ISMERGE+"&children="+CHILDREN+'&statementname='+statementname+'&substatementname='+substatementname, function(response)
+		{
+			app.hideLoading();
+
+
+			if(response.status == "1")
+			{
+				let filename = response.resource.filename;
+				window.location.href = '../resource/report/'+filename;
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+
+		});
 	});
 
 	initialise(statementId);
@@ -181,6 +200,7 @@ $(function()
 							if(message.status == 1)
 							{
 								app.message("数据导入成功");
+								getSheets(ISMERGE, statementId, CURRENTSUBSTATEMENT, MANAGER)
 							}
 							else
 							{
@@ -294,8 +314,7 @@ $(function()
 
 	});
 
-	
-
+	getSheets(1, statementId, '', 1);
 })
 
 function showEditorPanel()
@@ -394,6 +413,7 @@ function initialise(statementId)
 				var $substatement = $(this).closest("li");
 				var substatementId = $substatement.attr("code");
 				var manager = $substatement.attr("manager");
+				substatementname = $(this).text();
 				getSheets(0, statementId, substatementId, manager);
 			});
 			$("li.substatement h6 .merge-statement-button").on("click", function()
@@ -404,6 +424,7 @@ function initialise(statementId)
 				var $substatement = $(this).closest("li");
 				var substatementId = $substatement.attr("code");
 				var manager = $substatement.attr("manager");
+				substatementname = $(this).parent().find(".substatement-title").text();
 				getSheets(1, statementId, substatementId, manager)
 			});
 
@@ -419,6 +440,7 @@ function getSheets(ismerge, statementId, substatementId, manager)
 {
 	ISMERGE = ismerge;
 	CURRENTSUBSTATEMENT = substatementId;
+	MANAGER = manager
 	app.showLoading();
 	$.getJSON("statement.jsp?mode=6&merge="+ismerge+"&statement="+statementId+"&substatement="+substatementId+"&manager="+manager, function(response)
 	{
@@ -552,7 +574,7 @@ function getSheets(ismerge, statementId, substatementId, manager)
 					{
 						$(".warnings-panel span").html(warnings.length);
 						$(".warnings-panel").show();
-						$(".warnings-panel").on("click", function()
+						$(".warnings-panel").off().on("click", function()
 						{
 							window.open('checkup.html?merge='+ismerge+'&statement='+statementId+'&substatement='+substatementId+'&children='+children);
 						});

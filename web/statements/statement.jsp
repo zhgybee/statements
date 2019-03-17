@@ -262,6 +262,10 @@
 					if(substatement == null)
 					{
 						sheets = datasource.find("select SHEET_ID from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
+						for(Datum child : substatements)
+						{
+							substatementIds = ArrayUtils.add(substatementIds, "'"+child.getString("ID")+"'");
+						}
 					}
 					else
 					{
