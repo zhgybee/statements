@@ -376,7 +376,7 @@
 				{
 					value = app.toFixed((app.toNumber(value) * 100), 2) + "%";
 				}
-				else if(modes.indexOf("monery") != -1)
+				else if(modes.indexOf("money") != -1)
 				{
 					value = app.changeMoney(value);
 				}
@@ -393,7 +393,7 @@
 					value = value.replace("%","");
 					value = app.toFixed(app.toNumber(value) / 100, 2);
 				}
-				else if(modes.indexOf("monery") != -1)
+				else if(modes.indexOf("money") != -1)
 				{
 					value = value.replace(/,/ig,"");
 				}

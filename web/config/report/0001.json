@@ -40,5 +40,18 @@
 			{"name":"C", "meaning":"jsonobject", "width":"2000", "merge":{}, "sum":{"exclude":["交易"]}}
 
 		]
+	},
+	{
+		"type":"newline"
+	},
+	{
+		"id":"S0005", "type":"table", "columns":
+		[
+
+			{"name":"A", "width":"2000", "title":"A列", "merge":{"group":true}},
+			{"name":"B", "width":"2000", "title":"B列", "merge":{}, "modes":["percent"]},
+			{"name":"C", "width":"2000", "title":"C列", "merge":{}, "modes":["money"]}
+
+		]
 	}
 ]

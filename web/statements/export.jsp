@@ -1,3 +1,5 @@
+<%@page import="java.text.NumberFormat"%>
+<%@page import="org.json.JSONException"%>
 <%@page import="com.system.utils.StatementUtils"%>
 <%@page import="java.util.Objects"%>
 <%@page import="org.apache.commons.lang3.ArrayUtils"%>
@@ -103,7 +105,7 @@
 							data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID in ("+children+")");
 						}
 						//合并数据
-						data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
+						data = SystemUtils.merge(data, item.optJSONArray("columns"));
 					}
 					else
 					{
@@ -568,31 +570,26 @@
 	out.println(message);
 %>
 <%!
-public String toValue(JSONObject column, String value)
+public String toValue(JSONObject column, String value) throws JSONException
 {
-	DecimalFormat decimalFormat = new DecimalFormat("#.00");
 	JSONArray modes = column.optJSONArray("modes");
-	boolean ispercent = false;
 	if(modes != null)
 	{
-		for(int i = 0 ; i < modes.length() ; i++)
+		String mode = modes.join(",");
+		
+		if(mode.indexOf("percent") != -1)
 		{
-			if(modes.optString(i).equals("percent"))
-			{
-				ispercent = true;
-				break;
-			}
+			DecimalFormat decimalFormat = new DecimalFormat("#.00");
+			value = decimalFormat.format(NumberUtils.toDouble(value, 0) * 100) + "%";
+		}
+		
+		if(mode.indexOf("money") != -1)
+		{
+			NumberFormat format = NumberFormat.getNumberInstance();
+			value = format.format(NumberUtils.toDouble(value, 0));
 		}
 	}
-	
-	if(ispercent)
-	{
-		value = decimalFormat.format(NumberUtils.toDouble(value, 0) * 100) + "%";
-	}
-
 	value = StringUtils.replaceEach(value, new String[]{"<", ">", "&", "'", "\""}, new String[]{"<w:t>&lt;</w:t>", "<w:t>&gt;</w:t>", "<w:t>&amp;</w:t>", "<w:t>&apos;</w:t>", "<w:t>&quot;</w:t>"});
-
-	
 	return value;
 }
 %>

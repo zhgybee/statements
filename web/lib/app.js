@@ -536,6 +536,14 @@ var app = {};
 		if((text || "") != "")
 		{
 			text = text.toString();
+
+			var minus = false;
+			if(text.substring(0, 1) == "-")
+			{
+				minus = true;
+				text = text.substring(1, text.length);
+			}
+
 			text = text.replace(/^(\d*)$/,"$1.");
 			text = (text + "00").replace(/(\d*\.\d\d)\d*/,"$1");
 			text = text.replace(".",",");
@@ -545,7 +553,13 @@ var app = {};
 				  text = text.replace(code, "$1,$2");
 			}
 			text = text.replace(/,(\d\d)$/, ".$1");
-			return text.replace(/^\./, "0.")
+			text = text.replace(/^\./, "0.");
+
+			if(minus)
+			{
+				text = "-"+text;
+			}
+			return text;
 		}
 		return "";
 	}

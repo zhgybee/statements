@@ -576,7 +576,7 @@ function getResource(statementId, substatementId, merge, children)
 						var $cell = $(cell);
 						var name = $cell.attr("name");
 
-						$cell.text(item[name]);
+						$cell.text( app.changeMoney(item[name]) );
 
 					});
 				}

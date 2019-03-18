@@ -27,6 +27,7 @@ function setEditor(url)
 		{
 			var $row = $(this).closest("tr");
 			var value = $(this).text();
+			value = value.replace(/,/ig,"");
 			var $field = $('<input />');
 			$field.val(value);
 			$field.data("name", $(this).attr("name"));
@@ -70,7 +71,7 @@ function setEditor(url)
 					else
 					{
 						var $cell = $field.closest("td");
-						$cell.html($field.val());
+						$cell.html( app.changeMoney($field.val()) );
 					}
 				});
 			}
@@ -109,7 +110,7 @@ function expression(statementId, substatementId, merge, children)
 		{
 			var $cell = $(cell);
 			var expression = $cell.attr("expression");
-			$(cell).text(eval(analyze(expression)));
+			$(cell).text( app.changeMoney(eval(analyze(expression))) );
 
 		});
 	});
@@ -146,7 +147,11 @@ function getByPage(name, index)
 	var $cells = $("#"+name+" td");
 	if($cells.length > 0)
 	{
-		return app.toNumber( $($cells[index]).text() );
+
+		var text = $($cells[index]).text();
+		text = text.replace(/,/ig,"");
+
+		return app.toNumber( text );
 	}
 	return null;
 }
@@ -178,7 +183,7 @@ function set(statementId, substatementId, merge, children, callback)
 				{
 					var $cell = $(cell);
 					var expression = $cell.attr("expression");
-					$(cell).text(eval(analyze(expression, map)));
+					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
 				});
 
 				if(callback != null)
@@ -215,7 +220,7 @@ function set(statementId, substatementId, merge, children, callback)
 				{
 					var $cell = $(cell);
 					var expression = $cell.attr("expression");
-					$(cell).text(eval(analyze(expression, map)));
+					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
 				});
 
 				if(callback != null)
@@ -253,7 +258,7 @@ function set(statementId, substatementId, merge, children, callback)
 				{
 					var $cell = $(cell);
 					var expression = $cell.attr("expression");
-					$(cell).text(eval(analyze(expression, map)));
+					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
 				});
 
 				if(callback != null)
