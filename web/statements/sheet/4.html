@@ -382,11 +382,11 @@ $(function()
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
 
-	expression(statementId, substatementId, merge, children);
+	expression(statementId, substatementId, statementmode, children);
 	setExport('现金流量表');
 
 });

@@ -3,35 +3,35 @@
 	{
 		"sheets":
 		[
-			{"id":"0", "sort":"0", "name":"试算平衡表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"0", "sort":"0", "name":"试算平衡表", "caption":"试算平衡表", "description":"", "type":"01", "fixed":true, "tables":
 			[
-				{"name":"试算平衡表", "url":"0.html?mode=1", "system":true},
-				{"id":"S0001", "name":"期末数审计调整分录", "system":true},
-				{"id":"S0002", "name":"期初数审计调整分录", "system":true}
+				{"name":"试算平衡表", "url":"0.html?mode=1", "import":false},
+				{"id":"S0001", "name":"期末数审计调整分录", "import":false},
+				{"id":"S0002", "name":"期初数审计调整分录", "import":false}
 			]},
-			{"id":"1", "sort":"1", "name":"现金流量试算平衡表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"1", "sort":"1", "name":"现金流量试算平衡表", "description":"", "type":"01", "fixed":true, "tables":
 			[
-				{"name":"现金流量试算平衡表", "url":"1.html?mode=1", "system":true},
+				{"name":"现金流量试算平衡表", "url":"1.html?mode=1", "import":false},
 			]},
-			{"id":"2", "sort":"2", "name":"资产负债表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"2", "sort":"2", "name":"资产负债表", "caption":"四表", "description":"", "type":"02", "fixed":true, "tables":
 			[
-				{"name":"资产负债表", "url":"2.html?mode=1", "system":true}
+				{"name":"资产负债表", "url":"2.html?mode=1", "import":false}
 			]},
 
-			{"id":"3", "sort":"3", "name":"利润表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"3", "sort":"3", "name":"利润表", "description":"", "type":"02", "fixed":true, "tables":
 			[
-				{"name":"利润表", "url":"3.html?mode=1", "system":true}
+				{"name":"利润表", "url":"3.html?mode=1", "import":false}
 			]},
-			{"id":"4", "sort":"4", "name":"现金流量表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"4", "sort":"4", "name":"现金流量表", "description":"", "type":"02", "fixed":true, "tables":
 			[
-				{"name":"现金流量表", "url":"4.html?mode=1", "system":true}
+				{"name":"现金流量表", "url":"4.html?mode=1", "import":false}
 			]},
-			{"id":"5", "sort":"5", "name":"所有者权益变动表", "description":"", "manager":"1", "fixed":true, "tables":
+			{"id":"5", "sort":"5", "name":"所有者权益变动表", "description":"", "type":"02", "fixed":true, "tables":
 			[
-				{"name":"所有者权益变动表（本期）", "url":"5-1.html?mode=1", "system":true},
-				{"name":"所有者权益变动表（上期）", "url":"5-2.html?mode=1", "system":true}
+				{"name":"所有者权益变动表（本期）", "url":"5-1.html?mode=1", "import":false},
+				{"name":"所有者权益变动表（上期）", "url":"5-2.html?mode=1", "import":false}
 			]},
-			{"id":"6", "sort":"6", "name":"货币资金", "description":"", "tables":
+			{"id":"6", "sort":"6", "name":"货币资金", "caption":"货币表", "description":"", "tables":
 			[
 				{"id":"S0003", "name":"子表一", "items":["00003"]},
 				{"id":"S0004", "name":"子表二", "items":["00004"]}

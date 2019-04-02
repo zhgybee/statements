@@ -42,8 +42,8 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				//在工作台中，一个项目的子项目管理人员或者子项目的工作人员可以查询到该项目
-				Data statements = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_STATEMENT.* from T_STATEMENT left join T_USER on T_STATEMENT.CREATE_USER_ID = T_USER.ID where T_STATEMENT.ID in (select STATEMENT_ID from T_STATEMENT_TRANSACTOR where TRANSACTOR_USER_ID = ? and STATUS = ? group by STATEMENT_ID) or T_STATEMENT.ID in (select STATEMENT_ID from T_SUBSTATEMENT where MANAGER_USER_ID = ?) order by T_STATEMENT.CREATE_DATE desc", 
-						sessionuser.getId(), status, sessionuser.getId());
+				Data statements = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_STATEMENT.* from T_STATEMENT left join T_USER on T_STATEMENT.CREATE_USER_ID = T_USER.ID where T_STATEMENT.ID in (select STATEMENT_ID from T_STATEMENT_TRANSACTOR where TRANSACTOR_USER_ID = ? and STATUS = ? group by STATEMENT_ID) or T_STATEMENT.ID in (select STATEMENT_ID from T_SUBSTATEMENT where MANAGER_USER_ID = ?)  or T_STATEMENT.ID in (select STATEMENT_ID from T_STATEMENT_SHARER where USER_ID = ? group by STATEMENT_ID) order by T_STATEMENT.CREATE_DATE desc", 
+						sessionuser.getId(), status, sessionuser.getId(), sessionuser.getId());
 				message.resource("statements", statements);
 			}
 			catch(Exception e)
@@ -61,6 +61,7 @@
 		}
 		else if(mode.equals("2"))
 		{
+			/* 分页查询所有项目 */
 			int pagenumber = NumberUtils.toInt(request.getParameter("pagenumber"), 1);
 			int pagesize = NumberUtils.toInt(request.getParameter("pagesize"), 10);
 			String searcher = StringUtils.defaultString(request.getParameter("searcher"), "");
@@ -145,6 +146,15 @@
 				Data sheets = datasource.find("select SHEET_ID as 'id' from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 				statement.put("SHEETS", sheets);
 				
+				
+				Data sharers = datasource.find("select USER_ID from T_STATEMENT_SHARER where STATEMENT_ID = ?", statementId);
+				String[] sharerIds = new String[]{};
+				for(Datum sharer : sharers)
+				{
+					sharerIds = ArrayUtils.add(sharerIds, sharer.getString("USER_ID"));
+				}
+				statement.put("SHARERS", StringUtils.join(sharerIds, ","));
+				
 				message.resource("statement", statement);
 				
 				Data substatements = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_SUBSTATEMENT.* from T_SUBSTATEMENT left join T_USER on T_SUBSTATEMENT.MANAGER_USER_ID = T_USER.ID where T_SUBSTATEMENT.STATEMENT_ID = ? order by T_SUBSTATEMENT.CREATE_DATE desc", 
@@ -157,12 +167,21 @@
 					//如果当前人员是总项目负责人
 					message.resource("substatements", substatements);
 					statement.put("ISCREATOR", "1");
+					statement.put("ISSHARER", "0");
+				}
+				else if(ArrayUtils.contains(sharerIds, sessionuser.getId()))
+				{
+					//如果当前人员是项目共享人员
+					message.resource("substatements", substatements);
+					statement.put("ISCREATOR", "0");
+					statement.put("ISSHARER", "1");
 				}
 				else
 				{
 					statement.put("ISCREATOR", "0");
+					statement.put("ISSHARER", "0");
 					
-					//当前人可以操作的项目
+					//当前人可以管理的子项目
 					Set<Datum> container = new HashSet<Datum>();
 
 					//当前人员管理的子项目（包括下级）
@@ -185,7 +204,7 @@
 					}
 					
 					
-					//当前人填写表格所在的项目（从当前人员可以操作的表格查找）
+					//当前人填写表格所在的子项目（从当前人员可以操作的表格查找）
 					//设置管理标志位为0
 					Data statements = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ICON as 'USERICON', T_SUBSTATEMENT.* from T_SUBSTATEMENT left join T_USER on T_SUBSTATEMENT.MANAGER_USER_ID = T_USER.ID where T_SUBSTATEMENT.ID in (select SUBSTATEMENT_ID from T_STATEMENT_TRANSACTOR where TRANSACTOR_USER_ID = ?  group by SUBSTATEMENT_ID) and T_SUBSTATEMENT.STATEMENT_ID = ? order by T_SUBSTATEMENT.CREATE_DATE desc", 
 						sessionuser.getId(), statementId);
@@ -219,173 +238,140 @@
 		}
 		else if(mode.equals("6"))
 		{
-			String ismerge = StringUtils.defaultString(request.getParameter("merge"), "0");
+			String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "0");
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
 			String manager = StringUtils.defaultString(request.getParameter("manager"), "");
+			String share = StringUtils.defaultString(request.getParameter("sharer"), "");
 			
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				
 				ConfigService configService = new ConfigService("0001");
 				
-				//总项目
-				Datum statement = datasource.get("select * from T_STATEMENT where ID = ?", statementId);
+				//得到项目的日志
+				Datum log = datasource.get("select T_CREATOR.NAME as 'CREATEUSERNAME', T_CREATOR.ICON as 'CREATEUSERICON', T_STATEMENT_LOG.CREATE_DATE, T_EDITOR.NAME as 'EDITUSERNAME', T_EDITOR.ICON as 'EDITUSERICON', T_STATEMENT_LOG.EDIT_DATE from T_STATEMENT_LOG left join T_USER as T_CREATOR on T_STATEMENT_LOG.CREATE_USER_ID = T_CREATOR.ID left join T_USER as T_EDITOR on T_STATEMENT_LOG.EDIT_USER_ID = T_EDITOR.ID where T_STATEMENT_LOG.SUBSTATEMENT_ID = ? and T_STATEMENT_LOG.MODE = ?", substatementId, statementmode);
+
 				Data substatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
+				//得到所选择的子项目
 				Datum substatement = null;
-				if(statement != null)
+				for(Datum item : substatements)
 				{
-					//得到所选择的子项目
-					for(Datum item : substatements)
+					if(item.getString("ID").equals(substatementId))
 					{
-						if(item.getString("ID").equals(substatementId))
-						{
-							substatement = item;
-						}
+						substatement = item;
 					}
+				}
+				
+				//得到项目表格
+				Data sheets = null;
+				if(manager.equals("1") || share.equals("1"))
+				{	
+					sheets = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ID as 'USERID', T_USER.ICON as 'USERICON', T_STATEMENT_TRANSACTOR.ID, T_STATEMENT_TRANSACTOR.SHEET_ID from T_STATEMENT_TRANSACTOR left join T_USER on T_STATEMENT_TRANSACTOR.TRANSACTOR_USER_ID = T_USER.ID where T_STATEMENT_TRANSACTOR.SUBSTATEMENT_ID = ?", substatementId);
 					
-					//子项目的下级项目
-					String[] substatementIds = new String[]{};
+				}
+				else
+				{
+					sheets = datasource.find("select T_USER.NAME as 'USERNAME', T_USER.ID as 'USERID', T_USER.ICON as 'USERICON', T_STATEMENT_TRANSACTOR.ID, T_STATEMENT_TRANSACTOR.SHEET_ID from T_STATEMENT_TRANSACTOR left join T_USER on T_STATEMENT_TRANSACTOR.TRANSACTOR_USER_ID = T_USER.ID where T_STATEMENT_TRANSACTOR.SUBSTATEMENT_ID = ? and TRANSACTOR_USER_ID = ?", substatementId, sessionuser.getId());
+				}
+
+				//找到当前子项目下的下级项目（包括当前子项目）
+				String[] substatementIds = new String[]{};
+				Set<Datum> children = new HashSet<Datum>();
+				children.addAll(StatementUtils.getChildSubStatements(new HashSet<Datum>(), substatement, substatements));
+				children.add(substatement);
+				for(Datum child : children)
+				{
+					substatementIds = ArrayUtils.add(substatementIds, "'"+child.getString("ID")+"'");
+				}
+				
+				
+				for(Datum sheet : sheets)
+				{
+					String sheetId = StringUtils.defaultString(sheet.getString("SHEET_ID"), "");
 					
-
-					/*
-						得到项目表格
-							查看总项目（没有选择子项目）：取出所有表格（总项目对应的表格）
-							查看子项目：
-								负责人（manager）：取所有表格
-								项目工作人员：取出自己负责的表格
-					*/
-					Data sheets = null;
-					if(substatement == null)
+					if(!sheetId.equals(""))
 					{
-						sheets = datasource.find("select SHEET_ID from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
-						for(Datum child : substatements)
-						{
-							substatementIds = ArrayUtils.add(substatementIds, "'"+child.getString("ID")+"'");
-						}
-					}
-					else
-					{
-						StringBuffer sql = new StringBuffer();
-						sql.append("select T_USER.NAME as 'USERNAME', T_USER.ID as 'USERID', T_USER.ICON as 'USERICON', T_STATEMENT_TRANSACTOR.ID, T_STATEMENT_TRANSACTOR.SHEET_ID from T_STATEMENT_TRANSACTOR ");
-						sql.append("left join T_USER on T_STATEMENT_TRANSACTOR.TRANSACTOR_USER_ID = T_USER.ID ");	
-						if(manager.equals("1"))
-						{
-							sql.append("where T_STATEMENT_TRANSACTOR.SUBSTATEMENT_ID = ?");		
-							sheets = datasource.find(sql.toString(), substatementId);
-						}
-						else
-						{
-							sql.append("where T_STATEMENT_TRANSACTOR.SUBSTATEMENT_ID = ? and TRANSACTOR_USER_ID = ?");	
-							sheets = datasource.find(sql.toString(), substatementId, sessionuser.getId());
-						}
+						JSONObject sheetconfig = configService.getSheet(sheetId);	
 						
-						//找到当前子项目下的下级项目（包括当前子项目）
-						Set<Datum> children = new HashSet<Datum>();
-						children.addAll(StatementUtils.getChildSubStatements(new HashSet<Datum>(), substatement, substatements));
-						children.add(substatement);
-						for(Datum child : children)
-						{
-							substatementIds = ArrayUtils.add(substatementIds, "'"+child.getString("ID")+"'");
-						}
-					}
 
-					for(Datum sheet : sheets)
-					{
-						String sheetId = StringUtils.defaultString(sheet.getString("SHEET_ID"), "");
-						
-						if(!sheetId.equals(""))
+						//得到每个表格的数据量
+						int count = 0;
+						JSONArray tables = sheetconfig.optJSONArray("tables");
+						if(tables != null)
 						{
-							JSONObject sheetconfig = configService.getSheet(sheetId);	
-							
-							
-							
-							int count = 0;
-							JSONArray tables = sheetconfig.optJSONArray("tables");
-							if(tables != null)
+							for(int i = 0 ; i < tables.length() ; i++)
 							{
-								for(int i = 0 ; i < tables.length() ; i++)
+								JSONObject table = tables.optJSONObject(i);
+								String tablecode = table.optString("id");
+								if(!tablecode.equals(""))
 								{
-									JSONObject table = tables.optJSONObject(i);
-									String tablecode = table.optString("id");
-									if(!tablecode.equals(""))
+									DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablecode);
+									if(datastructure != null)
 									{
-										DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tablecode);
-										if(datastructure != null)
+										String tablename = datastructure.getProperty().optString("table");
+										Datum countmap = null;
+										if(statementmode.equals("0"))
 										{
-											String tablename = datastructure.getProperty().optString("table");
-											Datum countmap = null;
-											/*
-												取出表格数据
-													合并数据：
-														查看总项目：取出该项目中所有表格数据，根据项目ID得到数据
-														查看子项目：取出子项目的所有数据，包括下级子项目
-													不合并数据：取出子项目中的所有数据，根据子项目ID得到表格数据
-											*/
-											
-											if(ismerge.equals("1"))
-											{
-												if(substatement == null)
-												{
-													countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where STATEMENT_ID = ?", statementId);
-												}
-												else
-												{
-													countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID in ("+StringUtils.join(substatementIds, ",")+")");
-												}
-											}
-											else
-											{
-												countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID = ?", substatementId);
-											}
-											count += countmap.getInt("COUNT");
+											countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID = ? and MODE = 0", substatementId);
 										}
+										else if(statementmode.equals("1"))
+										{
+											countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID = ? and MODE = 1", substatementId);
+										}
+										else if(statementmode.equals("2"))
+										{
+											countmap = datasource.get("select count(ID) as 'COUNT' from "+tablename+" where SUBSTATEMENT_ID in ("+StringUtils.join(substatementIds, ",")+") and MODE = 0");
+										}
+										count += countmap.getInt("COUNT");
 									}
 								}
 							}
-							
-							boolean isEditor = false;	
-							if(sheet.getString("USERID").equals(sessionuser.getId()))
-							{
-								isEditor = true;
-							}
-							else
-							{
-								isEditor = false;
-							}
-
-							
-							sheet.put("EDITOR", isEditor);
-							sheet.put("SHEETNAME", sheetconfig.optString("name"));
-							sheet.put("MANAGERTABLE", sheetconfig.optString("manager"));
-							sheet.put("SORT", sheetconfig.optString("sort"));
-							sheet.put("COUNT", count);
 						}
 						
+						//是否拥有表格的编辑权限
+						boolean isEditor = false;	
+						if(sheet.getString("USERID").equals(sessionuser.getId()))
+						{
+							isEditor = true;
+						}
+						else
+						{
+							isEditor = false;
+						}
+
+						
+						sheet.put("EDITOR", isEditor);
+						sheet.put("SHEETNAME", sheetconfig.optString("name"));
+						sheet.put("SHEETTYPE", sheetconfig.optString("type"));
+						sheet.put("CAPTION", sheetconfig.optString("caption"));
+						sheet.put("SORT", sheetconfig.optString("sort"));
+						sheet.put("COUNT", count);
 					}
 					
-					Collections.sort(sheets, new Comparator<Datum>() 
-					{
-						public int compare(Datum d1, Datum d2) 
-						{
-							if(d1.getInt("SORT") > d2.getInt("SORT"))
-							{
-								return 1;
-							}
-							else
-							{
-								return -1;
-							}
-						}
-					});
-					
-					
-					message.resource("sheets", sheets);
-					message.resource("children", substatementIds);
 				}
+				
+				Collections.sort(sheets, new Comparator<Datum>() 
+				{
+					public int compare(Datum d1, Datum d2) 
+					{
+						if(d1.getInt("SORT") > d2.getInt("SORT"))
+						{
+							return 1;
+						}
+						else
+						{
+							return -1;
+						}
+					}
+				});
+				
+				
+				message.resource("sheets", sheets);
+				message.resource("log", log);
+				message.resource("children", substatementIds);
 			}
 			catch(Exception e)
 			{

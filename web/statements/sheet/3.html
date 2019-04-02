@@ -354,19 +354,28 @@ $(function()
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
-	getResource(statementId, substatementId, merge, children);
+	getResource(statementId, substatementId, statementmode, children);
 
-	setEditor(app.getContextPath()+"/statements/sheet/3.jsp?mode=2");
+	if(statementmode == 0)
+	{
+		setEditor(app.getContextPath()+"/statements/sheet/3.jsp?mode=2");
+	}
+	else
+	{
+		$(".editor").removeClass("editor");
+	}
+
+
 	setExport('合并利润表');
 
 })
-function getResource(statementId, substatementId, merge, children)
+function getResource(statementId, substatementId, statementmode, children)
 {
 	app.showLoading();
-	$.getJSON("3.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+	$.getJSON("3.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 	{
 		app.hideLoading();
 		if(response.status == "1")
@@ -390,7 +399,7 @@ function getResource(statementId, substatementId, merge, children)
 				}
 			});
 
-			expression(statementId, substatementId, merge, children);
+			expression(statementId, substatementId, statementmode, children);
 
 
 		}

@@ -45,7 +45,7 @@
 				<td></td>
 			</tr>                                                
 			<tr id="R2">
-				<td class="title">　　货币资金</td>
+				<td class="title">　　<span class="blue-mark"></span>货币资金</td>
 				<td></td>
 				<td class="T01" expression="[K1001.QMSDH] + [K1002.QMSDH] + [K1015.QMSDH]"></td>
 				<td class="T01" expression="[K1001.QCSDH] + [K1002.QCSDH] + [K1015.QCSDH]"></td>
@@ -571,10 +571,10 @@ $(function()
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
-	expression(statementId, substatementId, merge, children);
+	expression(statementId, substatementId, statementmode, children);
 	setExport('资产负债表');
 });
 

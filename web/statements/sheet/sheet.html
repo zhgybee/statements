@@ -28,18 +28,20 @@ html, body{height:100%}
 	var sheetId = app.getParameter("sheet") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || "0";
 	var children = app.getParameter("children") || "";
+	var iseditor = app.getParameter("editor") || "0";
 	
-
-	var table = null;
+	var CURTYPE = "merge";
+	var CURTABLE = null;
+	var CURSUBSTATEMENTID = substatementId;
 	$(function()
 	{ 
 		resize();
 		$(window).resize( function(){resize()} ); 
 
 		app.showLoading();
-		$.getJSON("sheet.jsp?mode=1", {sheet:sheetId, statement:statementId, substatement:substatementId, merge:merge, children:children}, function(response)
+		$.getJSON("sheet.jsp?mode=1", {sheet:sheetId, statement:statementId, substatement:substatementId, statementmode:statementmode, children:children}, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -62,15 +64,8 @@ html, body{height:100%}
 					});
 					app.tabs($("#tables"), function($tab)
 					{
-						table = $tab.data("table");
-						if(table.url != null)
-						{
-							$("#editor-frame iframe").attr("src", table.url+"&merge="+merge+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
-						}
-						else
-						{
-							$("#editor-frame iframe").attr("src", "editor.html?merge="+merge+"&table="+table.id+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
-						}
+						CURTABLE = $tab.data("table");
+						go();
 					});
 
 					$selection.click();
@@ -80,46 +75,35 @@ html, body{height:100%}
 					app.message("表格配置文件错误");
 				}
 
-				if(merge == "1")
+				if(statementmode == "2")
 				{
-					var $selection = $('<li>合并</li>');
-					$("#statements ul").append($selection);
+					var $mergetab = $('<li>合并表</li>');
+					$mergetab.data("type", "merge");
+					$("#statements ul").append($mergetab);
 
+					var $hadatab = $('<li>哈达表</li>');
+					$hadatab.data("type", "hada");
+					$("#statements ul").append($hadatab);
 
 					$.each(substatements, function(i, substatement)
 					{
 						var $tab = $('<li>'+substatement.TITLE+'</li>');
 						$tab.data("substatement", substatement);
+						$tab.data("type", "single");
 						$("#statements ul").append($tab);
 					});
 					app.tabs($("#statements"), function($tab)
 					{
+						CURTYPE = $tab.data("type");
 						var substatement = $tab.data("substatement");
-						if(substatement == null)
+						if(substatement != null)
 						{
-							if(table.url != null)
-							{
-								$("#editor-frame iframe").attr("src", table.url+"&merge="+merge+"&table="+table.id+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
-							}
-							else
-							{
-								$("#editor-frame iframe").attr("src", "editor.html?merge="+merge+"&table="+table.id+"&statement="+statementId+"&substatement="+substatementId+"&children="+children);
-							}
+							CURSUBSTATEMENTID = substatement.ID;
 						}
-						else
-						{
-							if(table.url != null)
-							{
-								$("#editor-frame iframe").attr("src", table.url+"&merge=0&table="+table.id+"&statement="+statementId+"&substatement="+substatement.ID+"&children=");
-							}
-							else
-							{
-								$("#editor-frame iframe").attr("src", "editor.html?merge=0&table="+table.id+"&statement="+statementId+"&substatement="+substatement.ID+"&children=");
-							}
-						}
+						go();
 					});
 
-					$selection.click();
+					$mergetab.click();
 
 					$("#statements").show();
 					
@@ -139,6 +123,45 @@ html, body{height:100%}
 		});
 
 	});
+
+
+	function go()
+	{
+		var tableId = CURTABLE.id || "";
+		if(CURTYPE == "merge")
+		{
+			if(CURTABLE.url != null)
+			{
+				$("#editor-frame iframe").attr("src", CURTABLE.url+"&statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
+			else
+			{
+				$("#editor-frame iframe").attr("src", "editor.html?statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
+		}
+		else if(CURTYPE == "hada")
+		{
+			if(CURTABLE.url != null)
+			{
+				$("#editor-frame iframe").attr("src", 'h'+CURTABLE.url+"&statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
+			else
+			{
+				$("#editor-frame iframe").attr("src", "hada.jsp?statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
+		}
+		else if(CURTYPE == "single")
+		{
+			if(CURTABLE.url != null)
+			{
+				$("#editor-frame iframe").attr("src", CURTABLE.url+"&statementmode=0&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children=&editor="+iseditor);
+			}
+			else
+			{
+				$("#editor-frame iframe").attr("src", "editor.html?statementmode=0&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children=&editor="+iseditor);
+			}
+		}
+	}
 
 	function resize()
 	{

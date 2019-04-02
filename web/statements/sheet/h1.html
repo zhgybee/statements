@@ -1,0 +1,1052 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="table.css" />
+	<style>
+	td.expression{background-color:transparent}
+	</style>
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+
+<div id="container">
+	<div class="template-panel">
+		<table>
+			<thead>
+				<tr>
+					<th style="width:430px" rowspan="3" class="substatement-key">项目</th>
+					<th style="width:60px" rowspan="3" class="substatement-key">行次</th>
+					<th colspan="6" class="substatement-title"></th>
+				</tr>
+				<tr>
+					<th colspan="3">本期发生额</th>
+					<th colspan="3">上期发生额</th>
+				</tr>
+				<tr>
+					<th style="width:100px">审定前</th>
+					<th style="width:100px">调整</th>
+					<th style="width:100px">审定后</th>
+					<th style="width:100px">审定前</th>
+					<th style="width:100px">调整</th>
+					<th style="width:100px">审定后</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr id="R1">
+					<td class="title bold substatement-key">一、经营活动产生的现金流量</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R2">
+					<td class="title substatement-key">　　销售商品、提供劳务收到的现金</td>
+					<td class="substatement-key">1</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R2.2] + [R2.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R2.5] + [R2.6]"></td>
+				</tr>
+				<tr id="R3">
+					<td class="title substatement-key">　　客户存款和同业存放款项净增加额</td>
+					<td class="substatement-key">2</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R3.2] + [R3.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R3.5] + [R3.6]"></td>
+				</tr>
+				<tr id="R4">
+					<td class="title substatement-key">　　向中央银行借款净增加额</td>
+					<td class="substatement-key">3</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R4.2] + [R4.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R4.5] + [R4.6]"></td>
+				</tr>
+				<tr id="R5">
+					<td class="title substatement-key">　　向其他金融机构拆入资金净增加额</td>
+					<td class="substatement-key">4</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R5.2] + [R5.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R5.5] + [R5.6]"></td>
+				</tr>
+				<tr id="R6">
+					<td class="title substatement-key">　　收到原保险合同保费取得的现金</td>
+					<td class="substatement-key">5</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R6.2] + [R6.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R6.5] + [R6.6]"></td>
+				</tr>
+				<tr id="R7">
+					<td class="title substatement-key">　　收到再保险业务现金净额</td>
+					<td class="substatement-key">6</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R7.2] + [R7.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R7.5] + [R7.6]"></td>
+				</tr>
+				<tr id="R8">
+					<td class="title substatement-key">　　保户储金及投资款净增加额</td>
+					<td class="substatement-key">7</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R8.2] + [R8.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R8.5] + [R8.6]"></td>
+				</tr>
+				<tr id="R9">
+					<td class="title substatement-key">　　处置以公允价值计量且其变动计入当期损益的金融资产净增加额</td>
+					<td class="substatement-key">8</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R9.2] + [R9.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R9.5] + [R9.6]"></td>
+				</tr>
+				<tr id="R10">
+					<td class="title substatement-key">　　收取利息、手续费及佣金的现金</td>
+					<td class="substatement-key">9</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R10.2] + [R10.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R10.5] + [R10.6]"></td>
+				</tr>
+				<tr id="R11">
+					<td class="title substatement-key">　　拆入资金净增加额</td>
+					<td class="substatement-key">10</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R11.2] + [R11.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R11.5] + [R11.6]"></td>
+				</tr>
+				<tr id="R12">
+					<td class="title substatement-key">　　回购业务资金净增加额</td>
+					<td class="substatement-key">11</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R12.2] + [R12.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R12.5] + [R12.6]"></td>
+				</tr>
+				<tr id="R13">
+					<td class="title substatement-key">　　收到的税费返还</td>
+					<td class="substatement-key">12</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R13.2] + [R13.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R13.5] + [R13.6]"></td>
+				</tr>
+				<tr id="R14">
+					<td class="title substatement-key">　　收到其他与经营活动有关的现金</td>
+					<td class="substatement-key">13</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R14.2] + [R14.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R14.5] + [R14.6]"></td>
+				</tr>
+				<tr id="R15">
+					<td class="title substatement-key">　　公司内部资金往来收入（支出用负号）</td>
+					<td class="substatement-key">14</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R15.2] + [R15.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R15.5] + [R15.6]"></td>
+				</tr>
+				<tr id="R16">
+					<td class="title bold substatement-key">　　现金流入小计</td>
+					<td class="substatement-key">15</td>
+					<td class="expression" expression="[R2.2] + [R3.2] + [R4.2] + [R5.2] + [R6.2] + [R7.2] + [R8.2] + [R9.2] + [R10.2] + [R11.2] + [R12.2] + [R13.2] + [R14.2] + [R15.2]"></td>
+					<td class="expression" expression="[R2.3] + [R3.3] + [R4.3] + [R5.3] + [R6.3] + [R7.3] + [R8.3] + [R9.3] + [R10.3] + [R11.3] + [R12.3] + [R13.3] + [R14.3] + [R15.3]"></td>
+					<td class="expression" expression="[R2.4] + [R3.4] + [R4.4] + [R5.4] + [R6.4] + [R7.4] + [R8.4] + [R9.4] + [R10.4] + [R11.4] + [R12.4] + [R13.4] + [R14.4] + [R15.4]"></td>
+					<td class="expression" expression="[R2.5] + [R3.5] + [R4.5] + [R5.5] + [R6.5] + [R7.5] + [R8.5] + [R9.5] + [R10.5] + [R11.5] + [R12.5] + [R13.5] + [R14.5] + [R15.5]"></td>
+					<td class="expression" expression="[R2.6] + [R3.6] + [R4.6] + [R5.6] + [R6.6] + [R7.6] + [R8.6] + [R9.6] + [R10.6] + [R11.6] + [R12.6] + [R13.6] + [R14.6] + [R15.6]"></td>
+					<td class="expression" expression="[R2.7] + [R3.7] + [R4.7] + [R5.7] + [R6.7] + [R7.7] + [R8.7] + [R9.7] + [R10.7] + [R11.7] + [R12.7] + [R13.7] + [R14.7] + [R15.7]"></td>
+				</tr>
+				<tr id="R17">
+					<td class="title substatement-key">　　购买商品、接受劳务支付的现金</td>
+					<td class="substatement-key">16</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R17.2] + [R17.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R17.5] + [R17.6]"></td>
+				</tr>
+				<tr id="R18">
+					<td class="title substatement-key">　　客户贷款及垫款净增加额</td>
+					<td class="substatement-key">17</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R18.2] + [R18.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R18.5] + [R18.6]"></td>
+				</tr>
+				<tr id="R19">
+					<td class="title substatement-key">　　存放中央银行和同业款项净增加额</td>
+					<td class="substatement-key">18</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R19.2] + [R19.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R19.5] + [R19.6]"></td>
+				</tr>
+				<tr id="R20">
+					<td class="title substatement-key">　　支付原保险合同赔付款项的现金</td>
+					<td class="substatement-key">19</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R20.2] + [R20.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R20.5] + [R20.6]"></td>
+				</tr>
+				<tr id="R21">
+					<td class="title substatement-key">　　支付利息、手续费及佣金的现金</td>
+					<td class="substatement-key">20</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R21.2] + [R21.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R21.5] + [R21.6]"></td>
+				</tr>
+				<tr id="R22">
+					<td class="title substatement-key">　　支付保单红利的现金</td>
+					<td class="substatement-key">21</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R22.2] + [R22.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R22.5] + [R22.6]"></td>
+				</tr>
+				<tr id="R23">
+					<td class="title substatement-key">　　支付给职工以及为职工支付的现金</td>
+					<td class="substatement-key">22</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R23.2] + [R23.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R23.5] + [R23.6]"></td>
+				</tr>
+				<tr id="R24">
+					<td class="title substatement-key">　　支付的各项税费</td>
+					<td class="substatement-key">23</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R24.2] + [R24.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R24.5] + [R24.6]"></td>
+				</tr>
+				<tr id="R241">
+					<td class="title substatement-key">　　支付其他与经营活动有关的现金</td>
+					<td class="substatement-key">24</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R241.2] + [R241.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R241.5] + [R241.6]"></td>
+				</tr>
+				<tr id="R25">
+					<td class="title bold substatement-key">　　现金流出小计</td>
+					<td class="substatement-key">25</td>				
+					<td class="expression" expression="[R17.2] + [R18.2] + [R19.2] + [R20.2] + [R21.2] + [R22.2] + [R23.2] + [R24.2] + [R241.2]"></td>
+					<td class="expression" expression="[R17.3] + [R18.3] + [R19.3] + [R20.3] + [R21.3] + [R22.3] + [R23.3] + [R24.3] + [R241.3]"></td>
+					<td class="expression" expression="[R17.4] + [R18.4] + [R19.4] + [R20.4] + [R21.4] + [R22.4] + [R23.4] + [R24.4] + [R241.4]"></td>
+					<td class="expression" expression="[R17.5] + [R18.5] + [R19.5] + [R20.5] + [R21.5] + [R22.5] + [R23.5] + [R24.5] + [R241.5]"></td>
+					<td class="expression" expression="[R17.6] + [R18.6] + [R19.6] + [R20.6] + [R21.6] + [R22.6] + [R23.6] + [R24.6] + [R241.6]"></td>
+					<td class="expression" expression="[R17.7] + [R18.7] + [R19.7] + [R20.7] + [R21.7] + [R22.7] + [R23.7] + [R24.7] + [R241.7]"></td>
+				</tr>
+				<tr id="R26">
+					<td class="title bold center substatement-key">经营活动产生的现金流量净额</td>
+					<td class="substatement-key">26</td>
+					<td class="expression" expression="[R16.2] - [R25.2]"></td>
+					<td class="expression" expression="[R16.3] - [R25.3]"></td>
+					<td class="expression" expression="[R16.4] - [R25.4]"></td>
+					<td class="expression" expression="[R16.5] - [R25.5]"></td>
+					<td class="expression" expression="[R16.6] - [R25.6]"></td>
+					<td class="expression" expression="[R16.7] - [R25.7]"></td>
+				</tr>
+				<tr id="R27">
+					<td class="title bold substatement-key">二、投资活动产生的现金流量</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R28">
+					<td class="title substatement-key">　　收回投资所收到的现金</td>
+					<td class="substatement-key">27</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R28.2] + [R28.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R28.5] + [R28.6]"></td>
+				</tr>
+				<tr id="R29">
+					<td class="title substatement-key">　　取得投资收益所收到的现金</td>
+					<td class="substatement-key">28</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R29.2] + [R29.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R29.5] + [R29.6]"></td>
+				</tr>
+				<tr id="R30">
+					<td class="title substatement-key">　　处置固定资产、无形资产和其它长期资产所收回的现金净额</td>
+					<td class="substatement-key">29</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R30.2] + [R30.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R30.5] + [R30.6]"></td>
+				</tr>
+				<tr id="R31">
+					<td class="title substatement-key">　　处置子公司及其他营业单位收到的现金净额</td>
+					<td class="substatement-key">30</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R31.2] + [R31.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R31.5] + [R31.6]"></td>
+				</tr>
+				<tr id="R32">
+					<td class="title substatement-key">　　收到的其他与投资活动有关的现金</td>
+					<td class="substatement-key">31</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R32.2] + [R32.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R32.5] + [R32.6]"></td>
+				</tr>
+				<tr id="R33">
+					<td class="title substatement-key">　　公司内部投资收入（支出用负号）</td>
+					<td class="substatement-key">32</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R33.2] + [R33.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R33.5] + [R33.6]"></td>
+				</tr>
+				<tr id="R34">
+					<td class="title bold substatement-key">　　现金流入小计</td>
+					<td class="substatement-key">33</td>				
+					<td class="expression" expression="[R28.2] + [R29.2] + [R30.2] + [R31.2] + [R32.2] + [R33.2]"></td>
+					<td class="expression" expression="[R28.3] + [R29.3] + [R30.3] + [R31.3] + [R32.3] + [R33.3]"></td>
+					<td class="expression" expression="[R28.4] + [R29.4] + [R30.4] + [R31.4] + [R32.4] + [R33.4]"></td>
+					<td class="expression" expression="[R28.5] + [R29.5] + [R30.5] + [R31.5] + [R32.5] + [R33.5]"></td>
+					<td class="expression" expression="[R28.6] + [R29.6] + [R30.6] + [R31.6] + [R32.6] + [R33.6]"></td>
+					<td class="expression" expression="[R28.7] + [R29.7] + [R30.7] + [R31.7] + [R32.7] + [R33.7]"></td>
+				</tr>
+				<tr id="R35">
+					<td class="title substatement-key">　　购建固定资产、无形资产和其它长期资产所支付的现金</td>
+					<td class="substatement-key">34</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R35.2] + [R35.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R35.5] + [R35.6]"></td>
+				</tr>
+				<tr id="R36">
+					<td class="title substatement-key">　　投资所支付的现金</td>
+					<td class="substatement-key">35</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R36.2] + [R36.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R36.5] + [R36.6]"></td>
+				</tr>
+				<tr id="R37">
+					<td class="title substatement-key">　　质押贷款净增加额</td>
+					<td class="substatement-key">36</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R37.2] + [R37.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R37.5] + [R37.6]"></td>
+				</tr>
+				<tr id="R38">
+					<td class="title substatement-key">　　取得子公司及其他营业单位支付的现金净额</td>
+					<td class="substatement-key">37</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R38.2] + [R38.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R38.5] + [R38.6]"></td>
+				</tr>
+				<tr id="R39">
+					<td class="title substatement-key">　　支付的其它与投资活动有关的现金</td>
+					<td class="substatement-key">38</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R39.2] + [R39.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R39.5] + [R39.6]"></td>
+				</tr>
+				<tr id="R40">
+					<td class="title bold substatement-key">　　现金流出小计</td>
+					<td class="substatement-key">39</td>
+					<td class="expression" expression="[R35.2] + [R36.2] + [R37.2] + [R38.2] + [R39.2]"></td>
+					<td class="expression" expression="[R35.3] + [R36.3] + [R37.3] + [R38.3] + [R39.3]"></td>
+					<td class="expression" expression="[R35.4] + [R36.4] + [R37.4] + [R38.4] + [R39.4]"></td>
+					<td class="expression" expression="[R35.5] + [R36.5] + [R37.5] + [R38.5] + [R39.5]"></td>
+					<td class="expression" expression="[R35.6] + [R36.6] + [R37.6] + [R38.6] + [R39.6]"></td>
+					<td class="expression" expression="[R35.7] + [R36.7] + [R37.7] + [R38.7] + [R39.7]"></td>
+				</tr>
+				<tr id="R41">
+					<td class="title bold center substatement-key">投资活动产生的现金流量净额</td>
+					<td class="substatement-key">40</td>
+					<td class="expression" expression="[R34.2] - [R40.2]"></td>
+					<td class="expression" expression="[R34.3] - [R40.3]"></td>
+					<td class="expression" expression="[R34.4] - [R40.4]"></td>
+					<td class="expression" expression="[R34.5] - [R40.5]"></td>
+					<td class="expression" expression="[R34.6] - [R40.6]"></td>
+					<td class="expression" expression="[R34.7] - [R40.7]"></td>
+				</tr>
+				<tr id="R42">
+					<td class="title bold substatement-key">三、筹资活动产生的现金流量</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R43">
+					<td class="title substatement-key">　　吸收投资所收到的现金</td>
+					<td class="substatement-key">41</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R43.2] + [R43.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R43.5] + [R43.6]"></td>
+				</tr>
+				<tr id="R44">
+					<td class="title substatement-key">　　取得借款所收到的现金</td>
+					<td class="substatement-key">42</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R44.2] + [R44.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R44.5] + [R44.6]"></td>
+				</tr>
+				<tr id="R45">
+					<td class="title substatement-key">　　发行债券收到的现金</td>
+					<td class="substatement-key">43</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R45.2] + [R45.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R45.5] + [R45.6]"></td>
+				</tr>
+				<tr id="R46">
+					<td class="title substatement-key">　　收到的其他与筹资活动有关的现金</td>
+					<td class="substatement-key">44</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R46.2] + [R46.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R46.5] + [R46.6]"></td>
+				</tr>
+				<tr id="R47">
+					<td class="title substatement-key">　　公司内部筹资收入（支出用负号）</td>
+					<td class="substatement-key">45</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R47.2] + [R47.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R47.5] + [R47.6]"></td>
+				</tr>
+				<tr id="R48">
+					<td class="title bold substatement-key">　　现金流入小计</td>
+					<td class="substatement-key">46</td>				
+					<td class="expression" expression="[R43.2] + [R44.2] + [R45.2] + [R46.2] + [R47.2]"></td>
+					<td class="expression" expression="[R43.3] + [R44.3] + [R45.3] + [R46.3] + [R47.3]"></td>
+					<td class="expression" expression="[R43.4] + [R44.4] + [R45.4] + [R46.4] + [R47.4]"></td>
+					<td class="expression" expression="[R43.5] + [R44.5] + [R45.5] + [R46.5] + [R47.5]"></td>
+					<td class="expression" expression="[R43.6] + [R44.6] + [R45.6] + [R46.6] + [R47.6]"></td>
+					<td class="expression" expression="[R43.7] + [R44.7] + [R45.7] + [R46.7] + [R47.7]"></td>
+				</tr>
+				<tr id="R49">
+					<td class="title substatement-key">　　偿还债务所支付的现金</td>
+					<td class="substatement-key">47</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R49.2] + [R49.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R49.5] + [R49.6]"></td>
+				</tr>
+				<tr id="R50">
+					<td class="title substatement-key">　　分配股利、利润或偿付利息所支付的现金</td>
+					<td class="substatement-key">48</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R50.2] + [R50.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R50.5] + [R50.6]"></td>
+				</tr>
+				<tr id="R51">
+					<td class="title substatement-key">　　支付的其他与筹资活动有关的现金</td>
+					<td class="substatement-key">49</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R51.2] + [R51.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R51.5] + [R51.6]"></td>
+				</tr>
+				<tr id="R52">
+					<td class="title bold substatement-key">　　现金流出小计</td>
+					<td class="substatement-key">50</td>				
+					<td class="expression" expression="[R49.2] + [R50.2] + [R51.2]"></td>
+					<td class="expression" expression="[R49.3] + [R50.3] + [R51.3]"></td>
+					<td class="expression" expression="[R49.4] + [R50.4] + [R51.4]"></td>
+					<td class="expression" expression="[R49.5] + [R50.5] + [R51.5]"></td>
+					<td class="expression" expression="[R49.6] + [R50.6] + [R51.6]"></td>
+					<td class="expression" expression="[R49.7] + [R50.7] + [R51.7]"></td>
+				</tr>
+				<tr id="R53">
+					<td class="title bold center substatement-key">筹资活动产生的现金流量净额</td>
+					<td class="substatement-key">51</td>
+					<td class="expression" expression="[R48.2] - [R52.2]"></td>
+					<td class="expression" expression="[R48.3] - [R52.3]"></td>
+					<td class="expression" expression="[R48.4] - [R52.4]"></td>
+					<td class="expression" expression="[R48.5] - [R52.5]"></td>
+					<td class="expression" expression="[R48.6] - [R52.6]"></td>
+					<td class="expression" expression="[R48.7] - [R52.7]"></td>
+				</tr>
+				<tr id="R54">
+					<td class="title bold substatement-key">四、汇率变动对现金的影响</td>
+					<td class="substatement-key">52</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R54.2] + [R54.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R54.5] + [R54.6]"></td>
+				</tr>
+				<tr id="R55">
+					<td class="title bold substatement-key">五、现金及现金等价物净增加额</td>
+					<td class="substatement-key">53</td>
+					<td class="expression" expression="[R26.2] + [R41.2] + [R53.2] + [R54.2]"></td>
+					<td class="expression" expression="[R26.3] + [R41.3] + [R53.3] + [R54.3]"></td>
+					<td class="expression" expression="[R26.4] + [R41.4] + [R53.4] + [R54.4]"></td>
+					<td class="expression" expression="[R26.5] + [R41.5] + [R53.5] + [R54.5]"></td>
+					<td class="expression" expression="[R26.6] + [R41.6] + [R53.6] + [R54.6]"></td>
+					<td class="expression" expression="[R26.7] + [R41.7] + [R53.7] + [R54.7]"></td>
+				</tr>
+				<tr id="R56">
+					<td class="title substatement-key">　　加：期初现金及现金等价物余额</td>
+					<td class="substatement-key">54</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R56.2] + [R56.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R56.5] + [R56.6]"></td>
+				</tr>
+				<tr id="R57">
+					<td class="title bold substatement-key">六、期末现金及现金等价物余额</td>
+					<td class="substatement-key">55</td>
+					<td class="expression" expression="[R55.2] + [R56.2]"></td>
+					<td class="expression" expression="[R55.3] + [R56.3]"></td>
+					<td class="expression" expression="[R55.4] + [R56.4]"></td>
+					<td class="expression" expression="[R55.5] + [R56.5]"></td>
+					<td class="expression" expression="[R55.6] + [R56.6]"></td>
+					<td class="expression" expression="[R55.7] + [R56.7]"></td>
+				</tr>
+
+
+				<tr id="R58">
+					<td class="title bold center" colspan="8" style="height:50px">补充资料</td>
+				</tr>
+				<tr id="R59">
+					<td class="title bold substatement-key">1、将净利润调节为经营活动的现金流量</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R60">
+					<td class="title substatement-key">　　净利润</td>
+					<td class="substatement-key">61</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R60.2] + [R60.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R60.5] + [R60.6]"></td>
+				</tr>
+				<tr id="R61">
+					<td class="title substatement-key">　　加：少数股东损益(合并报表填列)</td>
+					<td class="substatement-key">62</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R61.2] + [R61.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R61.5] + [R61.6]"></td>
+				</tr>
+				<tr id="R62">
+					<td class="title substatement-key">　　包括少数股东损益的净利润</td>
+					<td class="substatement-key">63</td>
+					<td class="expression" expression="[R60.2] + [R61.2]"></td>
+					<td class="expression" expression="[R60.3] + [R61.3]"></td>
+					<td class="expression" expression="[R60.4] + [R61.4]"></td>
+					<td class="expression" expression="[R60.5] + [R61.5]"></td>
+					<td class="expression" expression="[R60.6] + [R61.6]"></td>
+					<td class="expression" expression="[R60.7] + [R61.7]"></td>
+				</tr>
+				<tr id="R63">
+					<td class="title substatement-key">　　加：计提的资产减值准备</td>
+					<td class="substatement-key">64</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R63.2] + [R63.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R63.5] + [R63.6]"></td>
+				</tr>
+				<tr id="R64">
+					<td class="title substatement-key">　　　　固定资产折旧、油气资产折耗、生产性生物资产折旧</td>
+					<td class="substatement-key">65</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R64.2] + [R64.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R64.5] + [R64.6]"></td>
+				</tr>
+				<tr id="R65">
+					<td class="title substatement-key">　　　　无形资产摊销</td>
+					<td class="substatement-key">66</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R65.2] + [R65.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R65.5] + [R65.6]"></td>
+				</tr>
+				<tr id="R66">
+					<td class="title substatement-key">　　　　长期待摊费用摊销</td>
+					<td class="substatement-key">67</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R66.2] + [R66.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R66.5] + [R66.6]"></td>
+				</tr>
+				<tr id="R67">
+					<td class="title substatement-key">　　　　处置固定资产、无形资产和其他长期资产的损失(减：收益)</td>
+					<td class="substatement-key">68</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R67.2] + [R67.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R67.5] + [R67.6]"></td>
+				</tr>
+				<tr id="R68">
+					<td class="title substatement-key">　　　　固定资产报废损失</td>
+					<td class="substatement-key">69</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R68.2] + [R68.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R68.5] + [R68.6]"></td>
+				</tr>
+				<tr id="R69">
+					<td class="title substatement-key">　　　　公允价值变动损失(收益以"-"号填列)</td>
+					<td class="substatement-key">70</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R69.2] + [R69.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R69.5] + [R69.6]"></td>
+				</tr>
+				<tr id="R70">
+					<td class="title substatement-key">　　　　财务费用</td>
+					<td class="substatement-key">71</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R70.2] + [R70.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R70.5] + [R70.6]"></td>
+				</tr>
+				<tr id="R71">
+					<td class="title substatement-key">　　　　投资损失(减：收益)</td>
+					<td class="substatement-key">72</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R71.2] + [R71.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R71.5] + [R71.6]"></td>
+				</tr>
+				<tr id="R72">
+					<td class="title substatement-key">　　　　递延所得税资产减少(增加以"-"号填列)</td>
+					<td class="substatement-key">73</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R72.2] + [R72.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R72.5] + [R72.6]"></td>
+				</tr>
+				<tr id="R73">
+					<td class="title substatement-key">　　　　递延所得税负债增加(减少以"-"号填列)</td>
+					<td class="substatement-key">74</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R73.2] + [R73.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R73.5] + [R73.6]"></td>
+				</tr>
+				<tr id="R74">
+					<td class="title substatement-key">　　　　存货的减少(减：增加)</td>
+					<td class="substatement-key">75</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R74.2] + [R74.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R74.5] + [R74.6]"></td>
+				</tr>
+				<tr id="R75">
+					<td class="title substatement-key">　　　　经营性应收项目的减少(减：增加)</td>
+					<td class="substatement-key">76</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R75.2] + [R75.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R75.5] + [R75.6]"></td>
+				</tr>
+				<tr id="R76">
+					<td class="title substatement-key">　　　　经营性应付项目的增加(减：减少)</td>
+					<td class="substatement-key">77</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R76.2] + [R76.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R76.5] + [R76.6]"></td>
+				</tr>
+				<tr id="R77">
+					<td class="title substatement-key">　　　　其他</td>
+					<td class="substatement-key">78</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R77.2] + [R77.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R77.5] + [R77.6]"></td>
+				</tr>
+				<tr id="R78">
+					<td class="title substatement-key">　　经营活动产生的现金流量净额</td>
+					<td class="substatement-key">79</td>
+					<td class="expression" expression="[R62.2] + [R63.2] + [R64.2] + [R65.2] + [R66.2] + [R67.2] + [R68.2] + [R69.2] + [R70.2] + [R71.2] + [R72.2] + [R73.2] + [R74.2] + [R75.2] + [R76.2] + [R77.2]"></td>
+					<td class="expression" expression="[R62.3] + [R63.3] + [R64.3] + [R65.3] + [R66.3] + [R67.3] + [R68.3] + [R69.3] + [R70.3] + [R71.3] + [R72.3] + [R73.3] + [R74.3] + [R75.3] + [R76.3] + [R77.3]"></td>
+					<td class="expression" expression="[R62.4] + [R63.4] + [R64.4] + [R65.4] + [R66.4] + [R67.4] + [R68.4] + [R69.4] + [R70.4] + [R71.4] + [R72.4] + [R73.4] + [R74.4] + [R75.4] + [R76.4] + [R77.4]"></td>
+					<td class="expression" expression="[R62.5] + [R63.5] + [R64.5] + [R65.5] + [R66.5] + [R67.5] + [R68.5] + [R69.5] + [R70.5] + [R71.5] + [R72.5] + [R73.5] + [R74.5] + [R75.5] + [R76.5] + [R77.5]"></td>
+					<td class="expression" expression="[R62.6] + [R63.6] + [R64.6] + [R65.6] + [R66.6] + [R67.6] + [R68.6] + [R69.6] + [R70.6] + [R71.6] + [R72.6] + [R73.6] + [R74.6] + [R75.6] + [R76.6] + [R77.6]"></td>
+					<td class="expression" expression="[R62.7] + [R63.7] + [R64.7] + [R65.7] + [R66.7] + [R67.7] + [R68.7] + [R69.7] + [R70.7] + [R71.7] + [R72.7] + [R73.7] + [R74.7] + [R75.7] + [R76.7] + [R77.7]"></td>
+				</tr>
+				<tr id="R79">
+					<td class="title bold substatement-key">2、不涉及现金收支的投资和筹资活动</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R80">
+					<td class="title substatement-key">　　债务转为资本</td>
+					<td class="substatement-key">80</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R80.2] + [R80.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R80.5] + [R80.6]"></td>
+				</tr>
+				<tr id="R81">
+					<td class="title substatement-key">　　一年内到期的可转换公司债券</td>
+					<td class="substatement-key">81</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R81.2] + [R81.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R81.5] + [R81.6]"></td>
+				</tr>
+				<tr id="R82">
+					<td class="title substatement-key">　　融资租入固定资产</td>
+					<td class="substatement-key">82</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R82.2] + [R82.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R82.5] + [R82.6]"></td>
+				</tr>
+				<tr id="R83">
+					<td class="title bold substatement-key">3、现金及现金等价物净增加情况</td>
+					<td class="substatement-key"></td>
+					<td>&nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr id="R84">
+					<td class="title substatement-key">　　现金的期末余额</td>
+					<td class="substatement-key">83</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R84.2] + [R84.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R84.5] + [R84.6]"></td>
+				</tr>
+				<tr id="R85">
+					<td class="title substatement-key">　　减:现金的年初余额</td>
+					<td class="substatement-key">84</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R85.2] + [R85.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R85.5] + [R85.6]"></td>
+				</tr>
+				<tr id="R86">
+					<td class="title substatement-key">　　加:现金等价物的期末余额</td>
+					<td class="substatement-key">85</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R86.2] + [R86.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R86.5] + [R86.6]"></td>
+				</tr>
+				<tr id="R87">
+					<td class="title substatement-key">　　减:现金等价物的年初余额</td>
+					<td class="substatement-key">86</td>
+					<td name="BQSDQ"></td>
+					<td name="BQTZS"></td>
+					<td class="expression" expression="[R87.2] + [R87.3]"></td>
+					<td name="SQSDQ"></td>
+					<td name="SQTZS"></td>
+					<td class="expression" expression="[R87.5] + [R87.6]"></td>
+				</tr>
+				<tr id="R88">
+					<td class="title substatement-key">　　现金及现金等价物净增加额</td>
+					<td class="substatement-key">87</td>				
+					<td class="expression" expression="[R84.2] - [R85.2] + [R86.2] - [R87.2]"></td>
+					<td class="expression" expression="[R84.3] - [R85.3] + [R86.3] - [R87.3]"></td>
+					<td class="expression" expression="[R84.4] - [R85.4] + [R86.4] - [R87.4]"></td>
+					<td class="expression" expression="[R84.5] - [R85.5] + [R86.5] - [R87.5]"></td>
+					<td class="expression" expression="[R84.6] - [R85.6] + [R86.6] - [R87.6]"></td>
+					<td class="expression" expression="[R84.7] - [R85.7] + [R86.7] - [R87.7]"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="hada.js"></script>
+<script type="text/javascript">
+
+$(function()
+{	
+	resize();
+	$(window).resize( function(){resize()} ); 
+
+	var tableId = app.getParameter("table") || "";
+	var statementId = app.getParameter("statement") || "";
+	var substatementId = app.getParameter("substatement") || "";
+	var statementmode = app.getParameter("statementmode") || 0;
+	var children = app.getParameter("children") || "";
+
+	$.getJSON("0.jsp?mode=3&children="+children, function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var substatements = response.resource.substatements;
+			$.each(substatements, function(i, substatement)
+			{
+				var $panel = null;
+				if(i == 0)
+				{
+					$panel = $("#container .template-panel");
+				}
+				else
+				{
+					var $panel = $("#container .template-panel").clone();
+					$panel.removeClass("template-panel");
+					$("#container").append($panel);
+				}
+				$panel.attr("id", substatement.ID);
+				$panel.find(".substatement-title").html(substatement.TITLE);
+
+				
+				var background = (i % 2) == 0 ? '#fcfcfc' : '#ffffff';
+				$panel.find("table").css("background-color", background);
+
+				getResource($panel, i, statementId, substatement.ID, '0', children);
+
+			});
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+});
+
+function getResource($panel, index, statementId, substatementId, statementmode, children)
+{
+	app.showLoading();
+	$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
+	{
+		app.hideLoading();
+		if(response.status == "1")
+		{
+			var items = response.resource.items;
+
+			$.each(items, function(i, item)
+			{
+				var $row = $panel.find("#"+item['BM']);
+				if( $row.length > 0 )
+				{
+					var $cells = $row.find("td[name]");
+					$cells.each(function(j, cell)
+					{
+						var $cell = $(cell);
+						var name = $cell.attr("name");
+						var value = app.changeMoney(item[name]);
+
+						$cell.html( (value != "" ? value : "&nbsp;") );
+
+					});
+				}
+			});
+
+			expression($panel, statementId, substatementId, statementmode, children);
+
+			
+			if(index != 0)
+			{
+				$panel.find(".substatement-key").remove();
+			}
+		}
+		else 
+		{
+			app.message(response.messages);
+		}
+	});
+}
+function resize()
+{
+	$("#container").height( $(window).outerHeight() - $("#toolbar-panel").outerHeight(true) - 1 );
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

@@ -63,7 +63,8 @@
 				<i class="fa fa-chevron-up"></i>
 			</div>
 			<div class="row-panel clearfix">
-				<div class="left field-panel" style="width:75%;"><label>标题</label><div><input type="text" id="title-field"/><input type="hidden" id="sheets-field"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
+				<div class="left field-panel" style="width:50%;"><label>标题</label><div><input type="text" id="title-field"/><input type="hidden" id="sheets-field"/><button class="field-button" id="sheet-button" style="width:100px">选择表格</button></div></div>
+				<div class="left field-panel" style="width:25%;"><label>共享人</label><div><input type="text" id="sharer-field"/></div></div>
 				<div class="left field-panel" style="width:25%;"><label>法定代表人</label><div><input type="text" id="legalperson-field"/></div></div>
 			</div>
 			<div class="row-panel clearfix">
@@ -105,9 +106,10 @@
 		{
 			
 			initialise(1, app.pagesize, '');
-
+			
 			$("#sheet-button").on("click", function()
 			{
+				//选择子表
 				var defaultsheets = [];
 				if($("#sheets-field").val() != "")
 				{
@@ -139,6 +141,8 @@
 				parameter["accountantofficer"] = $("#accountantofficer-field").val();
 				parameter["description"] = $("#description-field").val();
 				parameter["sheets"] = $("#sheets-field").val();
+				parameter["sharers"] = $("#sharer-field").val();
+
 				$.post("do.jsp?mode=2", parameter, function(response)
 				{
 					app.hideLoading();
@@ -165,7 +169,6 @@
 			});
 
 			
-			
 			$("#statement-searcher-field").keydown
 			(
 				function(event)
@@ -174,6 +177,14 @@
 					{
 						initialise(1, app.pagesize, $("#statement-searcher-field").val())
 					}
+				}
+			);
+
+			$("#sharer-field").selection
+			(
+				{
+					url:app.getContextPath()+"/dictionary/list/user.json",
+					ismultiple:true
 				}
 			);
 

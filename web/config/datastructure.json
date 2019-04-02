@@ -1,4 +1,73 @@
 [
+
+	{
+		"id":"T0001", "table":"T01", "title":"试算平衡表（视图）", "columns":
+		[
+			{"name":"XM", "merge":{"group":true}},
+			{"name":"QMSDQ", "merge":{}},
+			{"name":"QCSDQ", "merge":{}},
+			{"name":"QMJFJE", "merge":{}},
+			{"name":"QMDFJE", "merge":{}},
+			{"name":"QCJFJE", "merge":{}},
+			{"name":"QCDFJE", "merge":{}}
+		]
+	},
+	{
+		"id":"T0002", "table":"T05", "title":"现金流量试算平衡表", "columns":
+		[
+			{"name":"BM", "merge":{"group":true}},
+			{"name":"BQSDQ", "merge":{}},
+			{"name":"BQTZS", "merge":{}},
+			{"name":"BQSDH", "merge":{}},
+			{"name":"SQSDQ", "merge":{}},
+			{"name":"SQTZS", "merge":{}},
+			{"name":"SQSDH", "merge":{}}
+		]
+	},
+	{
+		"id":"T0003", "table":"T04", "title":"利润表", "columns":
+		[
+			{"name":"BM", "merge":{"group":true}},
+			{"name":"BQFSE1", "merge":{}},
+			{"name":"SQFSE1", "merge":{}},
+			{"name":"BQFSE2", "merge":{}},
+			{"name":"SQFSE2", "merge":{}}
+		]
+	},
+	{
+		"id":"T0004", "table":"T06", "title":"所有者权益变动表", "columns":
+		[
+			{"name":"BM", "merge":{"group":true}},
+			{"name":"B01", "merge":{}},
+			{"name":"B02", "merge":{}},
+			{"name":"B03", "merge":{}},
+			{"name":"B04", "merge":{}},
+			{"name":"B05", "merge":{}},
+			{"name":"B06", "merge":{}},
+			{"name":"B07", "merge":{}},
+			{"name":"B08", "merge":{}},
+			{"name":"B09", "merge":{}},
+			{"name":"B10", "merge":{}},
+			{"name":"B11", "merge":{}},
+			{"name":"B12", "merge":{}},
+			{"name":"B13", "merge":{}},
+			{"name":"B14", "merge":{}},
+			{"name":"S01", "merge":{}},
+			{"name":"S02", "merge":{}},
+			{"name":"S03", "merge":{}},
+			{"name":"S04", "merge":{}},
+			{"name":"S05", "merge":{}},
+			{"name":"S06", "merge":{}},
+			{"name":"S07", "merge":{}},
+			{"name":"S08", "merge":{}},
+			{"name":"S09", "merge":{}},
+			{"name":"S10", "merge":{}},
+			{"name":"S11", "merge":{}},
+			{"name":"S12", "merge":{}},
+			{"name":"S13", "merge":{}},
+			{"name":"S14", "merge":{}}
+		]
+	},
 	{
 		"id":"S0001", "table":"T02", "title":"期末数审计调整分录", "datasource":"D001",
 		"columns":
@@ -85,9 +154,9 @@
 		[
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
-			{"name":"A", "width":"200", "merge":{"group":true}},
-			{"name":"B", "meaning":"jsonobject",  "width":"80", "merge":{}},
-			{"name":"C", "meaning":"jsonobject", "width":"80", "merge":{}},
+			{"name":"A", "width":"200", "merge":{"group":true}, "hada":{"group":true}},
+			{"name":"B", "meaning":"jsonobject",  "width":"80", "merge":{}, "hada":{}},
+			{"name":"C", "meaning":"jsonobject", "width":"80", "merge":{}, "hada":{}},
 			{"name":"CREATE_USER_ID", "dictionary":{"map":"dictionary/map/user.json"}, "width":"200"},
 			{"name":"CREATE_DATE", "width":"200"}
 		],
@@ -96,15 +165,15 @@
 			[
 				{"title":"序号", "frozen":true, "width":"50"},
 				{"title":"", "frozen":true, "width":"70", "height":"61"},
-				{"title":"A列", "rowspan":"2", "width":"200"},
-				{"title":"总列1", "colspan":"auto", "width":"80", "target":"B"},
-				{"title":"总列2", "colspan":"auto", "width":"80", "target":"C"},
+				{"title":"A列", "rowspan":"2", "width":"200", "hada":{"group":true}},
+				{"title":"总列1", "colspan":"auto", "width":"80", "target":"B", "hada":{}},
+				{"title":"总列2", "colspan":"auto", "width":"80", "target":"C", "hada":{}},
 				{"title":"创建人", "rowspan":"2", "width":"200"},
 				{"title":"创建日期", "rowspan":"2", "width":"200"}
 			],
 			[
-				{"meaning":"jsonobject", "width":"80", "target":"B"},
-				{"meaning":"jsonobject", "width":"80", "target":"C"}
+				{"meaning":"jsonobject", "width":"80", "target":"B", "hada":{}},
+				{"meaning":"jsonobject", "width":"80", "target":"C", "hada":{}}
 			]
 		],
 		"groups":
@@ -117,9 +186,9 @@
 		[
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
-			{"name":"A", "title":"项目"},
-			{"name":"B", "title":"科目编号"},
-			{"name":"C", "title":"审定前(期末数/本期累计数)"},
+			{"name":"A", "title":"项目", "merge":{"group":true}, "hada":{"group":true}},
+			{"name":"B", "title":"科目编号", "merge":{}, "hada":{}},
+			{"name":"C", "title":"审定前(期末数/本期累计数)", "merge":{}, "hada":{}},
 			{"name":"CREATE_USER_ID", "title":"创建人", "dictionary":{"map":"dictionary/map/user.json"}},
 			{"name":"CREATE_DATE", "title":"创建日期"}
 		]

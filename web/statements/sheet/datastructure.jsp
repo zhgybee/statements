@@ -25,7 +25,7 @@
 	String tableId = StringUtils.defaultString(request.getParameter("table"), "");
 	String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-	String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+	String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 	String children = StringUtils.defaultString(request.getParameter("children"), "");
 	
 
@@ -117,20 +117,17 @@
 						Set<String> dynamiccolumns = new LinkedHashSet<String>();
 						
 						Data dynamicheaders = null;					
-						if(merge.equals("1"))
+						if(statementmode.equals("2"))
 						{
-							if(substatementId.equals(""))
-							{
-								dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and STATEMENT_ID = ? and TAGCODE = ?", tableId, statementId, mark);
-							}
-							else
-							{
-								dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and TAGCODE = ? and SUBSTATEMENT_ID in ("+children+")", tableId, mark);
-							}
+							dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and TAGCODE = ? and SUBSTATEMENT_ID in ("+children+") and MODE = 0", tableId, mark);
 						}
-						else
+						else if(statementmode.equals("1"))
 						{
-							dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and SUBSTATEMENT_ID = ? and TAGCODE = ?", tableId, substatementId, mark);
+							dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and SUBSTATEMENT_ID = ? and TAGCODE = ? and MODE = 1", tableId, substatementId, mark);
+						}
+						else if(statementmode.equals("0"))
+						{
+							dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = ? and SUBSTATEMENT_ID = ? and TAGCODE = ? and MODE = 0", tableId, substatementId, mark);
 						}
 						if(dynamicheaders != null && dynamicheaders.size() > 0)
 						{

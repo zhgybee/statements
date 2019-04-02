@@ -26,7 +26,7 @@
 			String sheetId = request.getParameter("sheet");
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-			String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+			String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 			String children = StringUtils.defaultString(request.getParameter("children"), "");
 			children = URLDecoder.decode(children, "UTF-8");
 			

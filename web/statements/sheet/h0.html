@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<title></title>
+	<link rel="stylesheet" href="../../style/css/app.css" />
+	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="table.css" />
+	<style>
+	html, body{height:100%}
+	</style>
+</head>
+
+<body>
+<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+	<div class="left">
+	</div>
+	<div class="searcher-panel right">
+		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
+	</div>
+</div>
+<div id="container"></div>
+<script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript">
+
+	$(function()
+	{
+		resize();
+		$(window).resize( function(){resize()} ); 
+
+		var tableId = app.getParameter("table") || "";
+		var statementId = app.getParameter("statement") || "";
+		var substatementId = app.getParameter("substatement") || "";
+		var statementmode = app.getParameter("statementmode") || 0;
+		var children = app.getParameter("children") || "";
+
+		$.getJSON("0.jsp?mode=3&children="+children, function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				var substatements = response.resource.substatements;
+				
+				var content = "";
+				$.each(substatements, function(i, substatement)
+				{
+					content += '<div id="'+substatement.ID+'">';
+					content += '<table>';
+					content += '	<thead>';
+					content += '		<tr>';
+					if(i == 0)
+					{
+						content += '			<th rowspan="4" style="width:360px">项目</th>';
+						content += '			<th rowspan="4" style="width:80px">科目编号</th>';
+					}
+					content += '			<th colspan="8" style="width:80px">'+substatement.TITLE+'</th>';
+					content += '		</tr>';
+					content += '		<tr>';
+					content += '			<th colspan="4" style="width:400px">期末数/本期累计数</th>';
+					content += '			<th colspan="4" style="width:400px">期初数/上期累计数</th>';
+					content += '		</tr>';
+					content += '		<tr>';
+					content += '			<th rowspan="2" style="width:100px">审定前</th>';
+					content += '			<th colspan="2">审计调整</th>';
+					content += '			<th rowspan="2" style="width:100px">审定后</th>';
+					content += '			<th rowspan="2" style="width:100px">审定前</th>';
+					content += '			<th colspan="2">审计调整</th>';
+					content += '			<th rowspan="2" style="width:100px">审定后</th>';
+					content += '		</tr>';
+					content += '		<tr>';
+					content += '			<th style="width:100px">借方</th>';
+					content += '			<th style="width:100px">贷方</th>';
+					content += '			<th style="width:100px">借方</th>';
+					content += '			<th style="width:100px">贷方</th>';
+					content += '		</tr>';
+					content += '	</thead>';
+					content += '	<tbody></tbody>';
+					content += '</table>';
+					content += '</div>';
+				});
+
+				$("#container").html(content);
+
+				$.each(substatements, function(i, substatement)
+				{
+					var $substatement = $("#"+substatement.ID);
+					getResource($substatement, i, statementId, substatement.ID, '0', children);
+				});
+
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+		
+
+
+	});
+
+	function getResource($substatement, index, statementId, substatementId, statementmode, children)
+	{
+		app.showLoading();
+		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
+		{
+			app.hideLoading();
+			if(response.status == "1")
+			{
+				var items = response.resource.items;
+
+				var content = "";
+				$.each(items, function(i, item)
+				{
+					var rowclass = "";
+					var expression = "";
+					var key = "";
+
+					var qmsdq = "";
+					var qmjfje = "";
+					var qmdfje = "";
+					var qmsdh = "";
+					var qcsdq = "";
+					var qcjfje = "";
+					var qcdfje = "";
+					var qcsdh = "";
+
+					if(item['value'] != null)
+					{
+						rowclass = "expression";
+						expression = item['value'];
+					}
+					else
+					{
+						rowclass = item["code"];
+						var resource = item['resource'];
+						if(resource != null)
+						{
+							key = resource['ID'] || "";
+							qmsdq = app.changeMoney(resource['QMSDQ'] || "");
+							qmjfje = app.changeMoney(resource['QMJFJE'] || "");
+							qmdfje = app.changeMoney(resource['QMDFJE'] || "");
+							qmsdh = app.changeMoney(resource['QMSDH'] || "");
+
+							qcsdq = app.changeMoney(resource['QCSDQ'] || "");
+							qcjfje = app.changeMoney(resource['QCJFJE'] || "");
+							qcdfje = app.changeMoney(resource['QCDFJE'] || "");
+							qcsdh = app.changeMoney(resource['QCSDH'] || "");
+						}
+					}
+
+
+
+					content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
+					if(index == 0)
+					{
+						content += '<td style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
+						content += '<td>'+item["code"]+'</td>';
+					}
+
+					var background = (index % 2) == 0 ? 'background-color:#fcfcfc' : 'background-color:#ffffff';
+
+
+					content += '<td name="QMSDQ" style="'+background+'">'+ (qmsdq != "" ? qmsdq : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qmjfje != "" ? qmjfje : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qmdfje != "" ? qmdfje : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qmsdh != "" ? qmsdh : "&nbsp;") +'</td>';
+					content += '<td name="QCSDQ" style="'+background+'">'+ (qcsdq != "" ? qcsdq : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qcjfje != "" ? qcjfje : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qcdfje != "" ? qcdfje : "&nbsp;") +'</td>';
+					content += '<td style="'+background+'">'+ (qcsdh != "" ? qcsdh : "&nbsp;") +'</td>';
+					content += '</tr>';
+				});
+
+				var $body = $substatement.find("tbody");
+				$body.html(content);
+
+				$substatement.find(".expression").each(function(i, row)
+				{
+					var $row = $(row);
+					var expression = $row.attr("expression");
+					
+					var $cells = $row.find("td");
+
+					$cells.each(function(j, cell)
+					{
+						if(j > 1)
+						{
+							var result = analyze($substatement, expression, j)
+							$(cell).text( app.changeMoney(eval(result)) );
+						}
+					});
+
+				});
+			}
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+	}
+
+	function getStyle(items)
+	{
+		if(items != null)
+		{
+			var style = [];
+			for(var item in items)
+			{
+				style.push(item+":"+items[item]);
+			}
+			return style.join("; ")
+		}
+		return "";
+	}
+		
+	function analyze($substatement, expression, index)
+	{
+		if(expression.indexOf("[") != -1 && expression.indexOf("]") != -1)
+		{
+			var name = expression.substring(expression.indexOf("[")+1, expression.indexOf("]"));
+			var $row = $substatement.find("tbody ."+name);
+			var value = get($substatement, name, index) || 0;
+			expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
+			expression = analyze($substatement, expression, index);
+		}
+		return expression;
+	}
+
+	function get($substatement, name, index)
+	{
+		var $cells = $substatement.find("tbody ."+name+" td");
+		if($cells.length > 0)
+		{
+			var text = $($cells[index]).text();
+			text = text.replace(/,/ig,"");
+			return app.toNumber( text );
+		}
+		return null;
+	}
+
+		
+	function resize()
+	{
+		$("#container").height( $(window).outerHeight() - $("#toolbar-panel").outerHeight(true) - 1 );
+	}
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

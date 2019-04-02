@@ -72,6 +72,10 @@ var app = {};
 				$loading.slideUp('fast');
 			});
 		}
+		else
+		{
+			$loading.find(".messages-text").html(text);
+		}
 		$loading.slideDown('fast');
 	}
 

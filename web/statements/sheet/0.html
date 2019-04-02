@@ -12,6 +12,7 @@
 <body>
 <div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
 	<div class="left">
+	<button style="height:35px; width:80px" id="export-button">导出</button>
 	</div>
 	<div class="searcher-panel right">
 		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
@@ -48,224 +49,244 @@
 
 
 <script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
 <script type="text/javascript" src="../../lib/app.js"></script>
 <script type="text/javascript">
 
-		$(function()
+	$(function()
+	{
+		var tableId = app.getParameter("table") || "";
+		var statementId = app.getParameter("statement") || "";
+		var substatementId = app.getParameter("substatement") || "";
+		var statementmode = app.getParameter("statementmode") || 0;
+		var children = app.getParameter("children") || "";
+
+		getResource(statementId, substatementId, statementmode, children);
+
+		$(window).on("mousedown.editor", function(event)
 		{
-			var tableId = app.getParameter("table") || "";
-			var statementId = app.getParameter("statement") || "";
-			var substatementId = app.getParameter("substatement") || "";
-			var merge = app.getParameter("merge") || 0;
-			var children = app.getParameter("children") || "";
-
-			getResource(statementId, substatementId, merge, children);
-
-			$(window).on("mousedown.editor", function(event)
+			if($(event.target).closest(".editor input").size() == 0)
 			{
-				if($(event.target).closest(".editor input").size() == 0)
+				var $fields = $(".editor input:visible");
+				if($fields.size() > 0)
 				{
-					var $fields = $(".editor input:visible");
-					if($fields.size() > 0)
+					$fields.each(function(i)
 					{
-						$fields.each(function(i)
-						{
-							var $field = $(this);
-							var key = $field.data("key");
-							var name = $field.data("name");
-							var source = $field.data("source");
-							var itemname = $field.data("itemname");
-							var itemcode = $field.data("itemcode");
-							var $cell = $field.closest("td");
-							var value = $field.val();
+						var $field = $(this);
+						var key = $field.data("key");
+						var name = $field.data("name");
+						var source = $field.data("source");
+						var itemname = $field.data("itemname");
+						var itemcode = $field.data("itemcode");
+						var $cell = $field.closest("td");
+						var value = $field.val();
 
-							if(source != value)
+						if(source != value)
+						{
+							app.showLoading();
+							$.post(app.getContextPath()+"/statements/sheet/0.jsp?mode=2", {name:name, key:key, value:value, itemname:itemname, itemcode:itemcode, statement:statementId, substatement:substatementId, statementmode:statementmode}, function(response)
 							{
-								app.showLoading();
-								$.post(app.getContextPath()+"/statements/sheet/0.jsp?mode=2", {name:name, key:key, value:value, itemname:itemname, itemcode:itemcode, statement:statementId, substatement:substatementId, merge:merge}, function(response)
+								app.hideLoading();				
+								if(response.status == "1")
 								{
-									app.hideLoading();				
-									if(response.status == "1")
-									{
-										getResource(statementId, substatementId, merge, children)
-									}
-									else 
-									{
-										app.message(response.messages);
-									}
-								}, "json");
-							}
-							else
-							{
-								$cell.html( app.changeMoney($field.val()) );
-							}
-						});
-					}
-				}	
-			});
-
-
-		});
-
-		function getResource(statementId, substatementId, merge, children)
-		{
-			app.showLoading();
-			$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
-			{
-				app.hideLoading();
-				if(response.status == "1")
-				{
-					var items = response.resource.items;
-
-					var content = "";
-					$.each(items, function(i, item)
-					{
-						var editor = "";
-						if(item["editor"])
-						{
-							editor = 'editor';
-						}
-	
-						var rowclass = "";
-						var expression = "";
-						var key = "";
-
-						var qmsdq = "";
-						var qmjfje = "";
-						var qmdfje = "";
-						var qmsdh = "";
-						var qcsdq = "";
-						var qcjfje = "";
-						var qcdfje = "";
-						var qcsdh = "";
-
-						if(item['value'] != null)
-						{
-							rowclass = "expression";
-							expression = item['value'];
+									getResource(statementId, substatementId, statementmode, children)
+								}
+								else 
+								{
+									app.message(response.messages);
+								}
+							}, "json");
 						}
 						else
 						{
-							rowclass = item["code"];
-							var resource = item['resource'];
-							if(resource != null)
-							{
-								key = resource['ID'] || "";
-								qmsdq = resource['QMSDQ'] || "";
-								qmjfje = resource['QMJFJE'] || "";
-								qmdfje = resource['QMDFJE'] || "";
-								qmsdh = resource['QMSDH'] || "";
-
-								qcsdq = resource['QCSDQ'] || "";
-								qcjfje = resource['QCJFJE'] || "";
-								qcdfje = resource['QCDFJE'] || "";
-								qcsdh = resource['QCSDH'] || "";
-							}
-						}
-
-
-
-						content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
-						content += '<td class="itemname" style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
-						content += '<td class="itemcode">'+item["code"]+'</td>';
-						content += '<td class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qmjfje)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qmdfje)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qmsdh)+'</td>';
-						content += '<td class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qcjfje)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qcdfje)+'</td>';
-						content += '<td class="readonly">'+app.changeMoney(qcsdh)+'</td>';
-						content += '</tr>';
-					});
-					var $t01 = $("#T01 tbody");
-					$t01.html(content);
-
-					
-					$(".editor").on("click", function()
-					{
-						if($(this).find("input").length == 0)
-						{
-							var $row = $(this).closest("tr");
-							var value = $(this).text();
-							value = value.replace(/,/ig,"");
-							var $field = $('<input />');
-							$field.val(value);
-							$field.data("name", $(this).attr("name"));
-							$field.data("key", $row.attr("id"));
-							$field.data("source", value);
-							$field.data("itemname", $row.find(".itemname").text());
-							$field.data("itemcode", $row.find(".itemcode").text());
-							$(this).html($field);
-							$field.focus();
+							$cell.html( app.changeMoney($field.val()) );
 						}
 					});
-
-					$(".expression").each(function(i, row)
-					{
-						var $row = $(row);
-						var expression = $row.attr("expression");
-						
-						var $cells = $row.find("td");
-
-						$cells.each(function(j, cell)
-						{
-							if(j > 1)
-							{
-								var result = analyze(expression, j)
-								$(cell).text( app.changeMoney(eval(result)) );
-							}
-						});
-
-					});
-
-
 				}
-				else 
-				{
-					app.message(response.messages);
-				}
+			}	
+		});
+
+		$("#export-button").on("click", function()
+		{
+			var $table = $("#T01 table");
+			$table.find("td, th").css("border", "thin solid #000000");
+			$table.table2excel
+			({
+				exclude: "",
+				name:name,
+				filename:name + new Date().toISOString().replace(/[\-\:\.]/g, ""),
+				fileext: ".xls",
+				exclude_img: true,
+				exclude_links: true,
+				exclude_inputs: true
 			});
-		}
+			$table.find("td, th").css("border", "");
+		});
 
-		function getStyle(items)
+	});
+
+	function getResource(statementId, substatementId, statementmode, children)
+	{
+		app.showLoading();
+		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 		{
-			if(items != null)
+			app.hideLoading();
+			if(response.status == "1")
 			{
-				var style = [];
-				for(var item in items)
+				var items = response.resource.items;
+
+				var content = "";
+				$.each(items, function(i, item)
 				{
-					style.push(item+":"+items[item]);
-				}
-				return style.join("; ")
-			}
-			return "";
-		}
-			
-		function analyze(expression, index)
-		{
-			if(expression.indexOf("[") != -1 && expression.indexOf("]") != -1)
-			{
-				var name = expression.substring(expression.indexOf("[")+1, expression.indexOf("]"));
-				var $row = $("#T01 tbody ."+name);
-				var value = get(name, index) || 0;
-				expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
-				expression = analyze(expression, index);
-			}
-			return expression;
-		}
+					var editor = "";
+					if(item["editor"] && statementmode == 0)
+					{
+						editor = 'editor';
+					}
 
-		function get(name, index)
-		{
-			var $cells = $("#T01 tbody ."+name+" td");
-			if($cells.length > 0)
-			{
-				var text = $($cells[index]).text();
-				text = text.replace(/,/ig,"");
-				return app.toNumber( text );
+					var rowclass = "";
+					var expression = "";
+					var key = "";
+
+					var qmsdq = "";
+					var qmjfje = "";
+					var qmdfje = "";
+					var qmsdh = "";
+					var qcsdq = "";
+					var qcjfje = "";
+					var qcdfje = "";
+					var qcsdh = "";
+
+					if(item['value'] != null)
+					{
+						rowclass = "expression";
+						expression = item['value'];
+					}
+					else
+					{
+						rowclass = item["code"];
+						var resource = item['resource'];
+						if(resource != null)
+						{
+							key = resource['ID'] || "";
+							qmsdq = resource['QMSDQ'] || "";
+							qmjfje = resource['QMJFJE'] || "";
+							qmdfje = resource['QMDFJE'] || "";
+							qmsdh = resource['QMSDH'] || "";
+
+							qcsdq = resource['QCSDQ'] || "";
+							qcjfje = resource['QCJFJE'] || "";
+							qcdfje = resource['QCDFJE'] || "";
+							qcsdh = resource['QCSDH'] || "";
+						}
+					}
+
+
+
+					content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
+					content += '<td class="itemname" style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
+					content += '<td class="itemcode">'+item["code"]+'</td>';
+					content += '<td class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qmjfje)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qmdfje)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qmsdh)+'</td>';
+					content += '<td class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qcjfje)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qcdfje)+'</td>';
+					content += '<td class="readonly">'+app.changeMoney(qcsdh)+'</td>';
+					content += '</tr>';
+				});
+				var $t01 = $("#T01 tbody");
+				$t01.html(content);
+
+				
+				$(".editor").on("click", function()
+				{
+					if($(this).find("input").length == 0)
+					{
+						var $row = $(this).closest("tr");
+						var value = $(this).text();
+						value = value.replace(/,/ig,"");
+						var $field = $('<input />');
+						$field.val(value);
+						$field.data("name", $(this).attr("name"));
+						$field.data("key", $row.attr("id"));
+						$field.data("source", value);
+						$field.data("itemname", $row.find(".itemname").text());
+						$field.data("itemcode", $row.find(".itemcode").text());
+						$(this).html($field);
+						$field.focus();
+					}
+				});
+
+				$(".expression").each(function(i, row)
+				{
+					var $row = $(row);
+					var expression = $row.attr("expression");
+					
+					var $cells = $row.find("td");
+
+					$cells.each(function(j, cell)
+					{
+						if(j > 1)
+						{
+							var result = analyze(expression, j)
+							$(cell).text( app.changeMoney(eval(result)) );
+						}
+					});
+
+				});
+
+
 			}
-			return null;
+			else 
+			{
+				app.message(response.messages);
+			}
+		});
+	}
+
+	function getStyle(items)
+	{
+		if(items != null)
+		{
+			var style = [];
+			for(var item in items)
+			{
+				style.push(item+":"+items[item]);
+			}
+			return style.join("; ")
 		}
+		return "";
+	}
+		
+	function analyze(expression, index)
+	{
+		if(expression.indexOf("[") != -1 && expression.indexOf("]") != -1)
+		{
+			var name = expression.substring(expression.indexOf("[")+1, expression.indexOf("]"));
+			var $row = $("#T01 tbody ."+name);
+			var value = get(name, index) || 0;
+			expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
+			expression = analyze(expression, index);
+		}
+		return expression;
+	}
+
+	function get(name, index)
+	{
+		var $cells = $("#T01 tbody ."+name+" td");
+		if($cells.length > 0)
+		{
+			var text = $($cells[index]).text();
+			text = text.replace(/,/ig,"");
+			return app.toNumber( text );
+		}
+		return null;
+	}
+
+
+
 
 </script>
 

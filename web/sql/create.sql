@@ -64,6 +64,15 @@ CREATE TABLE T_STATEMENT_TRANSACTOR
  CONSTRAINT T_STATEMENT_TRANSACTOR_PK PRIMARY KEY(ID)
 );
 
+CREATE TABLE T_STATEMENT_SHARER
+(
+ ID                             VARCHAR(32),
+ STATEMENT_ID                   VARCHAR(32),
+ SUBSTATEMENT_ID                VARCHAR(32),
+ USER_ID                        VARCHAR(32),                   
+ CONSTRAINT T_STATEMENT_SHARER_PK PRIMARY KEY(ID)
+);
+
 CREATE TABLE T_HEADER
 (
  ID                             VARCHAR(32),
@@ -73,11 +82,23 @@ CREATE TABLE T_HEADER
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
+ MODE                           VARCHAR(1),  
  CREATE_USER_ID                 VARCHAR(32),
  CREATE_DATE                    DATETIME,
  CONSTRAINT T_STATEMENT_TRANSACTOR_PK PRIMARY KEY(ID)
 );
 
+CREATE TABLE T_STATEMENT_LOG
+(
+ ID                             VARCHAR(32),
+ SUBSTATEMENT_ID                VARCHAR(32),
+ EDIT_USER_ID                   VARCHAR(32),
+ EDIT_DATE                      DATETIME,
+ MODE                           VARCHAR(1),  
+ CREATE_USER_ID                 VARCHAR(32),
+ CREATE_DATE                    DATETIME,
+ CONSTRAINT T_STATEMENT_LOG_PK PRIMARY KEY(ID)
+);
 
 INSERT INTO T_USER(ID, CODE, NAME, ICON, LOGINNAME, PASSWORD, ROLE, CREATE_DATE) VALUES('1', '', '’≈’Ê', '1.jpg', 'admin', '1', '1', CURRENT_TIMESTAMP);
 
@@ -89,7 +110,7 @@ CREATE TABLE T01
  XMBH                           VARCHAR(8),
  QMSDQ                          VARCHAR(32),  
  QCSDQ                          VARCHAR(32),  
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -109,7 +130,7 @@ CREATE TABLE T02
  DFEJKM                         VARCHAR(128),
  DFJE                           VARCHAR(16),
  SXSM                           VARCHAR(1024),
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -129,7 +150,7 @@ CREATE TABLE T03
  DFEJKM                         VARCHAR(128),
  DFJE                           VARCHAR(16),
  SXSM                           VARCHAR(1024),
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -150,7 +171,7 @@ CREATE TABLE T04
  FZ2                            VARCHAR(128),
  BQFSE2                         VARCHAR(16),
  SQFSE2                         VARCHAR(16),	
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -170,7 +191,7 @@ CREATE TABLE T05
  SQSDQ                          VARCHAR(16),
  SQTZS                          VARCHAR(16),
  SQSDH                          VARCHAR(16),
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -214,7 +235,7 @@ CREATE TABLE T06
  S12                            VARCHAR(16),
  S13                            VARCHAR(16),
  S14                            VARCHAR(16),
- MERGE                          VARCHAR(1),  
+ MODE                           VARCHAR(1),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
@@ -226,17 +247,17 @@ CREATE TABLE T06
 
 CREATE VIEW V01 AS 
 select T01.*, QMJF.JFJE as 'QMJFJE', QMDF.DFJE as 'QMDFJE', QCJF.JFJE as 'QCJFJE', QCDF.DFJE as 'QCDFJE' from T01 
-left join (select STATEMENT_ID, SUBSTATEMENT_ID, MERGE, JFKM, sum(JFJE) as 'JFJE' from T02 group by STATEMENT_ID, SUBSTATEMENT_ID, MERGE, JFKM) QMJF on 
-T01.XMBH = QMJF.JFKM and T01.STATEMENT_ID = QMJF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QMJF.SUBSTATEMENT_ID and T01.MERGE = QMJF.MERGE
+left join (select STATEMENT_ID, SUBSTATEMENT_ID, MODE , JFKM, sum(JFJE) as 'JFJE' from T02 group by STATEMENT_ID, SUBSTATEMENT_ID, MODE , JFKM) QMJF on 
+T01.XMBH = QMJF.JFKM and T01.STATEMENT_ID = QMJF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QMJF.SUBSTATEMENT_ID and T01.MODE  = QMJF.MODE 
 
-left join (select STATEMENT_ID, SUBSTATEMENT_ID, MERGE, DFKM, sum(DFJE) as 'DFJE' from T02 group by STATEMENT_ID, SUBSTATEMENT_ID, MERGE, DFKM) QMDF on 
-T01.XMBH = QMDF.DFKM and T01.STATEMENT_ID = QMDF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QMDF.SUBSTATEMENT_ID and T01.MERGE = QMDF.MERGE
+left join (select STATEMENT_ID, SUBSTATEMENT_ID, MODE , DFKM, sum(DFJE) as 'DFJE' from T02 group by STATEMENT_ID, SUBSTATEMENT_ID, MODE , DFKM) QMDF on 
+T01.XMBH = QMDF.DFKM and T01.STATEMENT_ID = QMDF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QMDF.SUBSTATEMENT_ID and T01.MODE  = QMDF.MODE 
 
-left join (select STATEMENT_ID, SUBSTATEMENT_ID, MERGE, JFKM, sum(JFJE) as 'JFJE' from T03 group by STATEMENT_ID, SUBSTATEMENT_ID, MERGE, JFKM) QCJF on 
-T01.XMBH = QCJF.JFKM and T01.STATEMENT_ID = QCJF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QCJF.SUBSTATEMENT_ID and T01.MERGE = QCJF.MERGE
+left join (select STATEMENT_ID, SUBSTATEMENT_ID, MODE , JFKM, sum(JFJE) as 'JFJE' from T03 group by STATEMENT_ID, SUBSTATEMENT_ID, MODE , JFKM) QCJF on 
+T01.XMBH = QCJF.JFKM and T01.STATEMENT_ID = QCJF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QCJF.SUBSTATEMENT_ID and T01.MODE  = QCJF.MODE 
 
-left join (select STATEMENT_ID, SUBSTATEMENT_ID, MERGE, DFKM, sum(DFJE) as 'DFJE' from T03 group by STATEMENT_ID, SUBSTATEMENT_ID, MERGE, DFKM) QCDF on 
-T01.XMBH = QCDF.DFKM and T01.STATEMENT_ID = QCDF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QCDF.SUBSTATEMENT_ID and T01.MERGE = QCDF.MERGE
+left join (select STATEMENT_ID, SUBSTATEMENT_ID, MODE , DFKM, sum(DFJE) as 'DFJE' from T03 group by STATEMENT_ID, SUBSTATEMENT_ID, MODE , DFKM) QCDF on 
+T01.XMBH = QCDF.DFKM and T01.STATEMENT_ID = QCDF.STATEMENT_ID and T01.SUBSTATEMENT_ID = QCDF.SUBSTATEMENT_ID and T01.MODE  = QCDF.MODE 
 
 
 
@@ -267,6 +288,7 @@ CREATE TABLE A
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
+ MODE                           VARCHAR(1),  
  CREATE_USER_ID                 VARCHAR(32),
  CREATE_DATE                    DATETIME,
  CONSTRAINT A_PK PRIMARY KEY(ID)
@@ -281,6 +303,7 @@ CREATE TABLE B
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
+ MODE                           VARCHAR(1),  
  CREATE_USER_ID                 VARCHAR(32),
  CREATE_DATE                    DATETIME,
  CONSTRAINT B_PK PRIMARY KEY(ID)
@@ -295,6 +318,7 @@ CREATE TABLE C
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
+ MODE                           VARCHAR(1),  
  CREATE_USER_ID                 VARCHAR(32),
  CREATE_DATE                    DATETIME,
  CONSTRAINT C_PK PRIMARY KEY(ID)
@@ -308,6 +332,7 @@ CREATE TABLE D
  C                              VARCHAR(32),  
  STATUS                         VARCHAR(8),
  STATEMENT_ID                   VARCHAR(32),
+ MODE                           VARCHAR(1),  
  SUBSTATEMENT_ID                VARCHAR(32),
  CREATE_USER_ID                 VARCHAR(32),
  CREATE_DATE                    DATETIME,
@@ -378,5 +403,5 @@ INSERT INTO T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, 
 INSERT INTO T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS) VALUES('31', '1', '3', '7', '4', '001');
 INSERT INTO T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS) VALUES('32', '1', '4', '7', '5', '001');
 
-INSERT INTO A(ID, STATEMENT_ID, SUBSTATEMENT_ID) VALUES('1', '1', '1');
-INSERT INTO A(ID, STATEMENT_ID, SUBSTATEMENT_ID) VALUES('2', '1', '2');
+INSERT INTO A(ID, A, STATEMENT_ID, SUBSTATEMENT_ID, MODE) VALUES('1', '1', '1', '1', 0);
+INSERT INTO A(ID, A, STATEMENT_ID, SUBSTATEMENT_ID, MODE) VALUES('2', '2', '1', '2', 0);

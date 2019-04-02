@@ -20,10 +20,8 @@
 <%
 
 	ServiceMessage message = new ServiceMessage();
-	String ismerge = StringUtils.defaultString(request.getParameter("merge"), "0");
-	String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
+	String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "0");
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-	String children = StringUtils.defaultString(request.getParameter("children"), "");
 	
 	JSONArray configs = new JSONArray( FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "checkup.json"), "UTF-8" ));
 	
@@ -43,10 +41,10 @@
 			JSONObject item1 = checkup.optJSONObject("item1");
 			JSONObject item2 = checkup.optJSONObject("item2");
 			
-			Datum datum1 = datasource.get(toSql(item1.optString("sql"), ismerge, statementId, substatementId, children));
-			Datum datum2 = datasource.get(toSql(item2.optString("sql"), ismerge, statementId, substatementId, children));
+			Data data1 = datasource.find(toSql(item1.optString("sql"), statementmode, substatementId));
+			Data data2 = datasource.find(toSql(item2.optString("sql"), statementmode, substatementId));
 
-			JSONArray details = warning(item1.optString("name"), item2.optString("name"), datum1, datum2);
+			JSONArray details = warning(item1.optString("name"), item2.optString("name"), data1, data2);
 			if(details.length() > 0)
 			{
 				JSONObject warning = new JSONObject();
@@ -80,27 +78,66 @@
 %>
 
 <%!
-	public String toSql(String sql, String ismerge, String statementId, String substatementId, String children)
+	public String toSql(String sql, String statementmode, String substatementId)
 	{
-		if(ismerge.equals("1"))
-		{
-			if(substatementId.equals(""))
-			{
-				return "select * from ("+sql+") where STATEMENT_ID = '"+statementId+"'";
-			}
-			else
-			{
-				return "select * from ("+sql+") where SUBSTATEMENT_ID in ("+children+")";
-			}
-		}
-		else
-		{
-			return "select * from ("+sql+") where SUBSTATEMENT_ID = '"+substatementId+"'";
-		}
+		return "select * from ("+sql+") where SUBSTATEMENT_ID = '"+substatementId+"' and MODE = '"+statementmode+"'";
 	}
 
-	public JSONArray warning(String name1, String name2, Datum datum1, Datum datum2) throws JSONException
+	public JSONArray warning(String name1, String name2, Data data1, Data data2) throws JSONException
 	{
+		
+		Datum datum1 = null;
+		Datum datum2 = null;
+		
+		if(data1.size() > 0)
+		{
+			datum1 = new Datum();
+			for(Datum datum : data1)
+			{
+				Set<String> keys = datum.keySet();
+				for(String key : keys)
+				{
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					{
+						if(datum1.containsKey(key))
+						{
+							datum1.put(key, datum1.getDouble(key) + datum.getDouble(key));
+						}
+						else
+						{
+							datum1.put(key, datum.getDouble(key));
+						}
+					}
+				}
+			}
+		}
+		if(data2.size() > 0)
+		{
+			datum2 = new Datum();
+			for(Datum datum : data2)
+			{
+				Set<String> keys = datum.keySet();
+				for(String key : keys)
+				{
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					{
+						if(datum2.containsKey(key))
+						{
+							datum2.put(key, datum2.getDouble(key) + datum.getDouble(key));
+						}
+						else
+						{
+							datum2.put(key, datum.getDouble(key));
+						}
+					}
+				}
+			}
+		}
+		
+		
+		
+		
+		
 		JSONArray warnings = new JSONArray();
 
 		if(datum1 != null && datum2 != null)
@@ -112,9 +149,6 @@
 				{
 					double value1 = datum1.getDouble(key);
 					double value2 = datum2.getDouble(key);
-
-
-					
 
 					if(value1 != value2)
 					{

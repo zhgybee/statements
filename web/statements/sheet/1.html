@@ -942,19 +942,32 @@ $(function()
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
-	getResource(statementId, substatementId, merge, children);
+	getResource(statementId, substatementId, statementmode, children);
+	
+	if(statementmode == "1")
+	{
+		$("[name='BQSDQ']").removeClass("editor");
+		$("[name='SQSDQ']").removeClass("editor");
+	}
+	if(statementmode == "2")
+	{
+		$("[name='BQSDQ']").removeClass("editor");
+		$("[name='SQSDQ']").removeClass("editor");
+		$("[name='BQTZS']").removeClass("editor");
+		$("[name='SQTZS']").removeClass("editor");
+	}
 
 	setEditor(app.getContextPath()+"/statements/sheet/1.jsp?mode=2");
 	setExport('现金流量试算平衡表');
 });
 
-function getResource(statementId, substatementId, merge, children)
+function getResource(statementId, substatementId, statementmode, children)
 {
 	app.showLoading();
-	$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+	$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 	{
 		app.hideLoading();
 		if(response.status == "1")
@@ -978,7 +991,7 @@ function getResource(statementId, substatementId, merge, children)
 				}
 			});
 
-			expression(statementId, substatementId, merge, children);
+			expression(statementId, substatementId, statementmode, children);
 
 
 		}

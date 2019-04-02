@@ -24,9 +24,13 @@ li{padding:0px; margin:0px; list-style-type:none}
 
 .clearfix::after{clear:both; content:""; display:block;}
 
-.green{background-color:#5DC4BF!important}
+.gray{background-color:#bdc3c7!important}
+
+.green{background-color:#00aba9!important}
 
 .red{background-color:#cd5050!important}
+
+.orange{background-color:#f39c12!important}
 
 .blue{background-color:#009CEA!important}
 
@@ -35,6 +39,8 @@ li{padding:0px; margin:0px; list-style-type:none}
 .right{float:right}
 
 .button{border:none; background-color:#4ab6ef; font-size:13px; color:#ffffff; box-sizing:border-box; border-width:0px; outline:none; cursor:pointer; padding:0px 3px}
+
+.blue-mark{margin-right:5px; background-color:#4ab6ef; width:8px; height:8px; display:inline-block; border-radius:8px}
 
 .readonly{background-color:#fafafa}
 
@@ -95,9 +101,7 @@ li{padding:0px; margin:0px; list-style-type:none}
 .grid-toolbar-panel .searcher-panel input{border-radius:2px; margin-right:5px; background-color:#ffffff; border:0px none; color:#838383; width:100px; height:35px; padding:0px 5px}
 .grid-toolbar-panel .searcher-panel i{font-size:14px; color:#999999}
 
-.grid-toolbar-panel .warnings-panel{display:none; height:35px; background-color:#d15b47; color:#ffffff; line-height:35px; overflow:hidden; padding:0px 10px; cursor:pointer}
-.grid-toolbar-panel .warnings-panel i{font-size:18px}
-.grid-toolbar-panel .warnings-panel span{font-size:16px; margin-left:5px}
+
 
 .grid-toolbar-panel .pagination-panel {margin:0px auto}
 .grid-toolbar-panel .pagination-panel ul{margin:0px auto}
@@ -126,7 +130,7 @@ li{padding:0px; margin:0px; list-style-type:none}
 .header-panel{background-color:#F7F7F7;}
 .header-panel .header-items{padding:10px}
 .header-panel .header-items .header-icon{float:left}
-.header-panel .header-items .header-icon img{width:80px; height:80px; display:block; margin-right:20px}
+.header-panel .header-items .header-icon img{width:60px; height:60px; display:block; margin-right:20px}
 .header-panel .header-items .header-title{float:left}
 .header-panel .header-items .header-title h2{font-size:23px; letter-spacing:2px; color:#666666; font-weight:300;}
 .header-panel .header-items .header-title p{padding-top:5px;}

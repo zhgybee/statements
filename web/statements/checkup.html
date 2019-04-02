@@ -36,11 +36,11 @@ $(function()
 {
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
 	app.showLoading();
-	$.getJSON("checkup.jsp?statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+	$.getJSON("checkup.jsp?statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 	{
 		app.hideLoading();
 		if(response.status == "1")

@@ -19,7 +19,7 @@
 	String tableId = StringUtils.defaultString(request.getParameter("table"), "");
 	String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-	String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+	String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 	String children = StringUtils.defaultString(request.getParameter("children"), "");
 
 	children = URLDecoder.decode(children, "UTF-8");
@@ -51,23 +51,19 @@
 			{
 				sql = datastructure.getProperty().optString("table");
 
-				if(merge.equals("1"))
+				if(statementmode.equals("2"))
 				{
-					if(substatementId.equals(""))
-					{
-						data = datasource.find("select * from "+sql+" T where T.STATEMENT_ID = ?", statementId);
-					}
-					else
-					{
-						data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+")");
-					}
-					
+					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+") and MODE = 0");
 					//合并数据
 					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
 				}
-				else
+				else if(statementmode.equals("1"))
 				{
-					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID = ?", substatementId);
+					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID = ? and MODE = 1", substatementId);
+				}
+				else if(statementmode.equals("0"))
+				{
+					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID = ? and MODE = 0", substatementId);
 				}
 			}
 			else

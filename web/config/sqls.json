@@ -1,8 +1,8 @@
 [
-	{"code":"D001", "sql":"select * from T02 where MERGE = '[url:merge]' and STATEMENT_ID = '[url:statement]' and SUBSTATEMENT_ID = '[url:substatement]'"},
-	{"code":"D002", "sql":"insert into T02(ID, MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values('[sys:uuid]', '[url:merge]', '[url:statement]', '[url:substatement]', '[sys:user-id]', CURRENT_TIMESTAMP)"},
-	{"code":"D003", "sql":"select * from T03 where MERGE = '[url:merge]' and STATEMENT_ID = '[url:statement]' and SUBSTATEMENT_ID = '[url:substatement]'"},
-	{"code":"D004", "sql":"insert into T03(ID, MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values('[sys:uuid]', '[url:merge]', '[url:statement]', '[url:substatement]', '[sys:user-id]', CURRENT_TIMESTAMP)"},
+	{"code":"D001", "sql":"select * from T02 where MODE = '[url:statementmode]' and STATEMENT_ID = '[url:statement]' and SUBSTATEMENT_ID = '[url:substatement]'"},
+	{"code":"D002", "sql":"insert into T02(ID, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values('[sys:uuid]', '[url:statementmode]', '[url:statement]', '[url:substatement]', '[sys:user-id]', CURRENT_TIMESTAMP)"},
+	{"code":"D003", "sql":"select * from T03 where MODE = '[url:statementmode]' and STATEMENT_ID = '[url:statement]' and SUBSTATEMENT_ID = '[url:substatement]'"},
+	{"code":"D004", "sql":"insert into T03(ID, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values('[sys:uuid]', '[url:statementmode]', '[url:statement]', '[url:substatement]', '[sys:user-id]', CURRENT_TIMESTAMP)"},
 
 	
 	

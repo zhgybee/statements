@@ -1,3 +1,4 @@
+<%@page import="com.system.datastructure.DataStructure"%>
 <%@page import="com.system.utils.SystemUtils"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -30,9 +31,8 @@
 	
 		if(mode.equals("1"))
 		{
-			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-			String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+			String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 			String children = StringUtils.defaultString(request.getParameter("children"), "");
 			
 			Connection connection = null;
@@ -40,9 +40,44 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				String sql = "select * from T05 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ?";
-				Data items = datasource.find(sql, statementId, substatementId, merge);
 				
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get("T0002");
+				Data items = null;
+				if(statementmode.equals("2") || statementmode.equals("1"))
+				{
+					//合并抵消或哈达：审定前为所有单表审定后（审定前+调整）的合计，调整分录取合并抵消环境下的数据
+
+					items = datasource.find("select * from T05 where SUBSTATEMENT_ID in ("+children+") and MODE = '0'");
+					for(Datum item : items)
+					{
+						item.put("BQSDQ", item.getDouble("BQSDQ") + item.getDouble("BQTZS"));
+						item.put("SQSDQ", item.getDouble("SQSDQ") + item.getDouble("SQTZS"));
+					}
+					items = SystemUtils.merge(items, datastructure.getProperty().optJSONArray("columns"));
+
+					
+					//得到合并抵消环境下的调整数
+					Data changers = datasource.find("select * from T05 where SUBSTATEMENT_ID  = ?  and MODE = '1'", substatementId);
+					Map<String, String> changermap = new HashMap<String, String>();
+					for(Datum changer : changers)
+					{
+						changermap.put("BQ"+changer.getString("BM"), changer.getString("BQTZS"));
+						changermap.put("SQ"+changer.getString("BM"), changer.getString("SQTZS"));
+					}
+
+					for(Datum item : items)
+					{
+						item.put("BQTZS", changermap.get("BQ"+item.getString("BM")));
+						item.put("SQTZS", changermap.get("BQ"+item.getString("BM")));
+					}
+
+
+				}
+				else if(statementmode.equals("0"))
+				{
+					items = datasource.find("select * from T05 where SUBSTATEMENT_ID = ? and MODE = 0", substatementId);
+				}
+
 
 				Map<String, Datum> itemmap = new HashMap<String, Datum>();
 				for(Datum datum : items)
@@ -79,19 +114,19 @@
 				
 				String statementId = request.getParameter("statement");
 				String substatementId = request.getParameter("substatement");
-				String merge = request.getParameter("merge");
+				String statementmode = request.getParameter("statementmode");
 				
-				Data items = datasource.find("select ID from T05 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", statementId, substatementId, merge, key);
+				Data items = datasource.find("select ID from T05 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", statementId, substatementId, statementmode, key);
 				
 				if(items.size() == 0)
 				{
-					datasource.execute("insert into T05(ID, BM, "+columnname+", MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-							SystemUtils.uuid(), key, value, merge, statementId, substatementId, sessionuser.getId());
+					datasource.execute("insert into T05(ID, BM, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							SystemUtils.uuid(), key, value, statementmode, statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update T05 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", 
-							value, statementId, substatementId, merge, key);
+					datasource.execute("update T05 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", 
+							value, statementId, substatementId, statementmode, key);
 				}
 				connection.commit();
 			}

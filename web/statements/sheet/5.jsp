@@ -1,3 +1,4 @@
+<%@page import="com.system.datastructure.DataStructure"%>
 <%@page import="com.system.utils.SystemUtils"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -32,7 +33,7 @@
 		{
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-			String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+			String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 			String children = StringUtils.defaultString(request.getParameter("children"), "");
 			
 			Connection connection = null;
@@ -40,9 +41,22 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				String sql = "select * from T06 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ?";
-				Data items = datasource.find(sql, statementId, substatementId, merge);
-				
+
+
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get("T0004");
+				Data items = null;
+				if(statementmode.equals("2") || statementmode.equals("1"))
+				{
+					//合并抵消或哈达：取所有单表的合并数据
+					String sql = "select * from T06 where SUBSTATEMENT_ID in ("+children+") and MODE = '0'";
+					items = datasource.find(sql);
+					items = SystemUtils.merge(items, datastructure.getProperty().optJSONArray("columns"));
+				}
+				else if(statementmode.equals("0"))
+				{
+					String sql = "select * from T06 where SUBSTATEMENT_ID = ? and MODE = '0'";
+					items = datasource.find(sql, substatementId);
+				}
 
 				Map<String, Datum> itemmap = new HashMap<String, Datum>();
 				for(Datum datum : items)
@@ -79,19 +93,19 @@
 				
 				String statementId = request.getParameter("statement");
 				String substatementId = request.getParameter("substatement");
-				String merge = request.getParameter("merge");
+				String statementmode = request.getParameter("statementmode");
 				
-				Data items = datasource.find("select ID from T06 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", statementId, substatementId, merge, key);
+				Data items = datasource.find("select ID from T06 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", statementId, substatementId, "0", key);
 				
 				if(items.size() == 0)
 				{
-					datasource.execute("insert into T06(ID, BM, "+columnname+", MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-							SystemUtils.uuid(), key, value, merge, statementId, substatementId, sessionuser.getId());
+					datasource.execute("insert into T06(ID, BM, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							SystemUtils.uuid(), key, value, "0", statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update T06 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? and BM = ?", 
-							value, statementId, substatementId, merge, key);
+					datasource.execute("update T06 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", 
+							value, statementId, substatementId, "0", key);
 				}
 				connection.commit();
 			}

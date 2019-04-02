@@ -9,7 +9,7 @@
 		"id":"S0003", "type":"table", "dateset":"R000002", "columns":
 		[
 
-			{"name":"A", "width":"2000", "merge":{"group":true}, "align":"left"},
+			{"name":"A", "width":"2000", "merge":{"group":true}, "align":"center"},
 			{"name":"B", "meaning":"jsonobject", "width":"2000", "merge":{}, "modes":["percent"], "avg":{"exclude":["aaa"]}},
 			{"name":"C", "meaning":"jsonobject", "width":"2000", "merge":{}}
 
@@ -17,7 +17,7 @@
 		"header":
 		[
 			[
-				{"title":"A列", "rowspan":"restart", "width":"2000", "align":"left"},
+				{"title":"A列", "rowspan":"restart", "width":"2000", "align":"center"},
 				{"title":"总列1", "colspan":"auto", "width":"2000", "target":"B"},
 				{"title":"总列2", "colspan":"auto", "width":"2000", "target":"C"}
 			],
@@ -32,20 +32,7 @@
 		"type":"newline"
 	},
 	{
-		"id":"S0003", "type":"table", "columns":
-		[
-
-			{"name":"A", "width":"2000", "merge":{"group":true}},
-			{"name":"B", "meaning":"jsonobject", "width":"2000", "merge":{}, "modes":["percent"], "sum":{}},
-			{"name":"C", "meaning":"jsonobject", "width":"2000", "merge":{}, "sum":{"exclude":["交易"]}}
-
-		]
-	},
-	{
-		"type":"newline"
-	},
-	{
-		"id":"S0005", "type":"table", "columns":
+		"id":"S0004", "type":"table", "columns":
 		[
 
 			{"name":"A", "width":"2000", "title":"A列", "merge":{"group":true}},

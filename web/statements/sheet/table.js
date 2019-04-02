@@ -1,10 +1,11 @@
 $(function()
 {
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 
-	if(merge == 0)
+	if(statementmode == 0)
 	{
-		var $cell = $(".merge-item");
+		//去除单体不显示项
+		var $cell = $(".statementmode-item");
 		$cell.html("　");
 		$cell.removeAttr("name");
 		$cell.removeClass();
@@ -18,7 +19,7 @@ function setEditor(url)
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
-	var merge = app.getParameter("merge") || 0;
+	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
 
 	$(".editor").on("click", function()
@@ -55,12 +56,12 @@ function setEditor(url)
 					if(source != value)
 					{
 						app.showLoading();
-						$.post(url, {name:name, key:key, value:value, statement:statementId, substatement:substatementId, merge:merge}, function(response)
+						$.post(url, {name:name, key:key, value:value, statement:statementId, substatement:substatementId, statementmode:statementmode}, function(response)
 						{
 							app.hideLoading();	
 							if(response.status == "1")
 							{
-								getResource(statementId, substatementId, merge, children)
+								getResource(statementId, substatementId, statementmode, children)
 							}
 							else 
 							{
@@ -102,9 +103,9 @@ function setExport(name)
 }
 
 
-function expression(statementId, substatementId, merge, children)
+function expression(statementId, substatementId, statementmode, children)
 {
-	set(statementId, substatementId, merge, children, function()
+	set(statementId, substatementId, statementmode, children, function()
 	{
 		$(".expression").each(function(i, cell)
 		{
@@ -165,13 +166,13 @@ function getByData(map, key, name)
 	return null;
 }
 
-function set(statementId, substatementId, merge, children, callback)
+function set(statementId, substatementId, statementmode, children, callback)
 {
 	//试算表
 	var $cell01s = $("td.T01");
 	if($cell01s.length > 0)
 	{
-		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -209,7 +210,7 @@ function set(statementId, substatementId, merge, children, callback)
 	var $cell05s = $("td.T05");
 	if($cell05s.length > 0)
 	{
-		$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+		$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -247,7 +248,7 @@ function set(statementId, substatementId, merge, children, callback)
 	var $cell06s = $("td.T06");
 	if($cell06s.length > 0)
 	{
-		$.getJSON("5.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&merge="+merge+"&children="+children+"", function(response)
+		$.getJSON("5.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")

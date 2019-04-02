@@ -1,4 +1,11 @@
 
+<%@page import="java.io.IOException"%>
+<%@page import="java.io.BufferedOutputStream"%>
+<%@page import="java.io.OutputStream"%>
+<%@page import="java.io.FileInputStream"%>
+<%@page import="java.io.BufferedInputStream"%>
+<%@page import="java.io.InputStream"%>
+<%@page import="org.apache.commons.lang3.ArrayUtils"%>
 <%@page import="com.system.datasource.Datum"%>
 <%@page import="java.io.File"%>
 <%@page import="com.system.variable.VariableService"%>
@@ -27,16 +34,22 @@
 		String mode = request.getParameter("mode");
 		if(mode.equals("1"))
 		{
+			/* 删除项目 */
 			String statementId = request.getParameter("statement");
 			Connection connection = null;
 			try
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("delete from T_STATEMENT where id = ?", statementId);
-				datasource.execute("delete from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
-				datasource.execute("delete from T_STATEMENT_TRANSACTOR where STATEMENT_ID = ?", statementId);
-				datasource.execute("delete from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
+				if(!statementId.equals(""))
+				{
+					datasource.execute("delete from T_STATEMENT where id = ?", statementId);
+					datasource.execute("delete from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);
+					datasource.execute("delete from T_STATEMENT_TRANSACTOR where STATEMENT_ID = ?", statementId);
+					datasource.execute("delete from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
+					datasource.execute("delete from T_STATEMENT_SHARER where STATEMENT_ID = ?", statementId);
+					datasource.execute("delete from T_STATEMENT_LOG where STATEMENT_ID = ?", statementId);
+				}
 				connection.commit();
 			}
 			catch(Exception e)
@@ -67,7 +80,8 @@
 			String accountant = StringUtils.defaultString(request.getParameter("accountant"), "");
 			String accountantofficer = StringUtils.defaultString(request.getParameter("accountantofficer"), "");			
 			String description = StringUtils.defaultString(request.getParameter("description"), "");			
-			String sheets = StringUtils.defaultString(request.getParameter("sheets"), "");
+			String sheets = StringUtils.defaultString(request.getParameter("sheets"), "");		
+			String sharers = StringUtils.defaultString(request.getParameter("sharers"), "");
 						
 			Connection connection = null;
 			try
@@ -85,19 +99,73 @@
 				{
 					datasource.execute("update T_STATEMENT set CODE = ?, TITLE = ?, STARTDATE = ?, ENDDATE = ?, LEGALPERSON = ?, ACCOUNTANT = ?, ACCOUNTANTOFFICER = ?, STATUS = ?, DESCRIPTION = ? where ID = ?", 
 							"", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, id);
-					datasource.execute("delete from T_STATEMENT_SHEET where STATEMENT_ID = ?", id);
-				}
-
-				if(!sheets.equals(""))
-				{
-					JSONArray array = new JSONArray(sheets);
 					
+					
+					
+					Data existsheets = datasource.find("select SHEET_ID from T_STATEMENT_SHEET where STATEMENT_ID = ?", id);
+					Data substatements = datasource.find("select ID, MANAGER_USER_ID from T_SUBSTATEMENT where STATEMENT_ID = ?", id);
+					
+					String[] existsheetIds = new String[]{};
+					for(Datum existsheet : existsheets)
+					{
+						existsheetIds = ArrayUtils.add(existsheetIds, existsheet.getString("SHEET_ID"));
+					}
+
+					String[] selectsheetIds = new String[]{};
+					JSONArray array = new JSONArray(sheets);
 					for(int i = 0 ; i < array.length() ; i++)
 					{
 						JSONObject sheet = array.optJSONObject(i);
-						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheet.optString("id"));
+						selectsheetIds = ArrayUtils.add(selectsheetIds, sheet.optString("id"));
+					}
+					
+					//得到需要删除的sheetId
+					String[] delsheetIds = new String[]{};
+					for(String existsheetId : existsheetIds)
+					{
+						if(!ArrayUtils.contains(selectsheetIds, existsheetId))
+						{
+							delsheetIds = ArrayUtils.add(delsheetIds, existsheetId);
+						}
+					}
+					
+					//得到需要增加的sheetId
+					String[] addsheetIds = new String[]{};
+					for(String selectsheetId : selectsheetIds)
+					{
+						if(!ArrayUtils.contains(existsheetIds, selectsheetId))
+						{
+							addsheetIds = ArrayUtils.add(addsheetIds, selectsheetId);
+						}
+					}
+
+
+					for(int i = 0 ; i < addsheetIds.length ; i++)
+					{
+						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, addsheetIds[i]);
+						for(Datum substatement : substatements)
+						{
+							datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+									SystemUtils.uuid(), id, substatement.getString("ID"), addsheetIds[i], substatement.getString("MANAGER_USER_ID"), "001", "", sessionuser.getId());
+						}
+					}
+					for(int i = 0 ; i < delsheetIds.length ; i++)
+					{
+						datasource.execute("delete from T_STATEMENT_SHEET where SHEET_ID = ?", delsheetIds[i]);
+						datasource.execute("delete from T_STATEMENT_TRANSACTOR where STATEMENT_ID = ? and SHEET_ID = ?", id, delsheetIds[i]);
+					}
+					
+					datasource.execute("delete from T_STATEMENT_SHARER where STATEMENT_ID = ?", id);
+				}
+				if(!sharers.equals(""))
+				{
+					String[] sharerIds = sharers.split(",");
+					for(int i = 0 ; i < sharerIds.length ; i++)
+					{
+						datasource.execute("insert into T_STATEMENT_SHARER(ID, STATEMENT_ID, USER_ID) VALUES(?, ?, ?)", SystemUtils.uuid(), id, sharerIds[i]);
 					}
 				}
+				
 				
 				connection.commit();
 			}
@@ -195,8 +263,13 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
-				datasource.execute("delete from T_STATEMENT_TRANSACTOR where SUBSTATEMENT_ID = ?", substatementId);
+				if(!substatementId.equals(""))
+				{
+					datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
+					datasource.execute("delete from T_STATEMENT_TRANSACTOR where SUBSTATEMENT_ID = ?", substatementId);
+					datasource.execute("delete from T_STATEMENT_SHARER where SUBSTATEMENT_ID = ?", substatementId);
+					datasource.execute("delete from T_STATEMENT_LOG where SUBSTATEMENT_ID = ?", substatementId);
+				}
 				connection.commit();
 			}
 			catch(Exception e)
@@ -245,6 +318,38 @@
 					connection.close();
 				}
 			}
+		}
+		else if(mode.equals("6"))
+		{
+	        try 
+	        {
+	    		String name = StringUtils.defaultString(request.getParameter("name"), "");
+	    		String language = StringUtils.defaultString(request.getParameter("language"), "");
+	    		
+	            File file = new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "resource" +SystemProperty.FILESEPARATOR+ "template" +SystemProperty.FILESEPARATOR + "template_zh.xls");
+
+	            if(language.equals("en"))
+				{
+	            	file = new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "resource" +SystemProperty.FILESEPARATOR+ "template" +SystemProperty.FILESEPARATOR + "template_en.xls");
+				}
+	            
+	            InputStream stream = new BufferedInputStream(new FileInputStream(file));
+	            byte[] buffer = new byte[stream.available()];
+	            stream.read(buffer);
+	            stream.close();
+	            response.reset();
+	            response.addHeader("Content-Disposition", "attachment;filename="+new String(name.getBytes("gb2312"), "ISO8859-1"));
+	            response.addHeader("Content-Length", "" + file.length());
+	            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+	            response.setContentType("application/octet-stream");
+	            toClient.write(buffer);
+	            toClient.flush();
+	            toClient.close();
+	        } 
+	        catch (IOException ex) 
+	        {
+	            ex.printStackTrace();
+	        }
 		}
 	}
 	else

@@ -1,4 +1,3 @@
-<%@page import="java.text.NumberFormat"%>
 <%@page import="org.json.JSONException"%>
 <%@page import="com.system.utils.StatementUtils"%>
 <%@page import="java.util.Objects"%>
@@ -40,9 +39,8 @@
 		List<String> warnings = new ArrayList<String>();
 		
 		String version = request.getParameter("version");
-		String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 		String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-		String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+		String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 		String children = StringUtils.defaultString(request.getParameter("children"), "");
 		String statementname = StringUtils.defaultString(request.getParameter("statementname"), "");
 		String substatementname = StringUtils.defaultString(request.getParameter("substatementname"), "");
@@ -94,22 +92,18 @@
 						}
 					}
 					
-					if(merge.equals("1"))
+					if(statementmode.equals("2"))
 					{
-						if(substatementId.equals(""))
-						{
-							data = datasource.find("select * from "+sql+" T where T.STATEMENT_ID = ?", statementId);
-						}
-						else
-						{
-							data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID in ("+children+")");
-						}
-						//合并数据
+						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID in ("+children+") and MODE = 0");
 						data = SystemUtils.merge(data, item.optJSONArray("columns"));
 					}
-					else
+					else if(statementmode.equals("1"))
 					{
-						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID = ?", substatementId);
+						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID = ? and MODE = 1", substatementId);
+					}
+					else if(statementmode.equals("0"))
+					{
+						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID = ? and MODE = 0", substatementId);
 					}
 				}
 				
@@ -167,20 +161,17 @@
 						if(meaning.equals("jsonobject"))
 						{
 							String sql = "";
-							if(merge.equals("1"))
+							if(statementmode.equals("2"))
 							{
-								if(substatementId.equals(""))
-								{
-									sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and STATEMENT_ID = '"+statementId+"' and TAGCODE = '"+columnname+"'";
-								}
-								else
-								{
-									sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID in ("+children+") and TAGCODE = '"+columnname+"'";
-								}
+								sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID in ("+children+") and TAGCODE = '"+columnname+"' and MODE = 0";
 							}
-							else
+							else if(statementmode.equals("1"))
 							{
-								sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID = '"+substatementId+"' and TAGCODE = '"+columnname+"'";
+								sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID = '"+substatementId+"' and TAGCODE = '"+columnname+"' and MODE = 1";
+							}
+							else if(statementmode.equals("0"))
+							{
+								sql = "select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID = '"+substatementId+"' and TAGCODE = '"+columnname+"' and MODE = 0";
 							}
 							Set<String> dynamiccolumns = new LinkedHashSet<String>();
 							Data dynamicheaders = datasource.find(sql); 
@@ -236,7 +227,28 @@
 									target = column.optString("name");
 								}
 								Set<String> dynamiccolumns = dynamiccolumnmap.get(target);
-								for(String dynamiccolumn : dynamiccolumns)
+								if(dynamiccolumns.size() != 0)
+								{
+									for(String dynamiccolumn : dynamiccolumns)
+									{
+										xml.append("	<w:tc>");
+										xml.append("		<w:tcPr>");
+										xml.append("			<w:tcW w:w=\""+column.optInt("width")+"\" w:type=\"dxa\"/>");
+										xml.append("			<w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"C7DAF1\"/>");
+										xml.append("			<w:vAlign w:val=\"center\"/>");
+										xml.append("		</w:tcPr>");
+										xml.append("		<w:p>");
+										xml.append("			<w:pPr>");
+										xml.append("				<w:jc w:val=\""+align+"\"/>");
+										xml.append("			</w:pPr>");
+										xml.append("			<w:r>");
+										xml.append("				<w:t>"+dynamiccolumn+"</w:t>");
+										xml.append("			</w:r>");
+										xml.append("		</w:p>");
+										xml.append("	</w:tc>");
+									}
+								}
+								else
 								{
 									xml.append("	<w:tc>");
 									xml.append("		<w:tcPr>");
@@ -245,12 +257,6 @@
 									xml.append("			<w:vAlign w:val=\"center\"/>");
 									xml.append("		</w:tcPr>");
 									xml.append("		<w:p>");
-									xml.append("			<w:pPr>");
-									xml.append("				<w:jc w:val=\""+align+"\"/>");
-									xml.append("			</w:pPr>");
-									xml.append("			<w:r>");
-									xml.append("				<w:t>"+dynamiccolumn+"</w:t>");
-									xml.append("			</w:r>");
 									xml.append("		</w:p>");
 									xml.append("	</w:tc>");
 								}
@@ -261,8 +267,15 @@
 								xml.append("		<w:tcPr>");
 								if(!colspan.equals(""))
 								{
-									xml.append("		<w:tcW w:w=\""+(column.optInt("width") * NumberUtils.toInt(colspan, 0))+"\" w:type=\"dxa\"/>");
-									xml.append("		<w:gridSpan w:val=\""+colspan+"\"/>");
+									if(colspan.equals("0"))
+									{
+										xml.append("		<w:tcW w:w=\""+(column.optInt("width"))+"\" w:type=\"dxa\"/>");
+									}
+									else
+									{
+										xml.append("		<w:tcW w:w=\""+(column.optInt("width") * NumberUtils.toInt(colspan, 0))+"\" w:type=\"dxa\"/>");
+										xml.append("		<w:gridSpan w:val=\""+colspan+"\"/>");
+									}
 								}
 								else
 								{
@@ -484,6 +497,11 @@
 									{
 										for(String dynamiccolumn : dynamiccolumns)
 										{
+											String value = "";
+											if(summap.get(dynamiccolumn) != null && summap.get(dynamiccolumn) != 0)
+											{
+												value = Objects.toString(summap.get(dynamiccolumn), "");
+											}
 											xml.append("	<w:tc>");
 											xml.append("		<w:tcPr>");
 											xml.append("			<w:tcW w:w=\""+column.optInt("width")+"\" w:type=\"dxa\"/>");
@@ -494,7 +512,7 @@
 											xml.append("				<w:jc w:val=\"center\"/>");
 											xml.append("			</w:pPr>");
 											xml.append("			<w:r>");
-											xml.append("				<w:t>"+toValue(column, Objects.toString(summap.get(dynamiccolumn), ""))+"</w:t>");
+											xml.append("				<w:t>"+toValue(column, value)+"</w:t>");
 											xml.append("			</w:r>");
 											xml.append("		</w:p>");
 											xml.append("	</w:tc>");								
@@ -502,6 +520,11 @@
 									}
 									else
 									{
+										String value = "";
+										if(summap.get(columnname) != null && summap.get(columnname) != 0)
+										{
+											value = Objects.toString(summap.get(columnname), "");
+										}
 										xml.append("	<w:tc>");
 										xml.append("		<w:tcPr>");
 										xml.append("			<w:tcW w:w=\""+column.optInt("width")+"\" w:type=\"dxa\"/>");
@@ -512,7 +535,7 @@
 										xml.append("				<w:jc w:val=\"center\"/>");
 										xml.append("			</w:pPr>");
 										xml.append("			<w:r>");
-										xml.append("				<w:t>"+toValue(column, Objects.toString(summap.get(columnname), ""))+"</w:t>");
+										xml.append("				<w:t>"+toValue(column, value)+"</w:t>");
 										xml.append("			</w:r>");
 										xml.append("		</w:p>");
 										xml.append("	</w:tc>");
@@ -535,7 +558,19 @@
 			
 			xml.append("</w:body>");
 			xml.append("</w:wordDocument>");
+			
+			Data logs = datasource.find("select ID from T_STATEMENT_LOG where SUBSTATEMENT_ID = ? and MODE = ?", substatementId, statementmode);
+			if(logs.size() == 0)
+			{
+				datasource.execute("insert into T_STATEMENT_LOG(ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE, MODE) values(?, ?, ?, datetime('now','localtime'), ?)", SystemUtils.uuid(), substatementId, sessionuser.getId(), statementmode);
+			}
+			else
+			{
+				datasource.execute("update T_STATEMENT_LOG set CREATE_USER_ID = ?, CREATE_DATE = datetime('now','localtime') where SUBSTATEMENT_ID = ? and MODE = ?", sessionuser.getId(), substatementId, statementmode);
+			}
 
+			connection.commit();
+			
 		}
 		/*
 		catch(Exception e)
@@ -551,7 +586,7 @@
 				connection.close();
 			}
 		}
-		String name = statementname + (substatementname.equals("") ? "" : "-"+substatementname) + "-" + (merge.equals("1") ? "合并" : "单体" ) + ".doc";
+		String name = statementname + (substatementname.equals("") ? "" : "-"+substatementname) + "-" + (statementmode.equals("2") ? "合并" : "单体" ) + ".doc";
 		FileUtils.writeStringToFile(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "resource" + SystemProperty.FILESEPARATOR + "report" + SystemProperty.FILESEPARATOR + name), xml.toString(), "UTF-8");
 		message.resource("filename", name);
 		if(warnings.size() > 0)
@@ -572,24 +607,34 @@
 <%!
 public String toValue(JSONObject column, String value) throws JSONException
 {
-	JSONArray modes = column.optJSONArray("modes");
-	if(modes != null)
+	if(!value.equals(""))
 	{
-		String mode = modes.join(",");
-		
-		if(mode.indexOf("percent") != -1)
+		JSONArray modes = column.optJSONArray("modes");
+		if(modes != null)
 		{
-			DecimalFormat decimalFormat = new DecimalFormat("#.00");
-			value = decimalFormat.format(NumberUtils.toDouble(value, 0) * 100) + "%";
+			if(NumberUtils.toDouble(value, 0) != 0)
+			{
+				String mode = modes.join(",");
+				
+				if(mode.indexOf("percent") != -1)
+				{
+					DecimalFormat decimalFormat = new DecimalFormat("#.00");
+					value = decimalFormat.format(NumberUtils.toDouble(value, 0) * 100) + "%";
+				}
+				
+				if(mode.indexOf("money") != -1)
+				{
+					DecimalFormat format = new DecimalFormat("###,###.00");
+					value = format.format(NumberUtils.toDouble(value, 0));
+				}
+			}
+			else
+			{
+				value = "";
+			}
 		}
-		
-		if(mode.indexOf("money") != -1)
-		{
-			NumberFormat format = NumberFormat.getNumberInstance();
-			value = format.format(NumberUtils.toDouble(value, 0));
-		}
+		value = StringUtils.replaceEach(value, new String[]{"<", ">", "&", "'", "\""}, new String[]{"<w:t>&lt;</w:t>", "<w:t>&gt;</w:t>", "<w:t>&amp;</w:t>", "<w:t>&apos;</w:t>", "<w:t>&quot;</w:t>"});
 	}
-	value = StringUtils.replaceEach(value, new String[]{"<", ">", "&", "'", "\""}, new String[]{"<w:t>&lt;</w:t>", "<w:t>&gt;</w:t>", "<w:t>&amp;</w:t>", "<w:t>&apos;</w:t>", "<w:t>&quot;</w:t>"});
 	return value;
 }
 %>

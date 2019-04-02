@@ -1,3 +1,5 @@
+<%@page import="org.json.JSONException"%>
+<%@page import="com.system.datastructure.DataStructure"%>
 <%@page import="com.system.utils.SystemUtils"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -32,7 +34,7 @@
 		{
 			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
-			String merge = StringUtils.defaultString(request.getParameter("merge"), "");
+			String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 			String children = StringUtils.defaultString(request.getParameter("children"), "");
 			
 			Connection connection = null;
@@ -51,20 +53,71 @@
 				
 				JSONArray items =  configService.getItems(sheetIds);
 				
-				StringBuffer sql = new StringBuffer();
 				
-				sql.append("select T01.*, QMJF.JFJE as 'QMJFJE', QMDF.DFJE as 'QMDFJE', QCJF.JFJE as 'QCJFJE', QCDF.DFJE as 'QCDFJE' from T01 ");
-				sql.append("left join (select JFKM, sum(JFJE) as 'JFJE' from T02 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? group by JFKM) QMJF on T01.XMBH = QMJF.JFKM ");
-				sql.append("left join (select DFKM, sum(DFJE) as 'DFJE' from T02 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? group by DFKM) QMDF on T01.XMBH = QMDF.DFKM ");
-				sql.append("left join (select JFKM, sum(JFJE) as 'JFJE' from T03 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? group by JFKM) QCJF on T01.XMBH = QCJF.JFKM ");
-				sql.append("left join (select DFKM, sum(DFJE) as 'DFJE' from T03 where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MERGE = ? group by DFKM) QCDF on T01.XMBH = QCDF.DFKM ");
-				sql.append("where T01.STATEMENT_ID = ? and T01.SUBSTATEMENT_ID = ? and MERGE = ?");
+
+				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get("T0001");
+				Data data = null;
+				if(statementmode.equals("2") || statementmode.equals("1"))
+				{
+					StringBuffer sql = new StringBuffer();
+					
+					//合并抵消或哈达：审定前为所有单表审定后的合计，调整分录取合并抵消环境下的数据
+
+					
+					//得到所有单体审定后合计
+					data = datasource.find("select * from V01 where SUBSTATEMENT_ID in ("+children+") and MODE = '0'");
+					//合并审定前及调整分录
+					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
+					//计算审定后
+					data = flush(items, data);
+					
+					//得到合并抵消环境下的调整分类
+					Data qmjftzs = datasource.find("select JFKM, sum(JFJE) as 'JFJE' from T02 where SUBSTATEMENT_ID = ? and MODE = '1' group by JFKM", substatementId);
+					Data qmdftzs = datasource.find("select DFKM, sum(DFJE) as 'DFJE' from T02 where SUBSTATEMENT_ID = ? and MODE = '1' group by DFKM", substatementId);
+					Data qcjftzs = datasource.find("select JFKM, sum(JFJE) as 'JFJE' from T03 where SUBSTATEMENT_ID = ? and MODE = '1' group by JFKM", substatementId);
+					Data qcdftzs = datasource.find("select DFKM, sum(DFJE) as 'DFJE' from T03 where SUBSTATEMENT_ID = ? and MODE = '1' group by DFKM", substatementId);
+
+					Map<String, String> qmjftzmap = new HashMap<String, String>();
+					for(Datum qmjftz : qmjftzs)
+					{
+						qmjftzmap.put(qmjftz.getString("JFKM"), qmjftz.getString("JFJE"));
+					}
+					Map<String, String> qmdftzmap = new HashMap<String, String>();
+					for(Datum qmdftz : qmdftzs)
+					{
+						qmdftzmap.put(qmdftz.getString("DFKM"), qmdftz.getString("DFJE"));
+					}
+					Map<String, String> qcjftzmap = new HashMap<String, String>();
+					for(Datum qcjftz : qcjftzs)
+					{
+						qcjftzmap.put(qcjftz.getString("JFKM"), qcjftz.getString("JFJE"));
+					}
+					Map<String, String> qcdftzmap = new HashMap<String, String>();
+					for(Datum qcdftz : qcdftzs)
+					{
+						qcdftzmap.put(qcdftz.getString("DFKM"), qcdftz.getString("DFJE"));
+					}
+					
+					for(Datum datum : data)
+					{
+						String name = datum.getString("XMBH");
+						//审定后转为审定前
+						datum.put("QMSDQ", datum.get("QMSDH"));
+						datum.put("QCSDQ", datum.get("QCSDH"));
+						
+						//设置调整分录为合并抵消环境下的调整分类
+						datum.put("QMJFJE", qmjftzmap.get(name));
+						datum.put("QMDFJE", qmdftzmap.get(name));
+						datum.put("QCJFJE", qcjftzmap.get(name));
+						datum.put("QCDFJE", qcdftzmap.get(name));
+					}
+				}
+				else if(statementmode.equals("0"))
+				{
+					//单体：试算表直接取单体环境下子项目数据
+					data = datasource.find("select * from V01 where SUBSTATEMENT_ID = ? and MODE = '0'", substatementId);
+				}
 				
-				Data data = datasource.find(sql.toString(), statementId, substatementId, merge, 
-						statementId, substatementId, merge, 
-						statementId, substatementId, merge, 
-						statementId, substatementId, merge, 
-						statementId, substatementId, merge);
 				
 				
 				Map<String, Datum> itemmap = new HashMap<String, Datum>();
@@ -72,36 +125,7 @@
 				{
 					itemmap.put(datum.getString("XMBH"), datum);
 				}
-				
-				//防止修改内存中的配置文件
-				JSONArray resources = new JSONArray();
-				for(int i = 0 ; i < items.length() ; i++)
-				{
-					JSONObject item = new JSONObject(items.optJSONObject(i).toString());
-					String code = item.optString("code");
-					Datum datum = itemmap.get(code);
-					if(datum != null)
-					{
-						double qmsdh = 0;
-						double qcsdh = 0;
-						if(item.optString("mode").equals("1"))
-						{
-							qmsdh = datum.getDouble("QMSDQ") + datum.getDouble("QMJFJE") - datum.getDouble("QMDFJE");
-							qcsdh = datum.getDouble("QCSDQ") + datum.getDouble("QCJFJE") - datum.getDouble("QCDFJE");
-						}
-						else
-						{
-							qmsdh = datum.getDouble("QMSDQ") - datum.getDouble("QMJFJE") + datum.getDouble("QMDFJE");
-							qcsdh = datum.getDouble("QCSDQ") - datum.getDouble("QCJFJE") + datum.getDouble("QCDFJE");
-						}
-						datum.put("QMSDH", qmsdh);
-						datum.put("QCSDH", qcsdh);
-						item.put("resource", datum);
-					}
-					resources.put(item);
-				}
-				
-
+				JSONArray resources = flush(items, itemmap);
 				message.resource("itemmap", itemmap);
 				message.resource("items", resources);
 				
@@ -134,11 +158,11 @@
 				{
 					String statementId = request.getParameter("statement");
 					String substatementId = request.getParameter("substatement");
-					String merge = request.getParameter("merge");
+					String statementmode = request.getParameter("statementmode");
 					String itemname = request.getParameter("itemname");
 					String itemcode = request.getParameter("itemcode");
-					datasource.execute("insert into "+tablename+"(ID, XM, XMBH, "+columnname+", MERGE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
-							SystemUtils.uuid(), itemname, itemcode, value, merge, statementId, substatementId, sessionuser.getId());
+					datasource.execute("insert into "+tablename+"(ID, XM, XMBH, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							SystemUtils.uuid(), itemname, itemcode, value, statementmode, statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
@@ -163,10 +187,107 @@
 				}
 			}
 		}
+		else if(mode.equals("3"))
+		{
+			String children = StringUtils.defaultString(request.getParameter("children"), "");
+			Data substatements = null;
+			Connection connection = null;
+			try
+			{
+				connection = DataSource.connection(SystemProperty.DATASOURCE);	
+				DataSource datasource = new DataSource(connection);	
+				
+				substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+") order by CREATE_DATE");
+				message.resource("substatements", substatements);
+			}
+			catch(Exception e)
+			{ 
+				Throwable throwable = ThrowableUtils.getThrowable(e);
+				out.println(e.getMessage());
+			}
+			finally
+			{
+				if(connection != null)
+				{
+					connection.close();
+				}
+			}
+		}
 	}
 	else
 	{
 		message.message(ServiceMessage.FAILURE, "登录用户失效，请重新登录。");
 	}
 	out.println(message);
+%>
+
+<%!
+
+
+public Data flush(JSONArray items, Data data) throws JSONException
+{
+	Map<String, Datum> itemmap = new HashMap<String, Datum>();
+	for(Datum datum : data)
+	{
+		itemmap.put(datum.getString("XMBH"), datum);
+	}
+	for(int i = 0 ; i < items.length() ; i++)
+	{
+		JSONObject item = items.optJSONObject(i);
+		String code = item.optString("code");
+		Datum datum = itemmap.get(code);
+		if(datum != null)
+		{
+			double qmsdh = 0;
+			double qcsdh = 0;
+			if(item.optString("mode").equals("1"))
+			{
+				qmsdh = datum.getDouble("QMSDQ") + datum.getDouble("QMJFJE") - datum.getDouble("QMDFJE");
+				qcsdh = datum.getDouble("QCSDQ") + datum.getDouble("QCJFJE") - datum.getDouble("QCDFJE");
+			}
+			else
+			{
+				qmsdh = datum.getDouble("QMSDQ") - datum.getDouble("QMJFJE") + datum.getDouble("QMDFJE");
+				qcsdh = datum.getDouble("QCSDQ") - datum.getDouble("QCJFJE") + datum.getDouble("QCDFJE");
+			}
+			datum.put("QMSDH", qmsdh);
+			datum.put("QCSDH", qcsdh);
+		}
+	}	
+	return data;
+}
+
+public JSONArray flush(JSONArray items, Map<String, Datum> itemmap) throws JSONException
+{
+	JSONArray resources = new JSONArray();
+	for(int i = 0 ; i < items.length() ; i++)
+	{
+		//防止修改内存中的配置文件
+		JSONObject item = new JSONObject(items.optJSONObject(i).toString());
+		String code = item.optString("code");
+		Datum datum = itemmap.get(code);
+		if(datum != null)
+		{
+			double qmsdh = 0;
+			double qcsdh = 0;
+			if(item.optString("mode").equals("1"))
+			{
+				qmsdh = datum.getDouble("QMSDQ") + datum.getDouble("QMJFJE") - datum.getDouble("QMDFJE");
+				qcsdh = datum.getDouble("QCSDQ") + datum.getDouble("QCJFJE") - datum.getDouble("QCDFJE");
+			}
+			else
+			{
+				qmsdh = datum.getDouble("QMSDQ") - datum.getDouble("QMJFJE") + datum.getDouble("QMDFJE");
+				qcsdh = datum.getDouble("QCSDQ") - datum.getDouble("QCJFJE") + datum.getDouble("QCDFJE");
+			}
+			datum.put("QMSDH", qmsdh);
+			datum.put("QCSDH", qcsdh);
+			item.put("resource", datum);
+		}
+		resources.put(item);
+	}	
+	return resources;
+}
+
+
 %>
