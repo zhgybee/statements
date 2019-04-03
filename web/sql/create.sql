@@ -91,6 +91,7 @@ CREATE TABLE T_HEADER
 CREATE TABLE T_STATEMENT_LOG
 (
  ID                             VARCHAR(32),
+ STATEMENT_ID                   VARCHAR(32),
  SUBSTATEMENT_ID                VARCHAR(32),
  EDIT_USER_ID                   VARCHAR(32),
  EDIT_DATE                      DATETIME,

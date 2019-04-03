@@ -39,6 +39,7 @@
 		List<String> warnings = new ArrayList<String>();
 		
 		String version = request.getParameter("version");
+		String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 		String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
 		String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 		String children = StringUtils.defaultString(request.getParameter("children"), "");
@@ -562,7 +563,7 @@
 			Data logs = datasource.find("select ID from T_STATEMENT_LOG where SUBSTATEMENT_ID = ? and MODE = ?", substatementId, statementmode);
 			if(logs.size() == 0)
 			{
-				datasource.execute("insert into T_STATEMENT_LOG(ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE, MODE) values(?, ?, ?, datetime('now','localtime'), ?)", SystemUtils.uuid(), substatementId, sessionuser.getId(), statementmode);
+				datasource.execute("insert into T_STATEMENT_LOG(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE, MODE) values(?, ?, ?, ?, datetime('now','localtime'), ?)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId(), statementmode);
 			}
 			else
 			{

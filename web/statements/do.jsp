@@ -94,6 +94,14 @@
 					id = SystemUtils.uuid();
 					datasource.execute("insert into T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 							id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
+					
+					JSONArray array = new JSONArray(sheets);
+					for(int i = 0 ; i < array.length() ; i++)
+					{
+						JSONObject sheet = array.optJSONObject(i);
+						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheet.optString("id"));
+					}
+					
 				}
 				else
 				{

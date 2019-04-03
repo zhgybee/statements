@@ -75,7 +75,7 @@
 			for(int i = 0 ; i < tables.length() ; i++)
 			{
 				JSONObject table = tables.optJSONObject(i);
-				if(table.optBoolean("import"))
+				if(table.optBoolean("import", true))
 				{
 					tableIds = ArrayUtils.add(tableIds, table.optString("id"));
 				}
@@ -156,7 +156,7 @@
 					Data logs = datasource.find("select ID from T_STATEMENT_LOG where SUBSTATEMENT_ID = ? and MODE = ?", substatementId, statementmode);
 					if(logs.size() == 0)
 					{
-						datasource.execute("insert into T_STATEMENT_LOG(ID, SUBSTATEMENT_ID, EDIT_USER_ID, EDIT_DATE, MODE) values(?, ?, ?, datetime('now','localtime'), ?)", SystemUtils.uuid(), substatementId, sessionuser.getId(), statementmode);
+						datasource.execute("insert into T_STATEMENT_LOG(ID, STATEMENT_ID, SUBSTATEMENT_ID, EDIT_USER_ID, EDIT_DATE, MODE) values(?, ?, ?, ?, datetime('now','localtime'), ?)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId(), statementmode);
 					}
 					else
 					{
