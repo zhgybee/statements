@@ -23,7 +23,7 @@
 	String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "0");
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
 	
-	JSONArray configs = new JSONArray( FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "checkup.json"), "UTF-8" ));
+	JSONObject configs = new JSONObject( FileUtils.readFileToString(new File(SystemProperty.PATH + SystemProperty.FILESEPARATOR + "config" + SystemProperty.FILESEPARATOR + "checkup.json"), "UTF-8" ));
 	
 	
 	Connection connection = null;
@@ -32,11 +32,13 @@
 		JSONArray warnings = new JSONArray();
 		connection = DataSource.connection(SystemProperty.DATASOURCE);	
 		DataSource datasource = new DataSource(connection);	
-
 		
-		for(int i = 0 ; i < configs.length() ; i++)
+		JSONArray items = configs.optJSONArray(statementmode);
+		
+		
+		for(int i = 0 ; i < items.length() ; i++)
 		{
-			JSONObject checkup =  configs.optJSONObject(i);
+			JSONObject checkup =  items.optJSONObject(i);
 			String description = checkup.optString("description");
 			JSONObject item1 = checkup.optJSONObject("item1");
 			JSONObject item2 = checkup.optJSONObject("item2");
@@ -139,13 +141,12 @@
 		
 		
 		JSONArray warnings = new JSONArray();
-
 		if(datum1 != null && datum2 != null)
 		{
 			Set<String> keys = datum1.keySet();
 			for(String key : keys)
 			{
-				if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+				if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("MODE"))
 				{
 					double value1 = datum1.getDouble(key);
 					double value2 = datum2.getDouble(key);
@@ -170,7 +171,7 @@
 				Set<String> keys = datum1.keySet();
 				for(String key : keys)
 				{
-					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("MODE"))
 					{
 						String value1 = datum1.getString(key);
 						JSONObject warning = new JSONObject();
@@ -188,7 +189,7 @@
 				Set<String> keys = datum2.keySet();
 				for(String key : keys)
 				{
-					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("MODE"))
 					{
 						String value2 = datum2.getString(key);
 						JSONObject warning = new JSONObject();
@@ -203,7 +204,6 @@
 			}
 
 		}	
-
 
 		return warnings;
 	}

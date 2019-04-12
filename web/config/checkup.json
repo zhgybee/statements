@@ -1,19 +1,42 @@
-[
-	{
-		"code":"", 
-		"description":"测试测试",
-		"item1":
+{
+	"0":
+	[
 		{
-			"name":"试算表",
-			"sql":"select QMSDQ as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE from T01 where XMBH = 'K1001'"
-		},
-		"item2":
-		{
-			"name":"货币资金表",
-			"sql":"select A as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE FROM A"
+			"code":"", 
+			"description":"测试测试",
+			"item1":
+			{
+				"name":"试算表",
+				"sql":"select QMSDQ as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE from T01 where XMBH = 'K1001'"
+			},
+			"item2":
+			{
+				"name":"货币资金表",
+				"sql":"select A as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE FROM A"
+			}
 		}
-	}
-]
+	],
+	"1":
+	[
+		{
+			"code":"", 
+			"description":"测试测试",
+			"item1":
+			{
+				"name":"试算表",
+				"sql":"select QMSDQ as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE from T01 where XMBH = 'K1001'"
+			},
+			"item2":
+			{
+				"name":"货币资金表",
+				"sql":"select A as '金额', STATEMENT_ID, SUBSTATEMENT_ID, MODE FROM A"
+			}
+		}
+	],
+	"2":
+	[
+	]
+}
 
 
 

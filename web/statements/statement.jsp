@@ -192,13 +192,20 @@
 						if(manageruesr.equals(sessionuser.getId()))
 						{
 							container.add(substatement);
-							container.addAll(StatementUtils.getChildSubStatements(new HashSet<Datum>(), substatement, substatements));
+							
+							Set<Datum> sublist = new HashSet<Datum>();
+							StatementUtils.getChildSubStatements(sublist, substatement, substatements);							
+							for(Datum sub : sublist)
+							{
+								sub.remove("ISFIND");
+								container.add(sub);
+							}
+							
 						}
 					}
 					Set<String> exist = new HashSet<String>();
 					for(Datum substatement : container)
 					{
-						substatement.remove("ISFIND");
 						substatement.put("MANAGER", "1");
 						exist.add(substatement.getString("ID"));
 					}
@@ -335,11 +342,10 @@
 						boolean isEditor = false;	
 						if(sheet.getString("USERID").equals(sessionuser.getId()))
 						{
-							isEditor = true;
-						}
-						else
-						{
-							isEditor = false;
+							if(!statementmode.equals("2"))
+							{
+								isEditor = true;
+							}
 						}
 
 						

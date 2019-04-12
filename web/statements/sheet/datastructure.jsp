@@ -27,6 +27,7 @@
 	String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
 	String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 	String children = StringUtils.defaultString(request.getParameter("children"), "");
+	String iseditor = StringUtils.defaultString(request.getParameter("editor"), "0");
 	
 
 	children = URLDecoder.decode(children, "UTF-8");
@@ -48,7 +49,15 @@
 
 			for(int i = 0 ; i < columns.length() ; i++)
 			{
-				JSONObject column = columns.optJSONObject(i);
+				JSONObject column = new JSONObject( columns.optJSONObject(i).toString() );
+				if(iseditor.equals("0"))
+				{
+					column.remove("editor");
+					if(column.has("buttons"))
+					{
+						column.put("buttons", new JSONArray());
+					}
+				}
 				if(column.has("frozen"))
 				{
 					frozencolumns.put(column);

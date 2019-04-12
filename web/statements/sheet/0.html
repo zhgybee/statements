@@ -60,8 +60,9 @@
 		var substatementId = app.getParameter("substatement") || "";
 		var statementmode = app.getParameter("statementmode") || 0;
 		var children = app.getParameter("children") || "";
+		var iseditor = app.getParameter("editor") || "0";
 
-		getResource(statementId, substatementId, statementmode, children);
+		getResource(statementId, substatementId, statementmode, children, iseditor);
 
 		$(window).on("mousedown.editor", function(event)
 		{
@@ -125,7 +126,7 @@
 
 	});
 
-	function getResource(statementId, substatementId, statementmode, children)
+	function getResource(statementId, substatementId, statementmode, children, iseditor)
 	{
 		app.showLoading();
 		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
@@ -139,7 +140,7 @@
 				$.each(items, function(i, item)
 				{
 					var editor = "";
-					if(item["editor"] && statementmode == 0)
+					if(iseditor == 1 && item["editor"])
 					{
 						editor = 'editor';
 					}

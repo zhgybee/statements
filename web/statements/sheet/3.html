@@ -356,10 +356,11 @@ $(function()
 	var substatementId = app.getParameter("substatement") || "";
 	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
+	var iseditor = app.getParameter("editor") || "0";
 
 	getResource(statementId, substatementId, statementmode, children);
 
-	if(statementmode == 0)
+	if(iseditor == 1)
 	{
 		setEditor(app.getContextPath()+"/statements/sheet/3.jsp?mode=2");
 	}

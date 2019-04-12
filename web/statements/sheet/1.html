@@ -944,6 +944,7 @@ $(function()
 	var substatementId = app.getParameter("substatement") || "";
 	var statementmode = app.getParameter("statementmode") || 0;
 	var children = app.getParameter("children") || "";
+	var iseditor = app.getParameter("editor") || "0";
 
 	getResource(statementId, substatementId, statementmode, children);
 	
@@ -959,8 +960,14 @@ $(function()
 		$("[name='BQTZS']").removeClass("editor");
 		$("[name='SQTZS']").removeClass("editor");
 	}
-
-	setEditor(app.getContextPath()+"/statements/sheet/1.jsp?mode=2");
+	if(iseditor == 1)
+	{
+		setEditor(app.getContextPath()+"/statements/sheet/1.jsp?mode=2");
+	}
+	else
+	{
+		$(".editor").removeClass("editor");
+	}
 	setExport('现金流量试算平衡表');
 });
 

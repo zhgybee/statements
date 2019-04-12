@@ -102,6 +102,17 @@
 						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, sheet.optString("id"));
 					}
 					
+					//默认新建一个子项目
+					String substatementId = SystemUtils.uuid();
+					datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							substatementId, id, "", sessionuser.getId(), title, "001", description, sessionuser.getId());
+
+					for(int i = 0 ; i < array.length() ; i++)
+					{
+						JSONObject sheet = array.optJSONObject(i);
+						datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+								SystemUtils.uuid(), id, substatementId, sheet.optString("id"), sessionuser.getId(), "001", "", sessionuser.getId());
+					}
 				}
 				else
 				{
@@ -273,10 +284,18 @@
 				DataSource datasource = new DataSource(connection);	
 				if(!substatementId.equals(""))
 				{
-					datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
-					datasource.execute("delete from T_STATEMENT_TRANSACTOR where SUBSTATEMENT_ID = ?", substatementId);
-					datasource.execute("delete from T_STATEMENT_SHARER where SUBSTATEMENT_ID = ?", substatementId);
-					datasource.execute("delete from T_STATEMENT_LOG where SUBSTATEMENT_ID = ?", substatementId);
+					Data children = datasource.find("select * from T_SUBSTATEMENT where PARENT_ID = ?", substatementId);
+					if(children.size() == 0)
+					{
+						datasource.execute("delete from T_SUBSTATEMENT where id = ?", substatementId);
+						datasource.execute("delete from T_STATEMENT_TRANSACTOR where SUBSTATEMENT_ID = ?", substatementId);
+						datasource.execute("delete from T_STATEMENT_SHARER where SUBSTATEMENT_ID = ?", substatementId);
+						datasource.execute("delete from T_STATEMENT_LOG where SUBSTATEMENT_ID = ?", substatementId);
+					}
+					else
+					{
+						message.message(ServiceMessage.FAILURE, "存在子项目不能被删除");
+					}
 				}
 				connection.commit();
 			}

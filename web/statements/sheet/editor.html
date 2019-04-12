@@ -15,7 +15,7 @@ html, body{height:100%}
 <body>
 
 <div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
-	<div class="left" style="display:none">
+	<div class="left" style="display:none" id="buttons-panel">
 		<button style="height:35px; width:80px" id="add-button"><i class="fa fa-plus"></i>增加</button>
 		<button style="height:35px; width:80px" id="copy-button"><i class="fa fa-random"></i>复制</button>
 		<button style="height:35px; width:80px" class="red" id="delete-button"><i class="fa fa-times"></i>删除</button>
@@ -48,6 +48,12 @@ html, body{height:100%}
 		resize();
 		$(window).resize( function(){resize()} ); 
 
+		if(iseditor == "1")
+		{
+			$("#buttons-panel").show();
+		}
+		
+
 		initialize()
 	});
 
@@ -60,6 +66,7 @@ html, body{height:100%}
 		parameters["substatement"] = substatementId;
 		parameters["statementmode"] = statementmode;
 		parameters["children"] = children;
+		parameters["editor"] = iseditor;
 
 		app.showLoading();
 		$.getJSON("datastructure.jsp", parameters, function(response)

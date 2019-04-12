@@ -234,7 +234,7 @@
 			for(int i = 0 ; i < tables.length() ; i++)
 			{
 				JSONObject table = tables.optJSONObject(i);
-				if(table.optBoolean("import"))
+				if(table.optBoolean("import", true))
 				{
 					tableIds = ArrayUtils.add(tableIds, table.optString("id"));
 				}

@@ -112,19 +112,20 @@ li{padding:0px; margin:0px; list-style-type:none}
 
 #module-frame{display:flex}
 .module-panel{margin:10px; flex-grow:1;}
-#left-panel{min-width:260px; flex-grow:0;}
+#left-panel{width:260px; flex-grow:0;}
 #left-panel h4{font-weight:400; color:#555555; font-size:16px; letter-spacing:1px}
 #left-panel h4 span{font-weight:400}
-#left-panel p{margin-top:6px; color:#999999; font-size:12px}
+#left-panel p{margin-top:6px; color:#999999}
 #left-panel #all-item{margin-top:10px}
 #left-panel #all-item h5{padding: 8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400;}
 #left-panel ul{color:#999999;}
 #left-panel ul li{margin-top:5px; cursor:pointer}
 #left-panel ul li:hover h5{color:#ffaa00}
-#left-panel ul li h5{padding:8px 0px; color:#999999; font-size:14px; margin:0px; float:left; font-weight:400}
+#left-panel ul li h5{padding:8px 0px; color:#555555; font-size:14px; margin:0px; float:left; font-weight:400}
+#left-panel ul li h5 i{font-size:18px; margin-right:4px}
 #left-panel ul li img{width:40px; height:40px;}
 #left-panel ul li strong{float:right; font-size:12px; margin:10px 10px 0px 0px; background-color:#999999; color:#ffffff; padding:0px 5px; border-radius:10px; font-weight:400;}
-#right-panel{flex-grow:1;}
+#right-panel{flex-grow:1; overflow:hidden; flex-basis:100%}
 
 
 .header-panel{background-color:#F7F7F7;}

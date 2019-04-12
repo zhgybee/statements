@@ -21,6 +21,7 @@
 	#statements > li .statement-panel .items p{margin-top:5px; color:#aaaaaa}
 	#statements > li .statement-panel .items hr{margin:10px 0px; border-top:1px solid #eeeeee; border-left:none; border-right:none; border-bottom:none;}
 
+	#statements > li .delete-substatement-button{cursor:pointer}
 	#statements > li .substatement{background-color:#ffffff}
 	#statements > li .substatement li{padding:15px; border-top:1px solid #eeeeee}
 	#statements > li .substatement li .usericon{width:55px; float:left; text-align:center}
@@ -106,6 +107,31 @@
 		{
 			
 			initialise(1, app.pagesize, '');
+
+			$.getJSON(app.getContextPath()+"/dictionary/list/sheet.jsp?version=0001", function(response)
+			{
+				if(response.status == "1")
+				{
+					var defaultsheets = [];
+					var sheets = response.resource.sheets;
+					if(sheets != null)
+					{
+						$.each(sheets, function(i, sheet)
+						{
+							if(sheet.fixed)
+							{
+								defaultsheets.push({id:sheet['id']});
+							}
+						});
+					}
+					$("#sheets-field").val(JSON.stringify(defaultsheets));
+				}
+				else 
+				{
+					app.message(response.messages);
+				}
+			});
+
 			
 			$("#sheet-button").on("click", function()
 			{
@@ -131,7 +157,6 @@
 
 			$("#save-button").on("click", function()
 			{
-				app.showLoading();
 				var parameter = {};
 				parameter["title"] = $("#title-field").val();
 				parameter["legalperson"] = $("#legalperson-field").val();
@@ -143,6 +168,13 @@
 				parameter["sheets"] = $("#sheets-field").val();
 				parameter["sharers"] = $("#sharer-field").val();
 
+				if(parameter["title"] == "")
+				{
+					app.message("请填写标题");
+					return;
+				}
+
+				app.showLoading();
 				$.post("do.jsp?mode=2", parameter, function(response)
 				{
 					app.hideLoading();

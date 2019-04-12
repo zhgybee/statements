@@ -101,6 +101,7 @@
 				String statementId = request.getParameter("statement");
 				String substatementId = request.getParameter("substatement");
 				String tableId = StringUtils.defaultString(request.getParameter("table"), "");
+				String statementmode = StringUtils.defaultString(request.getParameter("statementmode"), "");
 				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get(tableId);
 				if(datastructure != null)
 				{
@@ -134,7 +135,7 @@
 					}
 					else
 					{
-						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, sessionuser.getId());
+						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, MODE, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, statementmode, sessionuser.getId());
 					}
 					
 					connection.commit();

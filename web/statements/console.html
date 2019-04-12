@@ -29,8 +29,8 @@
 #left-panel ul li.substatement .substatement-items h6 {font-weight:400; font-size:13px;}
 #left-panel ul li.substatement .substatement-items h6 .substatement-title{font-weight:400; cursor:pointer}
 #left-panel ul li.substatement .substatement-items h6 .substatement-title:hover{color:#ffaa00}
-#left-panel ul li.substatement .substatement-items h6 .merge-statement-button{margin-left:10px; padding:1px 5px }
-#left-panel ul li.substatement .substatement-items h6 .hada-statement-button{margin-left:4px; padding:1px 5px }
+#left-panel ul li.substatement .substatement-items p .merge-statement-button{margin-left:6px; padding:0px 2px }
+#left-panel ul li.substatement .substatement-items p .hada-statement-button{margin-left:4px; padding:0px 2px }
 #manager-module .button-panel button{display:inline-block; border:none; text-align: center; width:120px; font-size:20px; height:60px; line-height:60px; color:#ffffff; cursor:pointer; padding: 0px 20px; border-radius:4px}
 #manager-module .button-panel button i{font-size:20px; margin-right:3px}
 .uploadify-button{height:60px; font-size:20px; box-sizing:border-box}
@@ -207,7 +207,11 @@ $(function()
 		'height':'60',
 		'cover':false,
 		'removeCompleted':false,
-		'multi':false,
+		'multi':false,			
+		'onUploadStart': function(file)
+		{
+			$("#import-file-items .uploadify-queue-item[id!='"+file.id+"']").remove();
+		},
 		'onUploadSuccess':function(file, message, response)
 		{
 			message = $.parseJSON(message);
@@ -518,7 +522,7 @@ function initialise(statementId)
 				$("#delete-button").show();
 			}
 
-			$("#statement-all-button h5").html(statement.TITLE);
+			$("#statement-all-button h5").html('<i class="fa fa-angle-right"></i>'+statement.TITLE);
 			
 
 
@@ -540,8 +544,8 @@ function initialise(statementId)
 				content += '<li class="clearfix substatement" manager="'+(substatement.MANAGER || 0)+'" sharer="'+issharer+'" code="'+substatement.ID+'" style="padding-left:'+((substatement.LEVEL || 0) * 15)+'px">';
 				content += '<div class="left"><img src="../resource/usericon/'+icon+'"></div>';
 				content += '<div class="substatement-items">';
-				content += '	<h6><span class="substatement-title">'+substatement.TITLE+'</span>'+(substatement.ISCHILD != null ? '<span class="button merge-statement-button">合抵</span><span class="orange button hada-statement-button">哈达</span>' : '')+'</h6>';
-				content += '	<p>'+substatement.USERNAME+'</p>';
+				content += '	<h6><span class="substatement-title">'+substatement.TITLE+'</span></h6>';
+				content += '	<p>'+substatement.USERNAME+''+(substatement.ISCHILD != null ? '<span class="button merge-statement-button">合抵</span><span class="orange button hada-statement-button">哈达</span>' : '')+'</p>';
 				content += '</div>';
 				content += '</li>';
 			});
@@ -560,7 +564,7 @@ function initialise(statementId)
 				SUBSTATEMENTNAME = $(this).text();
 				getSheets(0, statementId, substatementId, manager, sharer);
 			});
-			$("li.substatement h6 .merge-statement-button").on("click", function()
+			$("li.substatement p .merge-statement-button").on("click", function()
 			{
 				showEditorPanel();
 				$("#import-button-panel").css("display", "inline-block");
@@ -569,10 +573,10 @@ function initialise(statementId)
 				var substatementId = $substatement.attr("code");
 				var manager = $substatement.attr("manager");
 				var sharer = $substatement.attr("sharer");
-				SUBSTATEMENTNAME = $(this).parent().find(".substatement-title").text();
+				SUBSTATEMENTNAME = $(this).closest(".substatement-items").find(".substatement-title").text();
 				getSheets(1, statementId, substatementId, manager, sharer)
 			});
-			$("li.substatement h6 .hada-statement-button").on("click", function()
+			$("li.substatement p .hada-statement-button").on("click", function()
 			{
 				showEditorPanel();
 				$("#import-button-panel").css("display", "none");
@@ -581,7 +585,7 @@ function initialise(statementId)
 				var substatementId = $substatement.attr("code");
 				var manager = $substatement.attr("manager");
 				var sharer = $substatement.attr("sharer");
-				SUBSTATEMENTNAME = $(this).parent().find(".substatement-title").text();
+				SUBSTATEMENTNAME = $(this).closest(".substatement-items").find(".substatement-title").text();
 				getSheets(2, statementId, substatementId, manager, sharer)
 			});
 
@@ -654,7 +658,10 @@ function getSheets(statementmode, statementId, substatementId, manager, sharer)
 						content += '	<div class="icon"><img src="../resource/usericon/'+icon+'" /><div class="'+ (manager == "1" && sheettype == "" ? "changeuser-button" : "unchangeuser-button") +'">'+(sheet.USERNAME || "")+'</div></div>';
 					}
 					content += '	<div class="items">';
-					content += '		<strong>'+sheet.COUNT+'</strong>';
+					if(sheettype != '01' && sheettype != '02')
+					{
+						content += '		<strong>'+sheet.COUNT+'</strong>';
+					}
 					content += '		<h5>'+sheet.SHEETNAME+'</h5>';
 					content += '		<hr/>';
 					content += '		<div class="buttons">';
