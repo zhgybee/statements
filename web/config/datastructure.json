@@ -74,13 +74,13 @@
 		[
 			{"frozen":true, "type":"index", "width":"50"},
 			{"frozen":true, "type":"button", "buttons":["copy", "delete"], "width":"70"},
-			{"name":"JFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300"},
-			{"name":"JFEJKM", "editor":{}, "width":"200"},
-			{"name":"JFJE", "editor":{}, "width":"100", "modes":["money"]},
-			{"name":"DFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300"},
-			{"name":"DFEJKM", "editor":{}, "width":"200"},
-			{"name":"DFJE", "editor":{}, "width":"100", "modes":["money"]},
-			{"name":"SXSM", "editor":{}, "width":"200"}
+			{"name":"JFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300", "hada":{}},
+			{"name":"JFEJKM", "editor":{}, "width":"200", "hada":{}},
+			{"name":"JFJE", "editor":{}, "width":"100", "modes":["money"], "hada":{}},
+			{"name":"DFKM", "editor":{"type":"choice"}, "dictionary":{"list":"statements/sheet/items.jsp?mode=1&statement=[url:statement]", "map":"statements/sheet/items.jsp?mode=2&statement=[url:statement]"}, "width":"300", "hada":{}},
+			{"name":"DFEJKM", "editor":{}, "width":"200", "hada":{}},
+			{"name":"DFJE", "editor":{}, "width":"100", "modes":["money"], "hada":{}},
+			{"name":"SXSM", "editor":{}, "width":"200", "hada":{}}
 
 		],
 		"header":
@@ -88,17 +88,17 @@
 			[
 				{"title":"序号", "frozen":true, "width":"50"},
 				{"title":"", "frozen":true, "width":"70", "height":"61"},
-				{"title":"借方", "colspan":"3", "width":"600"},
-				{"title":"贷方", "colspan":"3", "width":"600"},
-				{"title":"调整事项说明", "rowspan":"2", "width":"200"}
+				{"title":"借方", "colspan":"3", "width":"600", "hada":{}},
+				{"title":"贷方", "colspan":"3", "width":"600", "hada":{}},
+				{"title":"调整事项说明", "rowspan":"2", "width":"200", "hada":{}}
 			],
 			[
-				{"title":"科目", "width":"300"},
-				{"title":"二级科目", "width":"200"},
-				{"title":"金额", "width":"100"},
-				{"title":"科目", "width":"300"},
-				{"title":"二级科目", "width":"200"},
-				{"title":"金额", "width":"100"}
+				{"title":"科目", "width":"300", "hada":{}},
+				{"title":"二级科目", "width":"200", "hada":{}},
+				{"title":"金额", "width":"100", "hada":{}},
+				{"title":"科目", "width":"300", "hada":{}},
+				{"title":"二级科目", "width":"200", "hada":{}},
+				{"title":"金额", "width":"100", "hada":{}}
 			]
 		],
 		"groups":

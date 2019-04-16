@@ -1,4 +1,5 @@
 
+<%@page import="com.system.variable.VariableService"%>
 <%@page import="org.apache.commons.lang3.ArrayUtils"%>
 <%@page import="java.util.LinkedHashMap"%>
 <%@page import="java.util.LinkedHashSet"%>
@@ -138,6 +139,17 @@
 			}
 			data2.add(datum2);
 		}
+		else
+		{
+			Datum datum2 = new Datum();
+			
+			Set<String> keys = datum.keySet();
+			for(String key : keys)
+			{
+				datum2.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+			}
+			data2.add(datum2);
+		}
 		
 	}
 
@@ -255,8 +267,10 @@
 	}	
 
 	statementhtml.append("<tr>");
-	
-	statementhtml.append("<th rowspan=\""+(header.length() + 1)+"\">"+grouptitle+"</th>");
+	if(!grouptitle.equals(""))
+	{
+		statementhtml.append("<th rowspan=\""+(header.length() + 1)+"\">"+grouptitle+"</th>");
+	}
 	for(Datum substatement : substatements)
 	{
 		statementhtml.append("<th colspan=\""+colspans.get(substatement.getString("ID"))+"\">"+substatement.getString("TITLE")+"</th>");
@@ -282,11 +296,25 @@
 				String meaning = column.optString("meaning");
 				if(column.has("hada"))
 				{
+					String dictionary = null;
+					if(column.has("dictionary"))
+					{
+						dictionary =  column.optJSONObject("dictionary").optString("map");
+						dictionary = VariableService.parseUrlVariable(dictionary, 0, request);
+					}
+
 					JSONObject hada = column.optJSONObject("hada");
 
 					if(j == 0 && hada.has("group"))
 					{
-						bodyhtml.append("	<td>"+datum.getString(column.optString("name"))+"</td>");
+						if(dictionary != null)
+						{
+							bodyhtml.append("	<td dictionary=\""+dictionary+"\">"+datum.getString(column.optString("name"))+"</td>");
+						}
+						else
+						{
+							bodyhtml.append("	<td>"+datum.getString(column.optString("name"))+"</td>");
+						}
 					}
 					
 					if( !hada.has("group") )
@@ -309,7 +337,14 @@
 						}
 						else
 						{
-							bodyhtml.append("	<td>"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+							if(dictionary != null)
+							{
+								bodyhtml.append("	<td dictionary=\""+dictionary+"\">"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+							}
+							else
+							{
+								bodyhtml.append("	<td>"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+							}
 						}
 					}
 				}
@@ -335,13 +370,24 @@
 </table>
 </div>
 <script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/app.js"></script>
+<script type="text/javascript" src="datastructure.js"></script>
 <script type="text/javascript">
+	
 
+	var structureutils = new DataStructureUtils();
+	
 	$(function()
 	{
 		resize();
 		$(window).resize( function(){resize()} ); 
 
+		$("#container tbody td[dictionary]").each(function(i, cell)
+		{
+			var description = structureutils.getDictionary(app.getContextPath()+"/"+$(cell).attr("dictionary"), $(cell).text(), true);
+			$(cell).text(description);
+		});
+		
 	});
 	function resize()
 	{
