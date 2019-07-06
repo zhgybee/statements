@@ -14,11 +14,13 @@ html, body{height:100%}
 </head>
 <body>
 
+<table id="export-table" style="display:none"></table>
 <div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
 	<div class="left" style="display:none" id="buttons-panel">
 		<button style="height:35px; width:80px" id="add-button"><i class="fa fa-plus"></i>增加</button>
 		<button style="height:35px; width:80px" id="copy-button"><i class="fa fa-random"></i>复制</button>
 		<button style="height:35px; width:80px" class="red" id="delete-button"><i class="fa fa-times"></i>删除</button>
+		<button style="height:35px; width:80px" id="export-button">导出</button>
 	</div>
 	<div class="searcher-panel right">
 		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
@@ -27,7 +29,9 @@ html, body{height:100%}
 
 <div class="datagrid" id="editor-panel" style="overflow:hidden; width:100%"></div>
 
+
 <script type="text/javascript" src="../../lib/jquery.js"></script>
+<script type="text/javascript" src="../../lib/jquery.table2excel.js"></script>
 <script type="text/javascript" src="../../lib/app.js"></script>
 <script type="text/javascript" src="../../lib/datagrid/datagrid.js"></script>
 <script type="text/javascript" src="../../lib/calendar/jquery.calendar.js"></script>
@@ -53,6 +57,112 @@ html, body{height:100%}
 			$("#buttons-panel").show();
 		}
 		
+
+		$("#export-button").on("click", function()
+		{
+			var exporttable = $("#export-table");
+
+			var $headerfrozen = $("#editor-panel .datagrid-frozen-header-container table");
+			var $header = $("#editor-panel .datagrid-header-container table");
+			var $bodyfrozen = $("#editor-panel .datagrid-frozen-body-container table");
+			var $bodyer = $("#editor-panel .datagrid-body-container table");
+
+			var headerrows = [];
+			$headerfrozen.find("tr").each(function(i, tr)
+			{
+				var row = "";
+
+				$(tr).find("td").each(function(j, td)
+				{
+					var $td = $(td);
+					var $value = $td.find("div");
+					row += '<td '+($td.attr('colspan') ? 'colspan="'+$td.attr('colspan')+'"' : '')+' '+($td.attr('rowspan') ? 'rowspan="'+$td.attr('rowspan')+'"' : '')+'>'+($value.text())+'</td>';
+				});
+				headerrows.push(row)
+			});
+
+			$header.find("tr").each(function(i, tr)
+			{
+				var row = "";
+				$(tr).find("td").each(function(j, td)
+				{
+					var $td = $(td);
+					var $value = $td.find("div");
+					row += '<td '+($td.attr('colspan') ? 'colspan="'+$td.attr('colspan')+'"' : '')+' '+($td.attr('rowspan') ? 'rowspan="'+$td.attr('rowspan')+'"' : '')+'>'+($value.text())+'</td>';
+				});
+				
+				if(headerrows[i])
+				{
+					headerrows[i] = headerrows[i] + row;
+				}
+				else
+				{
+					headerrows.push(row)
+				}
+
+			});
+
+			var bodyerrows = [];
+			$bodyfrozen.find("tr").each(function(i, tr)
+			{
+				var row = "";
+
+				$(tr).find("td").each(function(j, td)
+				{
+					var $td = $(td);
+					var $value = $td.find("div");
+					console.log($value);
+					row += '<td '+($td.attr('colspan') ? 'colspan="'+$td.attr('colspan')+'"' : '')+' '+($td.attr('rowspan') ? 'rowspan="'+$td.attr('rowspan')+'"' : '')+'>'+($value.text())+'</td>';
+				});
+				bodyerrows.push(row)
+			});
+
+			$bodyer.find("tr").each(function(i, tr)
+			{
+				var row = "";
+				$(tr).find("td").each(function(j, td)
+				{
+					var $td = $(td);
+					var $value = $td.find("div");
+					row += '<td '+($td.attr('colspan') ? 'colspan="'+$td.attr('colspan')+'"' : '')+' '+($td.attr('rowspan') ? 'rowspan="'+$td.attr('rowspan')+'"' : '')+'>'+($value.text())+'</td>';
+				});
+				
+				if(bodyerrows[i])
+				{
+					bodyerrows[i] = bodyerrows[i] + row;
+				}
+				else
+				{
+					bodyerrows.push(row)
+				}
+
+			});
+			
+			for(var i = 0 ; i < headerrows.length ; i++)
+			{
+				headerrows[i] = '<tr>'+headerrows[i]+'</tr>';
+			}
+			for(var i = 0 ; i < bodyerrows.length ; i++)
+			{
+				bodyerrows[i] = '<tr>'+bodyerrows[i]+'</tr>';
+			}
+			exporttable.append(headerrows.join(","));
+			exporttable.append(bodyerrows.join(","));
+
+			var $table = $("#export-table");
+			$table.find("td, th").css("border", "thin solid #000000");
+			$table.table2excel
+			({
+				exclude: "",
+				name:name,
+				filename:name + new Date().toISOString().replace(/[\-\:\.]/g, ""),
+				fileext: ".xls",
+				exclude_img: true,
+				exclude_links: true,
+				exclude_inputs: true
+			});
+
+		});
 
 		initialize()
 	});

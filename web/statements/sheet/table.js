@@ -1,5 +1,13 @@
 $(function()
 {
+
+	$.ajaxSetup 
+	(
+		{
+			async:false
+		}
+	);
+
 	var statementmode = app.getParameter("statementmode") || 0;
 
 	if(statementmode == 0)
@@ -11,11 +19,28 @@ $(function()
 		$cell.removeClass();
 	}
 
+	$(window).keydown(function(event)
+	{
+		var $self = $(event.target).closest(".editor");
+		if($self.length == 1)
+		{
+			if(event.keyCode == 9)
+			{
+				var $editors = $(".editor:visible");
+				var index = $editors.index($self);
+				if($editors[index+1])
+				{
+					$editors[index+1].click();
+					return false;
+				}
+			}
+		}
+	});
+
 });
 
 function setEditor(url)
 {	
-	
 	var tableId = app.getParameter("table") || "";
 	var statementId = app.getParameter("statement") || "";
 	var substatementId = app.getParameter("substatement") || "";
@@ -46,6 +71,7 @@ function setEditor(url)
 			var $fields = $(".editor input:visible");
 			if($fields.size() > 0)
 			{
+				var iserror = 0;
 				$fields.each(function(i)
 				{
 					var $field = $(this);
@@ -61,10 +87,10 @@ function setEditor(url)
 							app.hideLoading();	
 							if(response.status == "1")
 							{
-								getResource(statementId, substatementId, statementmode, children)
 							}
 							else 
 							{
+								iserror = true || iserror;
 								app.message(response.messages);
 							}
 						}, "json");
@@ -75,6 +101,10 @@ function setEditor(url)
 						$cell.html( app.changeMoney($field.val()) );
 					}
 				});
+				if(!iserror)
+				{
+					getResource(statementId, substatementId, statementmode, children);
+				}
 			}
 		}	
 	});

@@ -55,6 +55,14 @@
 
 	$(function()
 	{
+		$.ajaxSetup 
+		(
+			{
+		    	async:false
+			}
+		);
+
+
 		var tableId = app.getParameter("table") || "";
 		var statementId = app.getParameter("statement") || "";
 		var substatementId = app.getParameter("substatement") || "";
@@ -71,6 +79,7 @@
 				var $fields = $(".editor input:visible");
 				if($fields.size() > 0)
 				{
+					var iserror = 0;
 					$fields.each(function(i)
 					{
 						var $field = $(this);
@@ -87,13 +96,13 @@
 							app.showLoading();
 							$.post(app.getContextPath()+"/statements/sheet/0.jsp?mode=2", {name:name, key:key, value:value, itemname:itemname, itemcode:itemcode, statement:statementId, substatement:substatementId, statementmode:statementmode}, function(response)
 							{
-								app.hideLoading();				
+								app.hideLoading();	
 								if(response.status == "1")
 								{
-									getResource(statementId, substatementId, statementmode, children, iseditor)
 								}
 								else 
 								{
+									iserror = true || iserror;
 									app.message(response.messages);
 								}
 							}, "json");
@@ -103,8 +112,30 @@
 							$cell.html( app.changeMoney($field.val()) );
 						}
 					});
+					if(!iserror)
+					{
+						getResource(statementId, substatementId, statementmode, children, iseditor);
+					}
 				}
 			}	
+		});
+
+		$(window).keydown(function(event)
+		{
+			var $self = $(event.target).closest(".editor");
+			if($self.length == 1)
+			{
+				if(event.keyCode == 9)
+				{
+					var $editors = $(".editor:visible");
+					var index = $editors.index($self);
+					if($editors[index+1])
+					{
+						$editors[index+1].click();
+						return false;
+					}
+				}
+			}
 		});
 
 		$("#export-button").on("click", function()

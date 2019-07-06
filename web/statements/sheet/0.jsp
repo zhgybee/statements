@@ -150,23 +150,28 @@
 			{
 				String tablename = "T01";
 				String columnname = request.getParameter("name");
+				//改成通过项目id和科目编号取得数据20190706（在一次性发起多条填数时，如果是同行数据填写，两个输入框都会没有key，最终导致都是新增）
 				String key = StringUtils.defaultString(request.getParameter("key"), "");
 				String value = request.getParameter("value");
 				connection = DataSource.connection(SystemProperty.DATASOURCE);
 				DataSource datasource = new DataSource(connection);	
-				if(key.equals(""))
+
+				String statementId = request.getParameter("statement");
+				String substatementId = request.getParameter("substatement");
+				String statementmode = request.getParameter("statementmode");
+				String itemname = request.getParameter("itemname");
+				String itemcode = request.getParameter("itemcode");
+				
+				Data data = datasource.find("select ID from "+tablename+" where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and XMBH = ?", statementId, substatementId, itemcode);
+				
+				if(data.size() == 0)
 				{
-					String statementId = request.getParameter("statement");
-					String substatementId = request.getParameter("substatement");
-					String statementmode = request.getParameter("statementmode");
-					String itemname = request.getParameter("itemname");
-					String itemcode = request.getParameter("itemcode");
 					datasource.execute("insert into "+tablename+"(ID, XM, XMBH, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
 							SystemUtils.uuid(), itemname, itemcode, value, statementmode, statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, key);
+					datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and XMBH = ?", value, statementId, substatementId, itemcode);
 				}
 				connection.commit();
 			}

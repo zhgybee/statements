@@ -1,3 +1,7 @@
+
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="com.system.datasource.Datum"%>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="com.system.SystemProperty"%>
 <%@page import="com.system.utils.ThrowableUtils"%>
@@ -43,7 +47,23 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				
+
+				Data allsubstatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);				
+				List<String> parentIds = new ArrayList<String>();
+				for(Datum substatement : allsubstatements)
+				{
+					parentIds.add(substatement.getString("PARENT_ID"));
+				}
+
 				Data substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+")");
+				for(Datum substatement : substatements)
+				{
+					if( parentIds.contains(substatement.get("ID")) )
+					{
+						substatement.put("ISCHILD", "1");
+					}
+				}
+
 				message.resource("substatements", substatements);
 			}
 			catch(Exception e)

@@ -86,8 +86,8 @@
 		"header":
 		[
 			[
-				{"title":"序号", "frozen":true, "width":"50"},
-				{"title":"", "frozen":true, "width":"70", "height":"61"},
+				{"title":"序号", "rowspan":"2", "frozen":true, "width":"50"},
+				{"title":"", "rowspan":"2", "frozen":true, "width":"70", "height":"61"},
 				{"title":"借方", "colspan":"3", "width":"600", "hada":{}},
 				{"title":"贷方", "colspan":"3", "width":"600", "hada":{}},
 				{"title":"调整事项说明", "rowspan":"2", "width":"200", "hada":{}}
@@ -103,7 +103,7 @@
 		],
 		"groups":
 		[
-			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE']", "title":[{"column":"JFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
+			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE', 'DFJE']", "title":[{"column":"JFKM", "text":"总计"}, {"column":"DFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
 		],
 		"sqls":{"add":"D002"}
 	},
@@ -126,8 +126,8 @@
 		"header":
 		[
 			[
-				{"title":"序号", "frozen":true, "width":"50"},
-				{"title":"", "frozen":true, "width":"70", "height":"61"},
+				{"title":"序号", "rowspan":"2", "frozen":true, "width":"50"},
+				{"title":"", "rowspan":"2", "frozen":true, "width":"70", "height":"61"},
 				{"title":"借方", "colspan":"3", "width":"600"},
 				{"title":"贷方", "colspan":"3", "width":"600"},
 				{"title":"调整事项说明", "rowspan":"2", "width":"200"}
@@ -143,7 +143,7 @@
 		],
 		"groups":
 		[
-			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE']", "title":[{"column":"JFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
+			{"type":"footer", "rule":{"column":"JFKM", "value":"*"}, "sum":"['JFJE', 'DFJE']", "title":[{"column":"JFKM", "text":"总计"}, {"column":"DFKM", "text":"总计"}], "style":{"background-color":"#fafafa"}}
 		],
 		"sqls":{"add":"D004"}
 	},
@@ -163,8 +163,8 @@
 		"header":
 		[
 			[
-				{"title":"序号", "frozen":true, "width":"50"},
-				{"title":"", "frozen":true, "width":"70", "height":"61"},
+				{"title":"序号", "rowspan":"2", "frozen":true, "width":"50"},
+				{"title":"", "rowspan":"2", "frozen":true, "width":"70", "height":"61"},
 				{"title":"A列", "rowspan":"2", "width":"200", "hada":{"group":true}},
 				{"title":"总列1", "colspan":"auto", "width":"80", "target":"B", "hada":{}},
 				{"title":"总列2", "colspan":"auto", "width":"80", "target":"C", "hada":{}},

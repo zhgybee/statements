@@ -27,7 +27,11 @@
 <link rel="stylesheet" href="../../style/css/app.css" />
 <link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
 <link rel="stylesheet" href="table.css" />
+<style>
 
+thead th{padding:0px 5px}
+
+</style>
 </head>
 <body>
 <div id="toolbar-panel" class="grid-toolbar-panel clearfix">
@@ -89,7 +93,6 @@
 	
 	
 	
-	
 	JSONArray header = datastructure.getProperty().optJSONArray("header");
 	JSONArray columns = datastructure.getProperty().optJSONArray("columns");
 	if(header == null)
@@ -115,13 +118,22 @@
 			
 		}
 	}
-	Data data2 = new Data();
+	
+	//组成哈达表的时候，需要把不同项目的每行数据组成一行
+	
+	//如果表结构配置文件中配置了哈达关键组字段，则数据按照哈达关键组字段组合
+	//即每个项目的哈达关键组字段中内容相同的组合
+	
+	//如果表结构配置文件中没有配置了哈达关键组字段，则按照顺序组合每个项目
+	
+	Map<String, Datum> map = new LinkedHashMap<String, Datum>();
+	Map<String, Data> groupdatamap = new HashMap<String, Data>();
 	for(Datum datum : data)
 	{
-		if(datum.get(groupcolumnname) != null)
+		if(!groupcolumnname.equals(""))
 		{
-			Datum datum2 = new Datum();
-			
+			String groupname = datum.getString(groupcolumnname);
+			Datum temp = new Datum();
 			Set<String> keys = datum.keySet();
 			for(String key : keys)
 			{
@@ -129,45 +141,86 @@
 				{
 					if(key.equals(groupcolumnname))
 					{
-						datum2.put(key, datum.get(key));
+						temp.put(key, datum.get(key));
 					}
 					else
 					{
-						datum2.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
 					}
 				}
 			}
-			data2.add(datum2);
+
+			Datum item = map.get(groupname);
+			if(item == null)
+			{
+				map.put(groupname, temp);
+			}
+			else
+			{
+				item.putAll(temp);
+			}
 		}
 		else
 		{
-			Datum datum2 = new Datum();
-			
+			Data groupdata = groupdatamap.get(datum.getString("SUBSTATEMENT_ID"));
+			if(groupdata == null)
+			{
+				groupdata = new Data();
+				groupdatamap.put(datum.getString("SUBSTATEMENT_ID"), groupdata);
+			}
+
+			Datum temp = new Datum();
 			Set<String> keys = datum.keySet();
 			for(String key : keys)
 			{
-				datum2.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+				if(ArrayUtils.contains(hadacolumns, key))
+				{
+					if(key.equals(groupcolumnname))
+					{
+						temp.put(key, datum.get(key));
+					}
+					else
+					{
+						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+					}
+				}
 			}
-			data2.add(datum2);
+			groupdata.add(temp);
+		}
+	}
+	
+	
+	if(groupdatamap.size() > 0)
+	{
+		int max = 0;
+		Set<String> groupIds = groupdatamap.keySet();
+		for(String groupId : groupIds)
+		{
+			Data groupdata = groupdatamap.get(groupId);
+			max = Math.max(max, groupdata.size());
 		}
 		
-	}
+		for(int i = 0 ; i < max ; i++)
+		{
+			Datum tmp = new Datum();
 
-	
-	Map<String, Datum> map = new LinkedHashMap<String, Datum>();
-	for(Datum datum2 : data2)
-	{
-		String groupname = datum2.getString(groupcolumnname);
-		Datum item = map.get(groupname);
-		if(item == null)
-		{
-			map.put(groupname, datum2);
-		}
-		else
-		{
-			item.putAll(datum2);
+			for(String groupId : groupIds)
+			{
+				Data groupdata = groupdatamap.get(groupId);
+				
+				if(groupdata.size() - 1 >= i)
+				{
+					tmp.putAll(groupdata.get(i));
+				}
+			}
+			
+			map.put(String.valueOf(i), tmp);
 		}
 	}
+	
+	out.println(map);
+
+
 	
 	Set<String> keys = map.keySet();
 	
@@ -294,6 +347,22 @@
 			{
 				JSONObject column = columns.optJSONObject(k);
 				String meaning = column.optString("meaning");
+				String classname = "";
+				if(column.has("modes"))
+				{
+					JSONArray modes = column.optJSONArray("modes");
+					if(modes != null)
+					{
+						for(int n = 0 ; n < modes.length() ; n++)
+						{
+							if(modes.optString(n).equals("money"))
+							{
+								classname = "money";
+							}
+						}
+					}
+				}
+				
 				if(column.has("hada"))
 				{
 					String dictionary = null;
@@ -313,7 +382,7 @@
 						}
 						else
 						{
-							bodyhtml.append("	<td>"+datum.getString(column.optString("name"))+"</td>");
+							bodyhtml.append("	<td class=\""+classname+"\">"+datum.getString(column.optString("name"))+"</td>");
 						}
 					}
 					
@@ -327,7 +396,7 @@
 								JSONObject values = new JSONObject(datum.getString(column.optString("name")+"-"+substatement.getString("ID")));
 								for(String dynamiccolumn : dynamiccolumns)
 								{
-									bodyhtml.append("	<td>"+values.optString(dynamiccolumn)+"</td>");
+									bodyhtml.append("	<td class=\""+classname+"\">"+values.optString(dynamiccolumn)+"</td>");
 								}
 							}
 							else
@@ -343,7 +412,7 @@
 							}
 							else
 							{
-								bodyhtml.append("	<td>"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+								bodyhtml.append("	<td class=\""+classname+"\">"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
 							}
 						}
 					}
@@ -386,6 +455,12 @@
 		{
 			var description = structureutils.getDictionary(app.getContextPath()+"/"+$(cell).attr("dictionary"), $(cell).text(), true);
 			$(cell).text(description);
+		});
+		
+
+		$("#container tbody .money").each(function(i, cell)
+		{
+			$(cell).text( app.changeMoney($(cell).text()) );
 		});
 		
 	});

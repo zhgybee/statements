@@ -47,8 +47,8 @@
 			for(int i = 0 ; i < items.length() ; i++)
 			{
 				JSONObject item = items.optJSONObject(i);
-				String type = item.optString("type");
-				if(!type.equals("fixed"))
+				boolean iseditor = item.optBoolean("editor");
+				if(iseditor)
 				{
 					JSONObject resource = new JSONObject();
 					resource.put("k", item.optString("code"));
@@ -66,8 +66,8 @@
 			for(int i = 0 ; i < items.length() ; i++)
 			{
 				JSONObject item = items.optJSONObject(i);
-				String type = item.optString("type");
-				if(!type.equals("fixed"))
+				boolean iseditor = item.optBoolean("editor");
+				if(iseditor)
 				{
 					resources.put(item.optString("code"), item.optString("name"));
 				}

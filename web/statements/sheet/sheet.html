@@ -91,6 +91,14 @@ html, body{height:100%}
 						$tab.data("substatement", substatement);
 						$tab.data("type", "single");
 						$("#statements ul").append($tab);
+						
+						if(substatement['ISCHILD'] == '1')
+						{
+							var $tab = $('<li>'+substatement.TITLE+'(合抵)</li>');
+							$tab.data("substatement", substatement);
+							$tab.data("type", "merge-offset");
+							$("#statements ul").append($tab);
+						}
 					});
 					app.tabs($("#statements"), function($tab)
 					{
@@ -159,6 +167,17 @@ html, body{height:100%}
 			else
 			{
 				$("#editor-frame iframe").attr("src", "editor.html?statementmode=0&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children=&editor="+iseditor);
+			}
+		}
+		else if(CURTYPE == "merge-offset")
+		{
+			if(CURTABLE.url != null)
+			{
+				$("#editor-frame iframe").attr("src", CURTABLE.url+"&statementmode=1&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
+			else
+			{
+				$("#editor-frame iframe").attr("src", "editor.html?statementmode=1&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
 			}
 		}
 	}

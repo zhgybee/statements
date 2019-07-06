@@ -36,7 +36,7 @@
 .uploadify-button{height:60px; font-size:20px; box-sizing:border-box}
 #import-file-items{display:inline-block;}
 
-#status-toolbar{color:#aaaaaa; position:fixed; bottom:0px; left:0px; background-color:#ffffff; height:50px; width:100%; border-bottom:1px solid #eeeeee; display:flex; align-items:center; flex-direction:row-reverse}
+#status-toolbar{color:#aaaaaa; position:fixed; bottom:0px; left:0px; background-color:#ffffff; height:50px; width:100%; border-top:1px solid #f1f1f1; display:flex; align-items:center; flex-direction:row-reverse}
 #status-toolbar .buttons{padding:0px 10px;}
 #status-toolbar .buttons button{padding:10px; margin-left:10px}
 #status-toolbar #creator{padding:0px 40px;}
@@ -400,12 +400,14 @@ $(function()
 	$("#download-zh-template-button").on("click", function()
 	{
 		var statementname = $("#statement-title h2").text();
-		window.location.href = 'do.jsp?mode=6&language=zh&name='+getFileName();
+		var filename = encodeURIComponent(getFileName());
+		window.location.href = 'do.jsp?mode=6&language=zh&name='+filename;
 	});
 	$("#download-en-template-button").on("click", function()
 	{
 		var statementname = $("#statement-title h2").text();
-		window.location.href = 'do.jsp?mode=6&language=en&name='+getFileName();
+		var filename = encodeURIComponent(getFileName());
+		window.location.href = 'do.jsp?mode=6&language=en&name='+filename;
 	});
 });
 
