@@ -92,7 +92,7 @@
 				if(id.equals(""))
 				{
 					id = SystemUtils.uuid();
-					datasource.execute("insert into T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T_STATEMENT(ID, CODE, TITLE, STARTDATE, ENDDATE, LEGALPERSON, ACCOUNTANT, ACCOUNTANTOFFICER, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 							id, "", title, startdate, enddate, legalperson, accountant, accountantofficer, "001", description, sessionuser.getId());
 					
 					JSONArray array = new JSONArray(sheets);
@@ -104,13 +104,13 @@
 					
 					//默认新建一个子项目
 					String substatementId = SystemUtils.uuid();
-					datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 							substatementId, id, "", sessionuser.getId(), title, "001", description, sessionuser.getId());
 
 					for(int i = 0 ; i < array.length() ; i++)
 					{
 						JSONObject sheet = array.optJSONObject(i);
-						datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+						datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 								SystemUtils.uuid(), id, substatementId, sheet.optString("id"), sessionuser.getId(), "001", "", sessionuser.getId());
 					}
 				}
@@ -164,7 +164,7 @@
 						datasource.execute("insert into T_STATEMENT_SHEET(STATEMENT_ID, SHEET_ID) VALUES(?, ?)", id, addsheetIds[i]);
 						for(Datum substatement : substatements)
 						{
-							datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+							datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 									SystemUtils.uuid(), id, substatement.getString("ID"), addsheetIds[i], substatement.getString("MANAGER_USER_ID"), "001", "", sessionuser.getId());
 						}
 					}
@@ -220,14 +220,14 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				String id = SystemUtils.uuid();
-				datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+				datasource.execute("insert into T_SUBSTATEMENT(ID, STATEMENT_ID, PARENT_ID, MANAGER_USER_ID, TITLE, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 						id, statementId, parentId, manageruser, title, "001", description, sessionuser.getId());
 
 				Data sheets = datasource.find("select * from T_STATEMENT_SHEET where STATEMENT_ID = ?", statementId);
 				
 				for(Datum sheet : sheets)
 				{
-					datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T_STATEMENT_TRANSACTOR(ID, STATEMENT_ID, SUBSTATEMENT_ID, SHEET_ID, TRANSACTOR_USER_ID, STATUS, DESCRIPTION, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 							SystemUtils.uuid(), statementId, id, sheet.getString("SHEET_ID"), manageruser, "001", "", sessionuser.getId());
 				}
 				

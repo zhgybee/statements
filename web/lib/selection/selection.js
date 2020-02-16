@@ -293,6 +293,25 @@
 						$(this).data("joint", $field);
 						$(this).data("$panel", $panel);
 						$field.on("click", {"$panel":$panel}, open);
+
+						
+						$field.on("keyup", {"$panel":$panel}, function(event)
+						{
+							let value = $(this).val();
+							var $panel = event.data.$panel;
+							var $items = $panel.find(".item-panel li");
+							$.each($items, function(i, item)
+							{
+								if($(item).text().indexOf(value) != -1)
+								{
+									$(item).show();
+								}
+								else
+								{
+									$(item).hide();
+								}
+							})
+						});
 					}
 				);
 

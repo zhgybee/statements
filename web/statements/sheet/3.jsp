@@ -99,12 +99,12 @@
 				
 				if(items.size() == 0)
 				{
-					datasource.execute("insert into T04(ID, BM, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into T04(ID, BM, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 							SystemUtils.uuid(), key, value, "0", statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update T04 set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", 
+					datasource.execute("update T04 set "+columnname+" = ?, CREATE_DATE = datetime(CURRENT_TIMESTAMP, 'localtime') where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and MODE = ? and BM = ?", 
 							value, statementId, substatementId, "0", key);
 				}
 				connection.commit();

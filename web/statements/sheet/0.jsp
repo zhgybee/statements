@@ -166,12 +166,12 @@
 				
 				if(data.size() == 0)
 				{
-					datasource.execute("insert into "+tablename+"(ID, XM, XMBH, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", 
+					datasource.execute("insert into "+tablename+"(ID, XM, XMBH, "+columnname+", MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
 							SystemUtils.uuid(), itemname, itemcode, value, statementmode, statementId, substatementId, sessionuser.getId());
 				}
 				else
 				{
-					datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and XMBH = ?", value, statementId, substatementId, itemcode);
+					datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = datetime(CURRENT_TIMESTAMP, 'localtime') where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and XMBH = ?", value, statementId, substatementId, itemcode);
 				}
 				connection.commit();
 			}

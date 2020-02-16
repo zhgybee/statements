@@ -540,6 +540,7 @@ var app = {};
 		if((text || "") != "")
 		{
 			text = text.toString();
+			text = text.trim();
 
 			var minus = false;
 			if(text.substring(0, 1) == "-")

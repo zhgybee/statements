@@ -53,7 +53,8 @@
 
 				if(statementmode.equals("2"))
 				{
-					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+") and MODE = 0");
+					//合并数据包括单体数据（MODE = 0）及合并抵消表中的数据（MODE = 1）
+					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+") and (MODE = 0 or MODE = 1)");
 					//合并数据
 					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
 				}

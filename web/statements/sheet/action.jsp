@@ -38,14 +38,16 @@
 					String tablename = datastructure.getProperty().optString("table");
 					JSONObject column = new JSONObject( request.getParameter("column") );
 					String key = request.getParameter("key");
-					String value = request.getParameter("value");
+					String value = StringUtils.defaultString(request.getParameter("value"), "");
 					if(column != null)
 					{
 						String columnname = column.optString("name");
 						
+						value = value.trim();
+						
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	
-						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = CURRENT_TIMESTAMP where ID = ?", value, key);
+						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = datetime(CURRENT_TIMESTAMP, 'localtime') where ID = ?", value, key);
 						
 						JSONObject editor = column.optJSONObject("editor");
 						if(editor != null)
@@ -135,7 +137,7 @@
 					}
 					else
 					{
-						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, MODE, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", SystemUtils.uuid(), statementId, substatementId, statementmode, sessionuser.getId());
+						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, MODE, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), statementId, substatementId, statementmode, sessionuser.getId());
 					}
 					
 					connection.commit();
