@@ -95,7 +95,7 @@
 					
 					if(statementmode.equals("2"))
 					{
-						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID in ("+children+") and MODE = 0");
+						data = datasource.find("select * from "+sql+" T where T.SUBSTATEMENT_ID in ("+children+") and (MODE = 0 or MODE = 1)");
 						data = SystemUtils.merge(data, item.optJSONArray("columns"));
 					}
 					else if(statementmode.equals("1"))

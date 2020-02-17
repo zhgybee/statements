@@ -154,6 +154,7 @@
 					$activebody.empty();	
 					if(dataset != null)
 					{
+						var groupindex = {index:1, afresh:false};
 						for(var i = 0 ; i < dataset.length ; i++)
 						{
 							var row = dataset[i];
@@ -162,13 +163,13 @@
 
 							if(frozencolumns != null)
 							{
-								$frozenrow = createTableRow($container, i, frozencolumns, row);
+								$frozenrow = createTableRow($container, i, groupindex, frozencolumns, row);
 								$frozenbody.append($frozenrow);
 							}
 
 							if(activecolumns != null)
 							{
-								$activerow = createTableRow($container, i, activecolumns, row);
+								$activerow = createTableRow($container, i, groupindex, activecolumns, row);
 								$activebody.append($activerow);
 							}
 
@@ -299,7 +300,7 @@
 			}, "json")
 		}
 
-		var createTableRow = function($container, index, columns, row)
+		var createTableRow = function($container, index, groupindex, columns, row)
 		{
 			var structureutils = new DataStructureUtils();
 			var $row = $("<tr/>");
@@ -352,6 +353,31 @@
 					{
 						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+(index + 1)+'</div>');
 						$cell.on("click", clickrow);
+					}
+					else if(type == "group")
+					{
+						if(groupindex['afresh'])
+						{
+							groupindex['index'] = groupindex['index'] + 1;
+							groupindex['afresh'] = false;
+						}
+
+						var keys = column['target'];
+						var isafresh = true;
+						$.each(keys, function(i, key)
+						{
+							if((row[key] || '') != '')
+							{
+								isafresh = false;
+							}
+						});
+						if(isafresh)
+						{
+							groupindex['index'] = groupindex['index'] + 1;
+							groupindex['afresh'] = true;
+						}
+
+						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+groupindex['index']+'</div>');
 					}
 					else if(type == "button")
 					{

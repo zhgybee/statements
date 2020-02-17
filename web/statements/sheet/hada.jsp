@@ -359,6 +359,10 @@ thead th{padding:0px 5px}
 							{
 								classname = "money";
 							}
+							if(modes.optString(n).equals("percent"))
+							{
+								classname = "percent";
+							}
 						}
 					}
 				}
@@ -462,6 +466,12 @@ thead th{padding:0px 5px}
 		{
 			$(cell).text( app.changeMoney($(cell).text()) );
 		});
+		
+		$("#container tbody .percent").each(function(i, cell)
+		{
+			$(cell).text( app.toFixed( app.toNumber($(cell).text()) * 100 ) + "%" );
+		});
+				
 		
 	});
 	function resize()

@@ -262,8 +262,10 @@
 					{
 						if(j > 1)
 						{
-							var result = analyze(expression, j)
-							$(cell).text( app.changeMoney(eval(result)) );
+							var result = analyze(expression, j);
+							var number = eval(result) || 0;
+							number = number.toFixed(2);
+							$(cell).text( app.changeMoney(number) );
 						}
 					});
 

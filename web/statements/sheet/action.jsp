@@ -52,23 +52,54 @@
 						JSONObject editor = column.optJSONObject("editor");
 						if(editor != null)
 						{
-							JSONArray callbacks = editor.optJSONArray("callback");
-							if(callbacks != null)
+							String code = editor.optString("callback");
+							if(code.equals("0001"))
 							{
-								for(int i =  0 ; i < callbacks.length() ; i++)
+								//当调整分录中填写了某个项目，但是试算表该项目没填写时，自动在试算表中加入该项目，并且审定前后数额都为null
+								Datum datum = datasource.get("select * from "+tablename+" where ID = ?", key);
+								if(datum != null)
 								{
-									JSONObject item = SystemProperty.SQLBUILDER.get(callbacks.optString(i));
-									if(item != null)
+									String jfkm = datum.getString("JFKM");
+									String dfkm = datum.getString("DFKM");
+									String statementmode = datum.getString("MODE");
+									String statementId = datum.getString("STATEMENT_ID");
+									String substatementId = datum.getString("SUBSTATEMENT_ID");
+									Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and (XMBH = ? or XMBH = ?) group by XMBH", substatementId, statementmode, jfkm, dfkm);
+									if(data.size() == 1)
 									{
-										String sql = item.optString("sql");
-										sql = VariableService.parseUrlVariable(sql, 0, request);
-										sql = VariableService.parseSysVariable(sql, request);
-										datasource.execute(sql);
+										datum = data.get(0);
+										if(datum.getString("XMBH").equals(jfkm) )
+										{
+											if(!dfkm.equals(""))
+											{
+												datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
+														SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
+											}
+										}
+										else if(datum.getString("XMBH").equals(dfkm) )
+										{
+											if(!jfkm.equals(""))
+											{
+												datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
+														SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
+											}
+										}
+										
 									}
-									else
+									else if(data.size() == 0)
 									{
-										message.message(ServiceMessage.FAILURE, "SQL构建器中不存在["+callbacks.optString(i)+"]。");
+										if(!jfkm.equals(""))
+										{
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
+													SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
+										}
+										if(!dfkm.equals(""))
+										{
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
+													SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
+										}
 									}
+										
 								}
 							}
 							

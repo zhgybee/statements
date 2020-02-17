@@ -1,3 +1,7 @@
+<%@page import="com.system.datasource.Datum"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="org.json.JSONArray"%>
 <%@page import="com.system.utils.StatementUtils"%>
 <%@page import="com.system.utils.SystemUtils"%>
 <%@page import="java.net.URLDecoder"%>
@@ -53,10 +57,57 @@
 
 				if(statementmode.equals("2"))
 				{
+					JSONArray columns = datastructure.getProperty().optJSONArray("columns");
 					//合并数据包括单体数据（MODE = 0）及合并抵消表中的数据（MODE = 1）
 					data = datasource.find("select * from "+sql+" T where SUBSTATEMENT_ID in ("+children+") and (MODE = 0 or MODE = 1)");
 					//合并数据
-					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
+					data = SystemUtils.merge(data, columns);
+					
+					//处理需要额外计算的合并字段，字段通过配置sql实现额外计算，sql中需要返回分组数据（key）及计算结果数据（value）。
+					JSONObject storage = new JSONObject();
+					storage.put("children", children);
+					String mergecolumn = "";
+					for( int i = 0 ; i < columns.length() ; i++ )
+					{
+						JSONObject column = columns.optJSONObject(i);
+						if(column.has("merge"))
+						{
+							JSONObject mergeconfig = column.optJSONObject("merge");
+							if(mergeconfig.has("group"))
+							{
+								//得到该表中合并分组字段（注意，分组字段在配置文件（datastructure.json）中必须设置在合并字段前）
+								//可能会带来问题，但配置文件中分组字段全部在合并字段前，可暂时不改
+								mergecolumn = column.optString("name");
+							}
+							if(mergeconfig.has("datasource"))
+							{
+								number = mergeconfig.optString("datasource");
+								if(!number.equals(""))
+								{
+									JSONObject sqls = SystemProperty.SQLBUILDER.get(number);
+									if(sqls != null)
+									{
+										String source = sqls.optString("sql");
+										source = VariableService.parseUrlVariable(source, 0, request);
+										source = VariableService.parseSysVariable(source, request);
+										source = VariableService.parseJSONVariable(source, storage);
+										
+										Data replacements = datasource.find(source);
+										
+										Map<String, String> map = new HashMap<String, String>();										
+										for(Datum replacement : replacements)
+										{
+											map.put(replacement.getString("key"), replacement.getString("value"));
+										}
+										for(Datum datum : data)
+										{
+											datum.put(column.optString("name"), map.get( datum.getString(mergecolumn) ));
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 				else if(statementmode.equals("1"))
 				{

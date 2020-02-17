@@ -5,7 +5,9 @@
 	{"code":"D004", "sql":"insert into T03(ID, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values('[sys:uuid]', '[url:statementmode]', '[url:statement]', '[url:substatement]', '[sys:user-id]', datetime(CURRENT_TIMESTAMP, 'localtime'))"},
 
 	
-	
+	{"code":"B000001", "sql":"select a.A as 'key', (a.s1 / b.s2) as 'value' from (select A, CAST(sum(B) as double) as s1 from C where SUBSTATEMENT_ID in ([json:children]) and (MODE = 0 or MODE = 1) group by A) a left join (select CAST(sum(B) as double) as s2 from D where SUBSTATEMENT_ID in ([json:children]) and (MODE = 0 or MODE = 1)) b"},
+
+
 	{"code":"R000001", "sql":"select * from A"},
 	{"code":"R000002", "sql":"select * from A"}
 ]
