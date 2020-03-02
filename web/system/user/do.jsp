@@ -61,7 +61,7 @@
 			{
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
-				datasource.execute("INSERT INTO T_USER(ID, NAME, CODE, LOGINNAME, PASSWORD, ROLE, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), name, code, loginname, password);
+				datasource.execute("INSERT INTO T_USER(ID, NAME, CODE, LOGINNAME, PASSWORD, ROLE, CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), name, code, loginname, password, role);
 				connection.commit();
 			}
 			catch(Exception e)

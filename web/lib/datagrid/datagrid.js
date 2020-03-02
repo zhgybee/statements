@@ -154,7 +154,7 @@
 					$activebody.empty();	
 					if(dataset != null)
 					{
-						var groupindex = {index:1, afresh:false};
+						var groupindex = {index:1, value:1};
 						for(var i = 0 ; i < dataset.length ; i++)
 						{
 							var row = dataset[i];
@@ -356,12 +356,6 @@
 					}
 					else if(type == "group")
 					{
-						if(groupindex['afresh'])
-						{
-							groupindex['index'] = groupindex['index'] + 1;
-							groupindex['afresh'] = false;
-						}
-
 						var keys = column['target'];
 						var isafresh = true;
 						$.each(keys, function(i, key)
@@ -373,11 +367,18 @@
 						});
 						if(isafresh)
 						{
-							groupindex['index'] = groupindex['index'] + 1;
-							groupindex['afresh'] = true;
+							groupindex['value'] = '';
+						}
+						else
+						{
+							if(groupindex['value'] == '')
+							{
+								groupindex['index'] = groupindex['index'] + 1;
+								groupindex['value'] = groupindex['index'];
+							}
 						}
 
-						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+groupindex['index']+'</div>');
+						$cell.append('<div class="'+name+'" style="'+getSize(width, height) + getStyle(column.style)+'">'+groupindex['value']+'</div>');
 					}
 					else if(type == "button")
 					{

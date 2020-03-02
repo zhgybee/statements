@@ -17,8 +17,8 @@ html, body{height:100%}
 <table id="export-table" style="display:none"></table>
 <div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
 	<div class="left" style="display:none" id="buttons-panel">
-		<button style="height:35px; width:80px" id="add-button"><i class="fa fa-plus"></i>增加</button>
-		<button style="height:35px; width:80px" id="copy-button"><i class="fa fa-random"></i>复制</button>
+		<button style="height:35px; width:80px; display:none" id="add-button"><i class="fa fa-plus"></i>增加</button>
+		<button style="height:35px; width:80px; display:none" id="copy-button"><i class="fa fa-random"></i>复制</button>
 		<button style="height:35px; width:80px" class="red" id="delete-button"><i class="fa fa-times"></i>删除</button>
 		<button style="height:35px; width:80px" id="export-button">导出</button>
 	</div>
@@ -49,6 +49,13 @@ html, body{height:100%}
 	
 	$(function()
 	{ 
+
+		if(tableId == 'S0001' || tableId == 'S0002')
+		{
+			$("#add-button").show();
+			$("#copy-button").show();
+		}
+
 		resize();
 		$(window).resize( function(){resize()} ); 
 

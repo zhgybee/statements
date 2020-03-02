@@ -93,13 +93,17 @@
 		
 		if(data1.size() > 0)
 		{
+			double count = 0;
+
 			datum1 = new Datum();
 			for(Datum datum : data1)
 			{
 				Set<String> keys = datum.keySet();
 				for(String key : keys)
 				{
-					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					count += datum.getDouble(key);
+
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
 					{
 						if(datum1.containsKey(key))
 						{
@@ -112,16 +116,26 @@
 					}
 				}
 			}
+			
+			//如果所有总数为0，也相当于未填
+			if(count == 0)
+			{
+				datum1 = null;
+			}
 		}
 		if(data2.size() > 0)
 		{
+			double count = 0;
+
 			datum2 = new Datum();
 			for(Datum datum : data2)
 			{
 				Set<String> keys = datum.keySet();
 				for(String key : keys)
 				{
-					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
+					count += datum.getDouble(key);
+
+					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("SUBSTATEMENT_ID"))
 					{
 						if(datum2.containsKey(key))
 						{
@@ -133,6 +147,12 @@
 						}
 					}
 				}
+			}
+			
+			//如果所有总数为0，也相当于未填
+			if(count == 0)
+			{
+				datum2 = null;
 			}
 		}
 		
