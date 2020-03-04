@@ -310,7 +310,15 @@
 								{
 									$(item).hide();
 								}
-							})
+							});
+							if( $panel.find(".item-panel li:visible").length == 1 )
+							{
+								var $item = $panel.find(".item-panel li:visible");
+								if($item.text() == value)
+								{
+									$item.click();
+								}
+							}
 						});
 					}
 				);

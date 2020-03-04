@@ -36,7 +36,7 @@
 		var statementmode = app.getParameter("statementmode") || 0;
 		var children = app.getParameter("children") || "";
 
-		$.getJSON("0.jsp?mode=3&children="+children, function(response)
+		$.getJSON("0.jsp?mode=3&statement="+statementId+"&children="+children, function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
@@ -46,6 +46,8 @@
 				var content = "";
 				$.each(substatements, function(i, substatement)
 				{
+
+
 					content += '<div id="'+substatement.ID+'">';
 					content += '<table>';
 					content += '	<thead>';
@@ -79,14 +81,55 @@
 					content += '	<tbody></tbody>';
 					content += '</table>';
 					content += '</div>';
+
+					if(substatement['ISCHILD'] == '1')
+					{
+						content += '<div id="'+substatement.ID+'-1">';
+						content += '<table>';
+						content += '	<thead>';
+						content += '		<tr>';
+						content += '			<th colspan="8" style="width:80px">'+substatement.TITLE+'(合抵)</th>';
+						content += '		</tr>';
+						content += '		<tr>';
+						content += '			<th colspan="4" style="width:400px">期末数/本期累计数</th>';
+						content += '			<th colspan="4" style="width:400px">期初数/上期累计数</th>';
+						content += '		</tr>';
+						content += '		<tr>';
+						content += '			<th rowspan="2" style="width:100px">审定前</th>';
+						content += '			<th colspan="2">审计调整</th>';
+						content += '			<th rowspan="2" style="width:100px">审定后</th>';
+						content += '			<th rowspan="2" style="width:100px">审定前</th>';
+						content += '			<th colspan="2">审计调整</th>';
+						content += '			<th rowspan="2" style="width:100px">审定后</th>';
+						content += '		</tr>';
+						content += '		<tr>';
+						content += '			<th style="width:100px">借方</th>';
+						content += '			<th style="width:100px">贷方</th>';
+						content += '			<th style="width:100px">借方</th>';
+						content += '			<th style="width:100px">贷方</th>';
+						content += '		</tr>';
+						content += '	</thead>';
+						content += '	<tbody></tbody>';
+						content += '</table>';
+						content += '</div>';
+					}
+
 				});
 
 				$("#container").html(content);
 
+				var index = 0;
 				$.each(substatements, function(i, substatement)
 				{
 					var $substatement = $("#"+substatement.ID);
-					getResource($substatement, i, statementId, substatement.ID, '0', children);
+					getResource($substatement, index, statementId, substatement.ID, '0', children);
+					if(substatement['ISCHILD'] == '1')
+					{
+						index += 1;
+						$substatement = $("#"+substatement.ID+"-1");
+						getResource($substatement, index, statementId, substatement.ID, '1', children);
+					}
+					index += 1;
 				});
 
 			}
@@ -185,7 +228,15 @@
 
 					$cells.each(function(j, cell)
 					{
-						if(j > 1)
+						if(index == 0)
+						{
+							if(j > 1)
+							{
+								var result = analyze($substatement, expression, j)
+								$(cell).text( app.changeMoney(eval(result)) );
+							}
+						}
+						else
 						{
 							var result = analyze($substatement, expression, j)
 							$(cell).text( app.changeMoney(eval(result)) );

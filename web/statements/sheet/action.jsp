@@ -64,39 +64,22 @@
 									String statementmode = datum.getString("MODE");
 									String statementId = datum.getString("STATEMENT_ID");
 									String substatementId = datum.getString("SUBSTATEMENT_ID");
-									Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and (XMBH = ? or XMBH = ?) group by XMBH", substatementId, statementmode, jfkm, dfkm);
-									if(data.size() == 1)
+
+									if(!jfkm.equals(""))
 									{
-										datum = data.get(0);
-										if(datum.getString("XMBH").equals(jfkm) )
+										Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and XMBH = ? group by XMBH", substatementId, statementmode, jfkm);
+										if(data.size() == 0)
 										{
-											if(!dfkm.equals(""))
-											{
-												datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
-														SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
-											}
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
 										}
-										else if(datum.getString("XMBH").equals(dfkm) )
-										{
-											if(!jfkm.equals(""))
-											{
-												datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
-														SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
-											}
-										}
-										
 									}
-									else if(data.size() == 0)
+
+									if(!dfkm.equals(""))
 									{
-										if(!jfkm.equals(""))
+										Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and XMBH = ? group by XMBH", substatementId, statementmode, dfkm);
+										if(data.size() == 0)
 										{
-											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
-													SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
-										}
-										if(!dfkm.equals(""))
-										{
-											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", 
-													SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
 										}
 									}
 										

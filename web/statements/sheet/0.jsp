@@ -1,3 +1,5 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="org.json.JSONException"%>
 <%@page import="com.system.datastructure.DataStructure"%>
 <%@page import="com.system.utils.SystemUtils"%>
@@ -152,7 +154,7 @@
 				String columnname = request.getParameter("name");
 				//改成通过项目id和科目编号取得数据20190706（在一次性发起多条填数时，如果是同行数据填写，两个输入框都会没有key，最终导致都是新增）
 				String key = StringUtils.defaultString(request.getParameter("key"), "");
-				String value = request.getParameter("value");
+				String value = StringUtils.defaultString(request.getParameter("value"), "");
 				connection = DataSource.connection(SystemProperty.DATASOURCE);
 				DataSource datasource = new DataSource(connection);	
 
@@ -163,6 +165,9 @@
 				String itemcode = request.getParameter("itemcode");
 				
 				Data data = datasource.find("select ID from "+tablename+" where STATEMENT_ID = ? and SUBSTATEMENT_ID = ? and XMBH = ?", statementId, substatementId, itemcode);
+				
+				value = value.trim();
+				value = StringUtils.replace(value, ",", "");
 				
 				if(data.size() == 0)
 				{
@@ -194,6 +199,7 @@
 		}
 		else if(mode.equals("3"))
 		{
+			String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 			String children = StringUtils.defaultString(request.getParameter("children"), "");
 			Data substatements = null;
 			Connection connection = null;
@@ -202,7 +208,23 @@
 				connection = DataSource.connection(SystemProperty.DATASOURCE);	
 				DataSource datasource = new DataSource(connection);	
 				
-				substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+") order by CREATE_DATE");
+
+				Data allsubstatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);				
+				List<String> parentIds = new ArrayList<String>();
+				for(Datum substatement : allsubstatements)
+				{
+					parentIds.add(substatement.getString("PARENT_ID"));
+				}
+
+				substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+")");
+				for(Datum substatement : substatements)
+				{
+					if( parentIds.contains(substatement.get("ID")) )
+					{
+						substatement.put("ISCHILD", "1");
+					}
+				}
+
 				message.resource("substatements", substatements);
 			}
 			catch(Exception e)

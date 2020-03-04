@@ -63,9 +63,13 @@ $(function()
 				content += '<div class="clearfix detail">';
 				$.each(details, function(j, detail)
 				{
+					var value1 = detail['value1'];
+					var value2 = detail['value2'];
+					value1 = app.changeMoney( app.toFixed(value1) );
+					value2 = app.changeMoney( app.toFixed(value2) );
 					content += '<div class="item-name">'+detail['name']+'</div>';
-					content += '<div class="item-value"><span>'+detail['item1']+'</span>：<span>'+(detail['value1'] == "" ? '无' : detail['value1'])+'</span></div>';
-					content += '<div class="item-value"><span>'+detail['item2']+'</span>：<span>'+(detail['value2'] == "" ? '无' : detail['value2'])+'</span></div>';
+					content += '<div class="item-value"><span>'+detail['item1']+'</span>：<span>'+(value1 == "" ? '无' : value1)+'</span></div>';
+					content += '<div class="item-value"><span>'+detail['item2']+'</span>：<span>'+(value2 == "" ? '无' : value2)+'</span></div>';
 				});
 				content += '</div>';
 				

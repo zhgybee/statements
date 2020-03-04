@@ -3,7 +3,7 @@
 	{
 		"id":"T0001", "table":"T01", "title":"试算平衡表（视图）", "columns":
 		[
-			{"name":"XM", "merge":{"group":true}},
+			{"name":"XMBH", "merge":{"group":true}},
 			{"name":"QMSDQ", "merge":{}},
 			{"name":"QCSDQ", "merge":{}},
 			{"name":"QMJFJE", "merge":{}},

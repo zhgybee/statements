@@ -160,12 +160,13 @@ function analyze(expression, map)
 		var value = "";
 		if(map == null)
 		{
-			value = getByPage(name, index) || 0;
+			value = getByPage(name, index) || "0";
 		}
 		else
 		{
-			value = getByData(map, name, index) || 0;
+			value = getByData(map, name, index) || "0";
 		}
+		value = value.replace(/,/gi, '');
 
 		expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
 		expression = analyze(expression, map);
