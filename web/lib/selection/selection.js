@@ -314,7 +314,10 @@
 							if( $panel.find(".item-panel li:visible").length == 1 )
 							{
 								var $item = $panel.find(".item-panel li:visible");
-								if($item.text() == value)
+								var text = $item.text();
+								text = text.trim();
+								text = text.replace(/¡¡/gi, '');
+								if(text == value)
 								{
 									$item.click();
 								}

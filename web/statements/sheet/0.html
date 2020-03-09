@@ -13,6 +13,7 @@
 <div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
 	<div class="left">
 	<button style="height:35px; width:80px" id="export-button">导出</button>
+	<button style="height:35px; width:80px" id="starting-button">计算</button>
 	</div>
 	<div class="searcher-panel right">
 		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
@@ -99,6 +100,7 @@
 								app.hideLoading();	
 								if(response.status == "1")
 								{
+									$cell.html( app.changeMoney($field.val()) );
 								}
 								else 
 								{
@@ -112,10 +114,12 @@
 							$cell.html( app.changeMoney($field.val()) );
 						}
 					});
+					/*
 					if(!iserror)
 					{
 						getResource(statementId, substatementId, statementmode, children, iseditor);
 					}
+					*/
 				}
 			}	
 		});
@@ -153,6 +157,11 @@
 				exclude_inputs: true
 			});
 			$table.find("td, th").css("border", "");
+		});
+
+		$("#starting-button").on("click", function()
+		{
+			getResource(statementId, substatementId, statementmode, children, iseditor);
 		});
 
 	});
@@ -318,6 +327,7 @@
 		}
 		return null;
 	}
+
 
 
 

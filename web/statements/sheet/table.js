@@ -167,6 +167,7 @@ function analyze(expression, map)
 			value = getByData(map, name, index) || "0";
 		}
 		value = value.replace(/,/gi, '');
+		value = app.toNumber( value );
 
 		expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
 		expression = analyze(expression, map);
@@ -179,11 +180,7 @@ function getByPage(name, index)
 	var $cells = $("#"+name+" td");
 	if($cells.length > 0)
 	{
-
-		var text = $($cells[index]).text();
-		text = text.replace(/,/ig,"");
-
-		return app.toNumber( text );
+		return $($cells[index]).text();
 	}
 	return null;
 }
@@ -192,7 +189,7 @@ function getByData(map, key, name)
 {
 	if(map[key] != null)
 	{
-		return map[key][name];
+		return map[key][name] + "";
 	}
 	return null;
 }

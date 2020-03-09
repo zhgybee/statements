@@ -232,14 +232,14 @@
 						{
 							if(j > 1)
 							{
-								var result = analyze($substatement, expression, j)
-								$(cell).text( app.changeMoney(eval(result)) );
+								var result = analyze($substatement, expression, j);
+								$(cell).html( (app.changeMoney(eval(result)) || "&nbsp;") );
 							}
 						}
 						else
 						{
-							var result = analyze($substatement, expression, j)
-							$(cell).text( app.changeMoney(eval(result)) );
+							var result = analyze($substatement, expression, j);
+							$(cell).html( (app.changeMoney(eval(result)) || "&nbsp;") );
 						}
 					});
 

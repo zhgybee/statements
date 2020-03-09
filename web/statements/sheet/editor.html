@@ -118,7 +118,6 @@ html, body{height:100%}
 				{
 					var $td = $(td);
 					var $value = $td.find("div");
-					console.log($value);
 					row += '<td '+($td.attr('colspan') ? 'colspan="'+$td.attr('colspan')+'"' : '')+' '+($td.attr('rowspan') ? 'rowspan="'+$td.attr('rowspan')+'"' : '')+'>'+($value.text())+'</td>';
 				});
 				bodyerrows.push(row)

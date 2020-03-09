@@ -142,6 +142,10 @@ html, body{height:100%}
 			{
 				$("#editor-frame iframe").attr("src", CURTABLE.url+"&statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
 			}
+			else if(CURTABLE.mergeurl != null)
+			{
+				$("#editor-frame iframe").attr("src", CURTABLE.mergeurl+"&statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);
+			}
 			else
 			{
 				$("#editor-frame iframe").attr("src", "editor.html?statementmode="+statementmode+"&table="+tableId+"&statement="+statementId+"&substatement="+CURSUBSTATEMENTID+"&children="+children+"&editor="+iseditor);

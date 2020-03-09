@@ -1,4 +1,6 @@
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="com.system.variable.VariableService"%>
 <%@page import="org.apache.commons.lang3.ArrayUtils"%>
 <%@page import="java.util.LinkedHashMap"%>
@@ -44,6 +46,7 @@ thead th{padding:0px 5px}
 <div id="container">
 <table>
 <%
+	String statementId = StringUtils.defaultString(request.getParameter("statement"), "");
 	String children = StringUtils.defaultString(request.getParameter("children"), "");
 	String tableId = StringUtils.defaultString(request.getParameter("table"), "");
 
@@ -59,9 +62,34 @@ thead th{padding:0px 5px}
 	{
 		connection = DataSource.connection(SystemProperty.DATASOURCE);	
 		DataSource datasource = new DataSource(connection);	
+
+		Data allsubstatements = datasource.find("select * from T_SUBSTATEMENT where STATEMENT_ID = ?", statementId);				
+		List<String> parentIds = new ArrayList<String>();
+		for(Datum substatement : allsubstatements)
+		{
+			parentIds.add(substatement.getString("PARENT_ID"));
+		}
+
+		substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+")");
 		
-		substatements = datasource.find("select * from T_SUBSTATEMENT where ID in ("+children+") order by CREATE_DATE");
-		Data dynamicheaders = datasource.find("select * from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID in ("+children+") and MODE = 0"); 
+		Data clones = new Data();
+		for(Datum substatement : substatements)
+		{
+			if( parentIds.contains(substatement.get("ID")) )
+			{
+				Datum clone = (Datum)substatement.clone();
+				clone.put("ID", clone.getString("ID")+"1");
+				clone.put("TITLE", clone.getString("TITLE")+"(合抵)");
+				clones.add(clone);
+			}
+
+			substatement.put("ID", substatement.getString("ID")+"0");
+		}
+		
+		substatements.addAll(clones);
+
+		
+		Data dynamicheaders = datasource.find("select *, (SUBSTATEMENT_ID || MODE) as 'SUBSTATEMENT_ID_MODE' from T_HEADER where TABLE_ID = '"+tableId+"' and SUBSTATEMENT_ID in ("+children+") and (MODE = 0 or MODE = 1)"); 
 		
 		for(Datum dynamicheader : dynamicheaders)
 		{
@@ -75,7 +103,7 @@ thead th{padding:0px 5px}
 			}
 			dynamiccolumnmap.put(code+"-"+substatementId, dynamiccolumns);
 		}
-		data = datasource.find("select * from "+tablename+" where SUBSTATEMENT_ID in ("+children+") and MODE = 0");
+		data = datasource.find("select *, (SUBSTATEMENT_ID || MODE) as 'SUBSTATEMENT_ID_MODE' from "+tablename+" where SUBSTATEMENT_ID in ("+children+") and (MODE = 0 or MODE = 1)");
 	}
 	catch(Exception e)
 	{ 
@@ -145,7 +173,7 @@ thead th{padding:0px 5px}
 					}
 					else
 					{
-						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID_MODE"), datum.get(key));
 					}
 				}
 			}
@@ -162,11 +190,11 @@ thead th{padding:0px 5px}
 		}
 		else
 		{
-			Data groupdata = groupdatamap.get(datum.getString("SUBSTATEMENT_ID"));
+			Data groupdata = groupdatamap.get(datum.getString("SUBSTATEMENT_ID_MODE"));
 			if(groupdata == null)
 			{
 				groupdata = new Data();
-				groupdatamap.put(datum.getString("SUBSTATEMENT_ID"), groupdata);
+				groupdatamap.put(datum.getString("SUBSTATEMENT_ID_MODE"), groupdata);
 			}
 
 			Datum temp = new Datum();
@@ -181,7 +209,7 @@ thead th{padding:0px 5px}
 					}
 					else
 					{
-						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID"), datum.get(key));
+						temp.put(key+"-"+datum.getString("SUBSTATEMENT_ID_MODE"), datum.get(key));
 					}
 				}
 			}
@@ -217,8 +245,6 @@ thead th{padding:0px 5px}
 			map.put(String.valueOf(i), tmp);
 		}
 	}
-	
-	out.println(map);
 
 
 	
@@ -410,19 +436,26 @@ thead th{padding:0px 5px}
 						}
 						else
 						{
+							String value = datum.getString(column.optString("name")+"-"+substatement.getString("ID"));
+							if(value.equals(""))
+							{
+								value = "&nbsp;";
+							}
+							
 							if(dictionary != null)
 							{
-								bodyhtml.append("	<td dictionary=\""+dictionary+"\">"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+								bodyhtml.append("	<td dictionary=\""+dictionary+"\">"+value+"</td>");
 							}
 							else
 							{
-								bodyhtml.append("	<td class=\""+classname+"\">"+datum.getString(column.optString("name")+"-"+substatement.getString("ID"))+"</td>");
+								bodyhtml.append("	<td class=\""+classname+"\">"+value+"</td>");
 							}
 						}
 					}
 				}
 			}		
 		}
+
 		bodyhtml.append("</tr>");
 	}
 	

@@ -593,6 +593,7 @@
 					number += app.toNumber( value[key] );
 				}
 			});
+			number = app.toNonExponential(number);
 			number = toValue(column, number);
 			return number;
 		}
