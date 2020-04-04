@@ -7,13 +7,19 @@
 	<link rel="stylesheet" href="../../style/css/app.css" />
 	<link rel="stylesheet" href="../../lib/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="table.css" />
+
+	<style>
+		thead{position:fixed; top:56px; z-index:2}
+		tbody{position:absolute; top:155px; z-index:1}
+	</style>
+
 </head>
 
 <body>
-<div style="padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
+<div style="position:fixed; z-index:2; top:0px; width:100%; padding:10px; background-color:#F7F7F7" id="toolbar-panel" class="grid-toolbar-panel clearfix">
 	<div class="left">
 	<button style="height:35px; width:80px" id="export-button">导出</button>
-	<button style="height:35px; width:80px" id="starting-button">计算</button>
+	<button style="height:35px; width:80px; display:none" id="starting-button">计算</button>
 	</div>
 	<div class="searcher-panel right">
 		<div class="searcher-keyword-panel"><input type="text" placeholder="请输入搜索内容..."/><i class="fa fa-search"></i></div>
@@ -59,7 +65,7 @@
 		$.ajaxSetup 
 		(
 			{
-		    	async:false
+		    	//async:false
 			}
 		);
 
@@ -72,6 +78,11 @@
 		var iseditor = app.getParameter("editor") || "0";
 
 		getResource(statementId, substatementId, statementmode, children, iseditor);
+
+		if(statementmode == "0")
+		{
+			$("#starting-button").show();
+		}
 
 		$(window).on("mousedown.editor", function(event)
 		{
@@ -224,17 +235,18 @@
 
 
 
+
 					content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
-					content += '<td class="itemname" style="text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
-					content += '<td class="itemcode">'+item["code"]+'</td>';
-					content += '<td class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qmjfje) )+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qmdfje) )+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qmsdh) )+'</td>';
-					content += '<td class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qcjfje) )+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qcdfje) )+'</td>';
-					content += '<td class="readonly">'+app.changeMoney( app.toFixed(qcsdh) )+'</td>';
+					content += '<td class="itemname" style="width:360px; text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
+					content += '<td style="width:80px" class="itemcode">'+item["code"]+'</td>';
+					content += '<td style="width:100px" class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmjfje) )+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmdfje) )+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmsdh) )+'</td>';
+					content += '<td style="width:100px" class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcjfje) )+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcdfje) )+'</td>';
+					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcsdh) )+'</td>';
 					content += '</tr>';
 				});
 				var $t01 = $("#T01 tbody");

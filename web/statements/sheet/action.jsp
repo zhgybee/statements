@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang3.math.NumberUtils"%>
 <%@page import="com.system.datasource.Datum"%>
 <%@page import="com.system.datasource.Data"%>
 <%@page import="com.system.variable.VariableService"%>
@@ -44,10 +45,16 @@
 						String columnname = column.optString("name");
 						
 						value = value.trim();
+						String integer = StringUtils.replace(value, ",", "");
+						if( NumberUtils.isNumber(integer) )
+						{
+							value = integer;
+						}
+						
 						
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	
-						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = datetime(CURRENT_TIMESTAMP, 'localtime') where ID = ?", value, key);
+						datasource.execute("update "+tablename+" set "+columnname+" = ?, CREATE_DATE = NOW() where ID = ?", value, key);
 						
 						JSONObject editor = column.optJSONObject("editor");
 						if(editor != null)
@@ -70,7 +77,7 @@
 										Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and XMBH = ? group by XMBH", substatementId, statementmode, jfkm);
 										if(data.size() == 0)
 										{
-											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, NOW())", SystemUtils.uuid(), "", jfkm, statementmode, statementId, substatementId, sessionuser.getId());
 										}
 									}
 
@@ -79,7 +86,7 @@
 										Data data = datasource.find("select XMBH from T01 where SUBSTATEMENT_ID = ? and MODE = ? and XMBH = ? group by XMBH", substatementId, statementmode, dfkm);
 										if(data.size() == 0)
 										{
-											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
+											datasource.execute("insert into T01(ID, XM, XMBH, MODE, STATEMENT_ID, SUBSTATEMENT_ID, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, ?, ?, NOW())", SystemUtils.uuid(), "", dfkm, statementmode, statementId, substatementId, sessionuser.getId());
 										}
 									}
 										
@@ -151,7 +158,7 @@
 					}
 					else
 					{
-						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, MODE, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, 'localtime'))", SystemUtils.uuid(), statementId, substatementId, statementmode, sessionuser.getId());
+						datasource.execute("insert into "+tablename+"(ID, STATEMENT_ID, SUBSTATEMENT_ID, MODE, CREATE_USER_ID, CREATE_DATE) values(?, ?, ?, ?, ?, NOW())", SystemUtils.uuid(), statementId, substatementId, statementmode, sessionuser.getId());
 					}
 					
 					connection.commit();

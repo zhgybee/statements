@@ -82,7 +82,7 @@
 <%!
 	public String toSql(String sql, String statementmode, String substatementId)
 	{
-		return "select * from ("+sql+") where SUBSTATEMENT_ID = '"+substatementId+"' and MODE = '"+statementmode+"'";
+		return "select * from ("+sql+") a where a.SUBSTATEMENT_ID = '"+substatementId+"' and a.MODE = '"+statementmode+"'";
 	}
 
 	public JSONArray warning(String name1, String name2, Data data1, Data data2) throws JSONException

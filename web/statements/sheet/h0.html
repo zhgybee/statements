@@ -36,6 +36,7 @@
 		var statementmode = app.getParameter("statementmode") || 0;
 		var children = app.getParameter("children") || "";
 
+		app.showLoading();
 		$.getJSON("0.jsp?mode=3&statement="+statementId+"&children="+children, function(response)
 		{
 			app.hideLoading();

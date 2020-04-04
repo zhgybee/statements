@@ -32,7 +32,22 @@ html, body{height:100%}
 	var children = app.getParameter("children") || "";
 	var iseditor = app.getParameter("editor") || "0";
 	
-	var CURTYPE = "merge";
+	var CURTYPE = "0";
+
+	if(statementmode == 2)
+	{
+		CURTYPE = "merge";
+	}
+	else if(statementmode == 1)
+	{
+		CURTYPE = "merge-offset";
+	}
+	else if(statementmode == 0)
+	{
+		CURTYPE = "single";
+	}
+	
+
 	var CURTABLE = null;
 	var CURSUBSTATEMENTID = substatementId;
 	$(function()
@@ -136,6 +151,7 @@ html, body{height:100%}
 	function go()
 	{
 		var tableId = CURTABLE.id || "";
+		console.log(CURTYPE);
 		if(CURTYPE == "merge")
 		{
 			if(CURTABLE.url != null)

@@ -125,7 +125,7 @@
 					vs = ArrayUtils.add(vs, "'"+substatementId+"'");
 					vs = ArrayUtils.add(vs, "'"+statementmode+"'");
 					vs = ArrayUtils.add(vs, "'"+sessionuser.getId()+"'");
-					vs = ArrayUtils.add(vs, "datetime(CURRENT_TIMESTAMP, 'localtime')");
+					vs = ArrayUtils.add(vs, "NOW()");
 					
 					for(String column : columns)
 					{
