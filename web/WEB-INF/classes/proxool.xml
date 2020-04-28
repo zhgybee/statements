@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <something-else-entirely>
 	<proxool>
-		<alias>statements</alias>
-		<driver-url>jdbc:mysql://localhost:3306/statements?useSSL=false&amp;serverTimezone=CTT&amp;useOldAliasMetadataBehavior=true</driver-url>
+		<alias>mentor</alias>
+		<driver-url>jdbc:mysql://localhost:3306/mentor?useSSL=false&amp;serverTimezone=CTT&amp;useOldAliasMetadataBehavior=true</driver-url>
 		<driver-class>com.mysql.cj.jdbc.Driver</driver-class>
 		<driver-properties>
 			<property name="user" value="root"/>

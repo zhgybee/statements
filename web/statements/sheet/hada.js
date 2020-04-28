@@ -72,6 +72,7 @@ function getByPage($substatement, name, index)
 
 		var text = $($cells[index]).text();
 		text = text.replace(/,/ig,"");
+		text = text.replace(new RegExp(/( )/g), "");
 
 		return app.toNumber( text );
 	}

@@ -438,7 +438,8 @@
 				}
 				else if(modes.indexOf("money") != -1)
 				{
-					value = value.replace(/,/ig,"");
+					value = value.replace(/,/ig, "");
+					value = value.replace(new RegExp(/( )/g), "");
 				}
 			}
 			return value;
@@ -585,12 +586,14 @@
 				var row = $(grouprow).data("row");
 				if(key == null)
 				{
-					number += app.toNumber(row[columnname]);
+					number = app.toNumber(row[columnname]) + app.toNumber(number);
+					number = app.toFixed(number);
 				}
 				else
 				{
 					var value = $.parseJSON(row[columnname]);
-					number += app.toNumber( value[key] );
+					number = app.toNumber(value[key]) + app.toNumber(number);
+					number = app.toFixed(number);
 				}
 			});
 			number = app.toNonExponential(number);
@@ -892,6 +895,7 @@
 								if(source != value)
 								{
 									app.showLoading();
+									value = fromValue(column, value);
 									$.post(options.editor.update, {column:JSON.stringify(column), key:key, value:value, table:tableId}, function(response)
 									{
 										app.hideLoading();				

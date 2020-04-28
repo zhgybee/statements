@@ -497,12 +497,20 @@ thead th{padding:0px 5px}
 
 		$("#container tbody .money").each(function(i, cell)
 		{
-			$(cell).text( app.changeMoney($(cell).text()) );
+			var value = app.changeMoney($(cell).text());
+			if(value != 0)
+			{
+				$(cell).text( app.changeMoney($(cell).text()) );
+			}
 		});
 		
 		$("#container tbody .percent").each(function(i, cell)
 		{
-			$(cell).text( app.toFixed( app.toNumber($(cell).text()) * 100 ) + "%" );
+			var value = app.toFixed( app.toNumber($(cell).text()) * 100 );
+			if(value != 0)
+			{
+				$(cell).text( value + "%" );
+			}
 		});
 				
 		

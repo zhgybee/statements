@@ -45,12 +45,13 @@
 						String columnname = column.optString("name");
 						
 						value = value.trim();
+						/*
 						String integer = StringUtils.replace(value, ",", "");
 						if( NumberUtils.isNumber(integer) )
 						{
 							value = integer;
 						}
-						
+						*/
 						
 						connection = DataSource.connection(SystemProperty.DATASOURCE);
 						DataSource datasource = new DataSource(connection);	

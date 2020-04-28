@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang3.math.NumberUtils"%>
 <%@page import="org.json.JSONException"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.io.File"%>
@@ -194,13 +195,16 @@
 					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("MODE"))
 					{
 						String value1 = datum1.getString(key);
-						JSONObject warning = new JSONObject();
-						warning.put("name", "数据不完整");
-						warning.put("item1", name1);
-						warning.put("value1", value1);
-						warning.put("item2", name2);
-						warning.put("value2", "");
-						warnings.put(warning);
+						if(NumberUtils.toDouble(value1, 0) != 0)
+						{
+							JSONObject warning = new JSONObject();
+							warning.put("name", "数据不完整");
+							warning.put("item1", name1);
+							warning.put("value1", value1);
+							warning.put("item2", name2);
+							warning.put("value2", "");
+							warnings.put(warning);
+						}
 					}
 				}
 			}
@@ -212,13 +216,16 @@
 					if(!key.equals("STATEMENT_ID") && !key.equals("SUBSTATEMENT_ID") && !key.equals("MODE"))
 					{
 						String value2 = datum2.getString(key);
-						JSONObject warning = new JSONObject();
-						warning.put("name", "数据不完整");
-						warning.put("item1", name1);
-						warning.put("value1", "");
-						warning.put("item2", name2);
-						warning.put("value2", value2);
-						warnings.put(warning);
+						if(NumberUtils.toDouble(value2, 0) != 0)
+						{
+							JSONObject warning = new JSONObject();
+							warning.put("name", "数据不完整");
+							warning.put("item1", name1);
+							warning.put("value1", "");
+							warning.put("item2", name2);
+							warning.put("value2", value2);
+							warnings.put(warning);
+						}
 					}
 				}
 			}

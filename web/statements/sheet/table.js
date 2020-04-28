@@ -53,7 +53,8 @@ function setEditor(url)
 		{
 			var $row = $(this).closest("tr");
 			var value = $(this).text();
-			value = value.replace(/,/ig,"");
+			value = value.replace(/,/ig, "");
+			value = value.replace(new RegExp(/( )/g), "");
 			var $field = $('<input />');
 			$field.val(value);
 			$field.data("name", $(this).attr("name"));
@@ -79,6 +80,8 @@ function setEditor(url)
 					var name = $field.data("name");
 					var source = $field.data("source");
 					var value = $field.val();
+					value = value.replace(/,/ig, "");
+					value = value.replace(new RegExp(/( )/g), "");
 					if(source != value)
 					{
 						app.showLoading();
@@ -141,19 +144,34 @@ function expression(statementId, substatementId, statementmode, children)
 		{
 			var $cell = $(cell);
 			var expression = $cell.attr("expression");
-			$(cell).text( app.changeMoney(eval(analyze(expression))) );
+			$(cell).text( app.changeMoney(app.toFixed(eval(analyze(expression)))) );
 
 		});
 	});
 }
 
-function analyze(expression, map)
+function analyze(expression, map, prefix)
 {
 
 	if(expression.indexOf("[") != -1 && expression.indexOf("]") != -1)
 	{
-
 		var content = expression.substring(expression.indexOf("[")+1, expression.indexOf("]"));
+
+		var contents = content.split(".");
+		var values = null;
+		if(contents.length == 3)
+		{
+			values = map[contents[0]];
+			content = content.replace(contents[0]+".",'');
+		}
+		else
+		{
+			if(prefix)
+			{
+				values = map[prefix];
+			}
+		}
+
 		var name = content.substring(0, content.indexOf("."));
 		var index = content.substring(content.indexOf(".") + 1, content.length);
 		
@@ -164,13 +182,13 @@ function analyze(expression, map)
 		}
 		else
 		{
-			value = getByData(map, name, index) || "0";
+			value = getByData(values, name, index) || "0";
 		}
 		value = value.replace(/,/gi, '');
 		value = app.toNumber( value );
 
 		expression = expression.substring(0, expression.indexOf("[")) + value + expression.substring(expression.indexOf("]") + 1, expression.length);
-		expression = analyze(expression, map);
+		expression = analyze(expression, map, prefix);
 	}
 	return expression;
 }
@@ -196,23 +214,23 @@ function getByData(map, key, name)
 
 function set(statementId, substatementId, statementmode, children, callback)
 {
-	//试算表
-	var $cell01s = $("td.T01");
-	if($cell01s.length > 0)
+	//试算表、利润表、现金流量试算表、所有者权益变动表
+	var $cells = $("td.T01, td.T03, td.T05, td.T06");
+	if($cells.length > 0)
 	{
-		$.getJSON("0.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
+		$.getJSON("quote.jsp?statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
 		{
 			app.hideLoading();
 			if(response.status == "1")
 			{
-				var map = response.resource.itemmap;
-
+				var map = response.resource.resources;
 				
-				$cell01s.each(function(i, cell)
+				$cells.each(function(i, cell)
 				{
 					var $cell = $(cell);
 					var expression = $cell.attr("expression");
-					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
+					var classnames = $cell.attr("class").split(" ");
+					$(cell).text( app.changeMoney( app.toFixed(eval(analyze(expression, map, classnames[0]))) ) );
 				});
 
 				if(callback != null)
@@ -234,78 +252,4 @@ function set(statementId, substatementId, statementmode, children, callback)
 		}
 	}
 
-	//现金流量试算表
-	var $cell05s = $("td.T05");
-	if($cell05s.length > 0)
-	{
-		$.getJSON("1.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
-		{
-			app.hideLoading();
-			if(response.status == "1")
-			{
-				var map = response.resource.itemmap;
-
-				$cell05s.each(function(i, cell)
-				{
-					var $cell = $(cell);
-					var expression = $cell.attr("expression");
-					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
-				});
-
-				if(callback != null)
-				{
-					callback();
-				}
-			}
-			else 
-			{
-				app.message(response.messages);
-			}
-		});
-	}
-	else
-	{
-		if(callback != null)
-		{
-			callback();
-		}
-	}
-
-	
-	//所有者权益变动表
-	var $cell06s = $("td.T06");
-	if($cell06s.length > 0)
-	{
-		$.getJSON("5.jsp?mode=1&statement="+statementId+"&substatement="+substatementId+"&statementmode="+statementmode+"&children="+children+"", function(response)
-		{
-			app.hideLoading();
-			if(response.status == "1")
-			{
-				var map = response.resource.itemmap;
-
-				$cell06s.each(function(i, cell)
-				{
-					var $cell = $(cell);
-					var expression = $cell.attr("expression");
-					$(cell).text( app.changeMoney(eval(analyze(expression, map))) );
-				});
-
-				if(callback != null)
-				{
-					callback();
-				}
-			}
-			else 
-			{
-				app.message(response.messages);
-			}
-		});
-	}
-	else
-	{
-		if(callback != null)
-		{
-			callback();
-		}
-	}
 }

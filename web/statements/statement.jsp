@@ -419,6 +419,31 @@
 				}
 			}
 		}
+		else if(mode.equals("8"))
+		{
+			String substatementId = StringUtils.defaultString(request.getParameter("substatement"), "");
+			
+			Connection connection = null;
+			try
+			{
+				connection = DataSource.connection(SystemProperty.DATASOURCE);	
+				DataSource datasource = new DataSource(connection);	
+				Datum substatement = datasource.get("select * from T_SUBSTATEMENT where ID = ?", substatementId);
+				message.resource("substatement", substatement);
+			}
+			catch(Exception e)
+			{
+				Throwable throwable = ThrowableUtils.getThrowable(e);
+				message.message(ServiceMessage.FAILURE, throwable.getMessage());
+			}
+			finally
+			{
+				if(connection != null)
+				{
+					connection.close();
+				}
+			}
+		}
 	}
 	else
 	{

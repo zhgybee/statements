@@ -239,11 +239,11 @@
 					content += '<tr id="'+key+'" class="'+rowclass+'" expression="'+expression+'">';
 					content += '<td class="itemname" style="width:360px; text-align:left; '+getStyle(item['style'])+'">'+item["name"]+'</td>';
 					content += '<td style="width:80px" class="itemcode">'+item["code"]+'</td>';
-					content += '<td style="width:100px" class="'+editor+'" name="QMSDQ">'+app.changeMoney(qmsdq)+'</td>';
+					content += '<td style="width:100px" class="'+editor+'" name="QMSDQ">'+app.changeMoney(app.toFixed(qmsdq))+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmjfje) )+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmdfje) )+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qmsdh) )+'</td>';
-					content += '<td style="width:100px" class="'+editor+'" name="QCSDQ">'+app.changeMoney(qcsdq)+'</td>';
+					content += '<td style="width:100px" class="'+editor+'" name="QCSDQ">'+app.changeMoney(app.toFixed(qcsdq))+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcjfje) )+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcdfje) )+'</td>';
 					content += '<td style="width:100px" class="readonly">'+app.changeMoney( app.toFixed(qcsdh) )+'</td>';
@@ -260,6 +260,7 @@
 						var $row = $(this).closest("tr");
 						var value = $(this).text();
 						value = value.replace(/,/ig,"");
+						value = value.replace(new RegExp(/( )/g), "");
 						var $field = $('<input />');
 						$field.val(value);
 						$field.data("name", $(this).attr("name"));
@@ -335,6 +336,7 @@
 		{
 			var text = $($cells[index]).text();
 			text = text.replace(/,/ig,"");
+			text = text.replace(new RegExp(/( )/g), "");
 			return app.toNumber( text );
 		}
 		return null;

@@ -44,28 +44,28 @@
 
 
 				DataStructure datastructure = SystemProperty.DATASTRUCTURES.get("T0003");
-				Data items = null;
+				Data data = null;
 				if(statementmode.equals("2") || statementmode.equals("1"))
 				{
 					//合并抵消或哈达：取所有单表的合并数据
 					String sql = "select * from T04 where SUBSTATEMENT_ID in ("+children+") and MODE = '0'";
-					items = datasource.find(sql);
-					items = SystemUtils.merge(items, datastructure.getProperty().optJSONArray("columns"));
+					data = datasource.find(sql);
+					data = SystemUtils.merge(data, datastructure.getProperty().optJSONArray("columns"));
 				}
 				else if(statementmode.equals("0"))
 				{
 					String sql = "select * from T04 where SUBSTATEMENT_ID = ? and MODE = '0'";
-					items = datasource.find(sql, substatementId);
+					data = datasource.find(sql, substatementId);
 				}
 
 				Map<String, Datum> itemmap = new HashMap<String, Datum>();
-				for(Datum datum : items)
+				for(Datum datum : data)
 				{
 					itemmap.put(datum.getString("BM"), datum);
 				}
 				
 				message.resource("itemmap", itemmap);
-				message.resource("items", items);
+				message.resource("items", data);
 			}
 			catch(Exception e)
 			{

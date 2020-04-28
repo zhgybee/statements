@@ -79,7 +79,8 @@ var app = {};
 
 	app.toFixed = function(number)
 	{
-		number = Math.round(number * 100) / 100;
+		
+		number = Math.round((number || 0) * 100) / 100;
 		return number.toString();
 		//return number.toFixed(2);
 	}
